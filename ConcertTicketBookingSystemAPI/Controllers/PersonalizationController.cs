@@ -20,41 +20,41 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> UpdateBirthYear(UpdateBirthYearDto dto)
+        public async Task<IActionResult> UpdateBirthYearAsync(UpdateBirthYearDto dto)
         {
             return Content(dto.BirthYear.ToString());
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> UpdateName(UpdateNameDto dto)
+        public async Task<IActionResult> UpdateNameAsync(UpdateNameDto dto)
         {
             return Ok();
         }
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> UpdateEmail(UpdateEmailDto dto)
-        {
-            return Ok();
-        }
-
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<IActionResult> RemoveRights()
+        public async Task<IActionResult> UpdateEmailAsync(UpdateEmailDto dto)
         {
             return Ok();
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> ActivatePromocode(ActivatePromocodeDto dto)
+        public async Task<IActionResult> RemoveRightsAsync()
         {
             return Ok();
         }
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> BuyTicket_PayPal(BuyTicketDto dto)
+        public async Task<IActionResult> ActivatePromocodeAsync(ActivatePromocodeDto dto)
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> BuyTicket_PayPalAsync(BuyTicketDto dto)
         {
             return Ok();
         }
