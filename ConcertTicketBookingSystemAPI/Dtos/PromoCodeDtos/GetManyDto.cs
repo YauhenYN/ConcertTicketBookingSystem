@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos
+namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodeDtos
 {
     public record GetManyDto
     {

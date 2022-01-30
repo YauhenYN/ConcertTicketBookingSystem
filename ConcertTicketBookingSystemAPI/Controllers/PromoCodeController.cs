@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos;
+using ConcertTicketBookingSystemAPI.Dtos.PromoCodeDtos;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -22,7 +22,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPromoCodeAsync(AddPromoCodeDto dto)
         {
-            //If promocode already exists, just change a flag in it on active
             return Ok();
         }
 
