@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConcertTicketBookingSystemAPI.Dtos.AdministrationDtos;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -16,6 +17,19 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public AdministrationController(ILogger<AdministrationController> logger)
         {
             _logger = logger;
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> AddAdmin(AddAdminDto dto)
+        {
+            return Ok();
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> RemoveAdmin(RemoveAdminDto dto)
+        {
+            return Ok();
         }
     }
 }

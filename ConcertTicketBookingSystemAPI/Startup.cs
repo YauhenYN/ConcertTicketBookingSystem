@@ -43,6 +43,10 @@ namespace ConcertTicketBookingSystemAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ConcertTicketBookingSystemAPI v1"));
             }
+            else if (env.IsProduction())
+            {
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
             app.UseRouting();
 

@@ -12,6 +12,6 @@ namespace ConcertTicketBookingSystemAPI.Dtos.PersonalizationDtos
         [Required]
         [DataType(DataType.Date)]
         [BirthDate(1900)]
-        public DateTime? BirthYear { get; init; }
+        public DateTime BirthYear { get; init; }
     }
 }

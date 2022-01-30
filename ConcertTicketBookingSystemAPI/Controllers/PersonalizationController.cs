@@ -44,5 +44,19 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             return Ok();
         }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> ActivatePromocode(ActivatePromocodeDto dto)
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> BuyTicket_PayPal(BuyTicketDto dto)
+        {
+            return Ok();
+        }
     }
 }
