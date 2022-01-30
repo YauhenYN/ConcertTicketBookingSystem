@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using ConcertTicketBookingSystemAPI.CustomValidationAttributes;
 
 namespace ConcertTicketBookingSystemAPI.Dtos.PersonalizationDtos
 {
-    public record UpdateBirthYearDto
+    public record UpdateNameDto
     {
+        [StringLength(30, MinimumLength = 3)]
         [Required]
-        [DataType(DataType.Date)]
-        [BirthDate(1900)]
-        public DateTime? BirthYear { get; init; }
+        public string NewName { get; init; }
     }
 }

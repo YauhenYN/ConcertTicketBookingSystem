@@ -18,11 +18,31 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             _logger = logger;
         }
-        [HttpPut]
+        [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> UpdateBirthYear(UpdateBirthYearDto dto)
         {
             return Content(dto.BirthYear.ToString());
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateName(UpdateNameDto dto)
+        {
+            return Ok();
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateEmail(UpdateEmailDto dto)
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> RemoveRights()
+        {
+            return Ok();
         }
     }
 }
