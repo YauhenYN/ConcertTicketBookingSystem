@@ -34,5 +34,17 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             return Ok();
         }
+        [HttpPost]
+        [Route("Activate")]
+        public async Task<ActionResult> ActivateConcertAsync(ActivateConcertDto dto)
+        {
+            return Ok();
+        }
+        [HttpPost]
+        [Route("Deactivate")]
+        public async Task<ActionResult> DeactivateConcertAsync(DeactivateConcertDto dto)
+        {
+            return Ok();
+        }
     }
 }
