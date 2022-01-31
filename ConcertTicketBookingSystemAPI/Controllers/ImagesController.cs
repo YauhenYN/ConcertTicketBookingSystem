@@ -10,11 +10,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DynamicImagesController : ControllerBase
+    public class ImagesController : ControllerBase
     {
-        private readonly ILogger<DynamicImagesController> _logger;
+        private readonly ILogger<ImagesController> _logger;
 
-        public DynamicImagesController(ILogger<DynamicImagesController> logger)
+        public ImagesController(ILogger<ImagesController> logger)
         {
             _logger = logger;
         }
