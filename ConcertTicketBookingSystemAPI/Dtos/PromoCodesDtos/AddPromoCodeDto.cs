@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodeDtos
+namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos
 {
     public record AddPromoCodeDto : IValidatableObject
     {
@@ -23,6 +23,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodeDtos
             int maxSum = 500;
             var list = new List<ValidationResult>();
             if (Discount * OnCount > maxSum) list.Add(new ValidationResult($"Сумма больше {maxSum}$"));
+            else if (Discount * OnCount < 1) list.Add(new ValidationResult("Сумма меньше 1$"));
             return list;
         }
     }

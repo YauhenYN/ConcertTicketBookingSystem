@@ -21,13 +21,13 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> AddAdminAsync(AddAdminDto dto)
+        public async Task<ActionResult> AddAdminAsync(AddAdminDto dto)
         {
             return Ok();
         }
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> RemoveAdminAsync(RemoveAdminDto dto)
+        public async Task<ActionResult> RemoveAdminAsync(RemoveAdminDto dto)
         {
             return Ok();
         }
