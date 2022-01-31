@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -16,6 +17,22 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public ConcertsController(ILogger<ConcertsController> logger)
         {
             _logger = logger;
+        }
+        [HttpGet]
+        public async Task<ActionResult<ConcertDto>> GetConcertAsync(GetConcertDto dto)
+        {
+            return Ok();
+        }
+        [HttpGet]
+        [Route("light")]
+        public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
+        {
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
+        {
+            return Ok();
         }
     }
 }
