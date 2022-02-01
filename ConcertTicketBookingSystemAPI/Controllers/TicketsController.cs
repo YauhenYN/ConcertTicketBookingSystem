@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.TicketsDtos;
+using ConcertTicketBookingSystemAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -13,43 +15,75 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     public class TicketsController : ControllerBase
     {
         private readonly ILogger<ConcertsController> _logger;
-
-        public TicketsController(ILogger<ConcertsController> logger)
+        private readonly ApplicationContext _context;
+        public TicketsController(ILogger<ConcertsController> logger, ApplicationContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [HttpGet]
         public async Task<ActionResult<TicketDto>> GetTicketAsync(GetTicketDto dto)
         {
-            return Ok();
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == dto.TicketId);
+            if (ticket != null) return ticket.ToDto();
+            else return NotFound();
         }
 
         [HttpGet]
         [Route("many")]
         public async Task<ActionResult<TicketSelectorDto>> GetManyTicketsAsync(TicketSelectParametersDto dto)
         {
-            return Ok();
+            var tickets = _context.Tickets.Where(t => dto.ByUserId == t.UserId);
+            var ticketsCount = tickets.Count();
+            if (ticketsCount > 0)
+            {
+                TicketSelectorDto selectorDto = new TicketSelectorDto()
+                {
+                    PageCount = ticketsCount / dto.NeededCount,
+                    CurrentPage = dto.PageNumber,
+                    Tickets = (await tickets.Skip((dto.PageNumber - 1) * dto.NeededCount).Take(dto.NeededCount).ToArrayAsync()).ToDtos()
+                };
+                return selectorDto;
+            }
+            return NotFound();
         }
 
         [HttpPost]
         public async Task<ActionResult> AddTicket(AddTicketDto dto)
         {
-            return Ok();
+            var ticket = dto.ToTicket();
+            await _context.Tickets.AddAsync(ticket);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetTicketAsync), new GetTicketDto() { TicketId = ticket.TicketId});
         }
 
         [HttpPost]
         [Route("Mark")]
         public async Task<ActionResult> MarkTicket(MarkTicketDto dto)
         {
-            return Ok();
+            var ticket = _context.Tickets.FirstOrDefault();
+            if (ticket != null && ticket.IsMarkedFlag == false)
+            {
+                ticket.IsMarkedFlag = true;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else return NotFound();
         }
 
         [HttpPost]
         [Route("Unmark")]
         public async Task<ActionResult> UnmarkTicket(UnmarkTicketDto dto)
         {
-            return Ok();
+            var ticket = _context.Tickets.FirstOrDefault();
+            if (ticket != null && ticket.IsMarkedFlag == true)
+            {
+                ticket.IsMarkedFlag = false;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else return NotFound();
         }
     }
 }
