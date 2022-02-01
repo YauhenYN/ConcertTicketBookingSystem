@@ -10,7 +10,7 @@ namespace ConcertTicketBookingSystemAPI.Models
     {
         [Required]
         public int RoleId { get; set; }
-        [Index(IsUnique = true)]
+        //Unique
         [StringLength(10, MinimumLength = 3)]
         [Required]
         public string Name { get; set; }

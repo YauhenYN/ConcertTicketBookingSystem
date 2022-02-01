@@ -15,7 +15,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         public bool IsActiveFlag { get; set; }
         [Column("ImageId")]
         [Required]
-        public int PreImageId { get; set; }
+        public Guid PreImageId { get; set; }
         public Image PreImage { get; set; }
         [Required]
         public int Cost { get; set; }
@@ -24,7 +24,9 @@ namespace ConcertTicketBookingSystemAPI.Models
         [Required]
         public DateTime ConcertDate { get; set; }
         [Required]
-        public DbGeography Location { get; set; }
+        public double Latitude { get; init; }
+        [Required]
+        public double Longitude { get; init; }
         [Required]
         public int CreatorId { get; set; }
         public User Creator { get; set; }

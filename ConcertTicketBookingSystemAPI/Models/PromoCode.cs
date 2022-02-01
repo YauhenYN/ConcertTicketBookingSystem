@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,7 +13,6 @@ namespace ConcertTicketBookingSystemAPI.Models
         public Guid PromoCodeId { get; set; }
         [StringLength(20, MinimumLength = 3)]
         [Required]
-        [Index(IsUnique = true)]
         public string Code { get; set; }
         [Required]
         public decimal Discount { get; set; }
