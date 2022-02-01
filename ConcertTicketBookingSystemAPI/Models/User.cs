@@ -11,8 +11,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         [Required]
         public Guid UserId { get; set; }
         [Required]
-        public int RoleId { get; set; }
-        public Role Role { get; set; }
+        public bool IsAdmin { get; set; }
         public DateTime? BirthDate { get; set; }
         public Guid? PromoCodeId { get; set; }
         public PromoCode PromoCode { get; set; }
@@ -20,6 +19,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         public string Email { get; set; }
         [Required]
         public bool CookieConfirmationFlag { get; set; }
-
+        public List<Action> Actions { get; set; }
+        public List<Ticket> Tickets { get; set; }
     }
 }

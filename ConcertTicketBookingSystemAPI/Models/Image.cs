@@ -10,11 +10,12 @@ namespace ConcertTicketBookingSystemAPI.Models
     public class Image
     {
         [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ImageId { get; set; }
         [Required]
         public string Type { get; set; }
         [Required]
         public byte[] Source { get; set; }
+        [Required]
+        public int ConcertId { get; set; }
     }
 }

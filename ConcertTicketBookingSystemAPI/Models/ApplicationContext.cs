@@ -17,7 +17,6 @@ namespace ConcertTicketBookingSystemAPI.Models
         public DbSet<Action> Actions { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
-        public DbSet<Role> Roles { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options)
@@ -26,14 +25,18 @@ namespace ConcertTicketBookingSystemAPI.Models
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
+            
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PromoCode>().HasIndex(promo => promo.Code).IsUnique();
-            modelBuilder.Entity<Role>().HasIndex(role => role.Name).IsUnique();
-            modelBuilder.Entity<Action>().Property(action => action.Date).HasDefaultValueSql("getutcdatetime()");
-            modelBuilder.Entity<Concert>().Property(concert => concert.CreationTime).HasDefaultValueSql("getutcdatetime()");
+            modelBuilder.Entity<Action>().Property(action => action.Date).HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<Concert>().Property(concert => concert.CreationTime).HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<GoogleUser>().HasIndex(user => user.GoogleId).IsUnique();
+            modelBuilder.Entity<FacebookUser>().HasIndex(user => user.FacebookId).IsUnique();
+            modelBuilder.Entity<MicrosoftUser>().HasIndex(user => user.MicrosoftId).IsUnique();
+            modelBuilder.Entity<Image>().HasIndex(image => image.ConcertId);
+            //Почему не работает
         }
     }
 }
