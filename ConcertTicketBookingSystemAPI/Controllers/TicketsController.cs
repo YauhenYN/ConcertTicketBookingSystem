@@ -42,7 +42,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 {
                     PageCount = ticketsCount / dto.NeededCount,
                     CurrentPage = dto.PageNumber,
-                    Tickets = (await tickets.Skip((dto.PageNumber - 1) * dto.NeededCount).Take(dto.NeededCount).ToArrayAsync()).ToDtos()
+                    Tickets = await tickets.Skip((dto.PageNumber - 1) * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync()
                 };
                 return selectorDto;
             }
@@ -50,7 +50,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddTicket(AddTicketDto dto)
+        public async Task<ActionResult> AddTicketAsync(AddTicketDto dto)
         {
             var ticket = dto.ToTicket();
             await _context.Tickets.AddAsync(ticket);
@@ -60,9 +60,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("Mark")]
-        public async Task<ActionResult> MarkTicket(MarkTicketDto dto)
+        public async Task<ActionResult> MarkTicketAsync(MarkTicketDto dto)
         {
-            var ticket = _context.Tickets.FirstOrDefault();
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == dto.TicketId);
             if (ticket != null && ticket.IsMarkedFlag == false)
             {
                 ticket.IsMarkedFlag = true;
@@ -74,9 +74,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("Unmark")]
-        public async Task<ActionResult> UnmarkTicket(UnmarkTicketDto dto)
+        public async Task<ActionResult> UnmarkTicketAsync(UnmarkTicketDto dto)
         {
-            var ticket = _context.Tickets.FirstOrDefault();
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == dto.TicketId);
             if (ticket != null && ticket.IsMarkedFlag == true)
             {
                 ticket.IsMarkedFlag = false;
