@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConcertTicketBookingSystemAPI.CustomServices;
 
 namespace ConcertTicketBookingSystemAPI
 {
@@ -37,6 +38,7 @@ namespace ConcertTicketBookingSystemAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConcertTicketBookingSystemAPI", Version = "v1" });
             });
+            services.AddEmailConfirmationService(new TimeSpan(long.Parse(Configuration["EmailConfirmationTimeSpan"])), 10000);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

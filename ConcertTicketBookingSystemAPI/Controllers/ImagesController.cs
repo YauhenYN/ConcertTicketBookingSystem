@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ConcertTicketBookingSystemAPI.Dtos.DynamicImagesDtos;
+using ConcertTicketBookingSystemAPI.Dtos.ImagesDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,11 +32,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 return new FileContentResult(image.Source, image.Type);
             }
             else return NotFound();
-        }
-        [HttpPost]
-        public async Task<ActionResult> AddImageAsync(AddImageDto dto) //Проверить что картинка в dto
-        {
-            return Ok();
         }
     }
 }

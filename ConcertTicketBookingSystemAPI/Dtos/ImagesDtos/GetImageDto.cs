@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.Dtos.DynamicImagesDtos
+namespace ConcertTicketBookingSystemAPI.Dtos.ImagesDtos
 {
     public class GetImageDto
     {
