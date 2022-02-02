@@ -28,11 +28,8 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public double Longitude { get; init; }
         [Required]
-        public string ConcertType { get; init; }
-        [Range(0, 5)]
-        public string[] ImageTypes { get; init; }
-        [Range(0, 5)]
-        public byte[] Images { get; init; }
+        [Range(0, 2)]
+        public ConcertType ConcertType { get; init; }
         public ClassicConcertDto ClassicConcertInfo { get; init; }
         public OpenAirConcertDto OpenAirConcertInfo { get; init; }
         public PartyConcertDto PartyConcertInfo { get; init; }
@@ -41,7 +38,6 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         {
             var list = new List<ValidationResult>();
             if (ClassicConcertInfo == null && OpenAirConcertInfo == null && PartyConcertInfo == null) list.Add(new ValidationResult("Должен быть определён весь тип"));
-            if (ImageTypes.Length != Images.Length) list.Add(new ValidationResult("lenght не совпадает у типа и картинки"));
             return list; 
         }
     }

@@ -10,6 +10,7 @@ namespace ConcertTicketBookingSystemAPI.Models
     public abstract class Concert
     {
         [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ConcertId { get; set; }
         [Required]
         public bool IsActiveFlag { get; set; }
@@ -18,7 +19,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         [Required]
         public byte[] PreImage { get; set; }
         [Required]
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
         [Required]
         public string Performer { get; set; }
         [Required]

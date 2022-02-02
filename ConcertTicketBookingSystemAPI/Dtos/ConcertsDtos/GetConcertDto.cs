@@ -9,6 +9,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
     public record GetConcertDto
     {
         [Required]
+        [Range(0, 2)]
+        public ConcertType ConcertType { get; init; }
+        [Required]
         public int ConcertId { get; init; }
     }
 }

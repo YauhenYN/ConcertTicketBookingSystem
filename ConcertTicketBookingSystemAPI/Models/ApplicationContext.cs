@@ -11,6 +11,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         public DbSet<GoogleUser> GoogleUsers { get; set; }
         public DbSet<FacebookUser> FacebookUsers { get; set; }
         public DbSet<MicrosoftUser> MicrosoftUsers { get; set; }
+        public DbSet<Concert> AbstractConcerts { get; set; }
         public DbSet<ClassicConcert> ClassicConcerts { get; set; }
         public DbSet<OpenAirConcert> OpenAirConcerts { get; set; }
         public DbSet<PartyConcert> PartyConcerts { get; set; }
@@ -36,6 +37,7 @@ namespace ConcertTicketBookingSystemAPI.Models
             modelBuilder.Entity<FacebookUser>().HasIndex(user => user.FacebookId).IsUnique();
             modelBuilder.Entity<MicrosoftUser>().HasIndex(user => user.MicrosoftId).IsUnique();
             modelBuilder.Entity<Image>().HasIndex(image => image.ConcertId);
+            modelBuilder.Entity<Concert>().Property(concert => concert.Cost).HasColumnType("money");
             //Почему не работает
         }
     }

@@ -13,8 +13,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public bool IsActive { get; init; }
         [Required]
-        [Url]
-        public string PreImageUrl { get; init; }
+        public string PreImageType { get; init; }
+        [Required]
+        public byte[] PreImage { get; init; }
         [Required]
         public decimal Cost { get; init; }
         [Required]
