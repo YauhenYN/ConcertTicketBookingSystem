@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.PersonalizationDtos;
+using ConcertTicketBookingSystemAPI.Models;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -13,16 +14,18 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     public class PersonalizationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;
+        private readonly ApplicationContext _context;
 
-        public PersonalizationController(ILogger<PersonalizationController> logger)
+        public PersonalizationController(ILogger<PersonalizationController> logger, ApplicationContext context)
         {
             _logger = logger;
+            _context = context;
         }
         [HttpPost]
         [Route("[action]")]
         public async Task<ActionResult> UpdateBirthYearAsync(UpdateBirthYearDto dto)
         {
-            return Content(dto.BirthYear.ToString());
+            return Ok();
         }
 
         [HttpPost]

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.DynamicImagesDtos;
+using ConcertTicketBookingSystemAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -13,17 +15,28 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     public class ImagesController : ControllerBase
     {
         private readonly ILogger<ImagesController> _logger;
+        private readonly ApplicationContext _context;
 
-        public ImagesController(ILogger<ImagesController> logger)
+        public ImagesController(ILogger<ImagesController> logger, ApplicationContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<FileContentResult>> GetImage(GetImageDto dto)
+        public async Task<ActionResult<FileResult>> GetImageAsync(GetImageDto dto)
+        {
+            var image = await _context.Images.FirstOrDefaultAsync(i => i.ImageId == dto.ImageId);
+            if (image != null)
+            {
+                return new FileContentResult(image.Source, image.Type);
+            }
+            else return NotFound();
+        }
+        [HttpPost]
+        public async Task<ActionResult> AddImageAsync(AddImageDto dto) //Проверить что картинка в dto
         {
             return Ok();
-            //return new FileContentResult();
         }
     }
 }
