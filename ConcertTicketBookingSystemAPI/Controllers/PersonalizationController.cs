@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.PersonalizationDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using ConcertTicketBookingSystemAPI.CustomServices;
+using Microsoft.Extensions.Configuration;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -17,30 +20,49 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     {
         private readonly ILogger<PersonalizationController> _logger;
         private readonly ApplicationContext _context;
+        private readonly IConfirmationService<Guid> _confirmationService;
+        private readonly EmailSenderService _emailSenderService;
+        private readonly IConfiguration _configuration;
 
-        public PersonalizationController(ILogger<PersonalizationController> logger, ApplicationContext context)
+        public PersonalizationController(ILogger<PersonalizationController> logger, ApplicationContext context, IConfirmationService<Guid> confirmationService, EmailSenderService emailSenderService, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
+            _emailSenderService = emailSenderService;
+            _configuration = configuration;
         }
         [HttpPost]
         [Route("[action]")]
         public async Task<ActionResult> UpdateBirthYearAsync(UpdateBirthYearDto dto)
         {
-            return Ok();
+            var user = await CurrentUserAsync();
+            user.BirthDate = dto.BirthYear;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpPost]
         [Route("[action]")]
         public async Task<ActionResult> UpdateNameAsync(UpdateNameDto dto)
         {
-            return Ok();
+            var user = await CurrentUserAsync();
+            user.Name = dto.NewName;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
         [HttpPost]
         [Route("[action]")]
         public async Task<ActionResult> UpdateEmailAsync(UpdateEmailDto dto)
         {
-            return Ok();
+            var user = await CurrentUserAsync();
+            var secretGuid = Guid.NewGuid();
+            await _emailSenderService.SendHtmlAsync("EmailConfirmation", dto.NewEmail, "<a href=\"" + _configuration["CurrentApiUrl"] + "\\EmailConfirmation\\Confirm" + secretGuid +"\">Подтвердить новый Email</a>");
+            _confirmationService.Add(secretGuid, async () =>
+            {
+                user.Email = dto.NewEmail;
+                await _context.SaveChangesAsync();
+            });
+            return NoContent();
         }
 
         [HttpPost]
@@ -63,5 +85,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             return Ok();
         }
+        private async Task<User> CurrentUserAsync() => await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
     }
 }

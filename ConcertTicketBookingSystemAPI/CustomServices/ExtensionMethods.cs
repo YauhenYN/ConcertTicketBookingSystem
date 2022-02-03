@@ -8,9 +8,13 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
 {
     public static class ExtensionMethods
     {
-        public static void AddEmailConfirmationService(this IServiceCollection collection, TimeSpan expirationSpan, int timerPeriod)
+        public static void AddGuidConfirmationService(this IServiceCollection collection, TimeSpan expirationSpan, int timerPeriod)
         {
-            collection.AddSingleton<IConfirmationService<Guid>, EmailConfirmationService>(provider => new EmailConfirmationService(expirationSpan, timerPeriod));
+            collection.AddSingleton<IConfirmationService<Guid>, GuidConfirmationService>(provider => new GuidConfirmationService(expirationSpan, timerPeriod));
+        }
+        public static void AddEmailSenderService(this IServiceCollection collection, string host, int port, string name, string email, string password)
+        {
+            collection.AddSingleton<EmailSenderService>(provider => new EmailSenderService(host, port, name, email, password));
         }
     }
 }

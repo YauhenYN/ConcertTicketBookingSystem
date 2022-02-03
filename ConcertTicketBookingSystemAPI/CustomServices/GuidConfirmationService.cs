@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.CustomServices
 {
-    public class EmailConfirmationService : IConfirmationService<Guid>, IDisposable
+    public class GuidConfirmationService : IConfirmationService<Guid>, IDisposable
     {
         private class ExpirationElement
         {
@@ -24,7 +24,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
         private readonly TimeSpan _expirationSpan;
         private readonly List<ExpirationElement> _expirationElements;
         private readonly Timer _timer;
-        public EmailConfirmationService(TimeSpan exprirationSpan, int timerPeriod)
+        public GuidConfirmationService(TimeSpan exprirationSpan, int timerPeriod)
         {
             _expirationSpan = exprirationSpan;
             _expirationElements = new List<ExpirationElement>();

@@ -23,6 +23,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _configuration = configuration;
             _confirmationService = confirmationService;
         }
+        [HttpGet]
         public RedirectResult Confirm(Guid confirmationCode)
         {
             _confirmationService.Confirm(confirmationCode);
