@@ -39,7 +39,7 @@ namespace ConcertTicketBookingSystemAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConcertTicketBookingSystemAPI", Version = "v1" });
             });
-            services.AddEmailConfirmationService(new TimeSpan(long.Parse(Configuration["EmailConfirmationTimeSpan"])), 10000);
+            services.AddEmailConfirmationService(new TimeSpan(Configuration.GetValue<long>("EmailConfirmationTimeSpan")), 10000);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

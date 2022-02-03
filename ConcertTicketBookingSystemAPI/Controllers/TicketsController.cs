@@ -28,6 +28,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult<TicketDto>> GetTicketAsync(GetTicketDto dto)
         {
             var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == dto.TicketId);
+            //(await _context.Users.Include(u => u.Tickets).FirstAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name)))
             if (ticket != null) return ticket.ToDto();
             else return NotFound();
         }
@@ -51,15 +52,15 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             return NotFound();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddTicketAsync(AddTicketDto dto)
-        {
-            //var ticket = dto.ToTicket();
-            //await _context.Tickets.AddAsync(ticket);
-            //await _context.SaveChangesAsync();
-            //return CreatedAtAction(nameof(GetTicketAsync), new GetTicketDto() { TicketId = ticket.TicketId});
-            return Ok();
-        }
+        //[HttpPost]
+        //public async Task<ActionResult> AddTicketAsync(AddTicketDto dto)
+        //{ //ПОЛЬЗОВАТЕЛЬ НЕ ДОЛЖЕН ДОБАВЛЯТЬ БИЛЕТЫ
+        //    //var ticket = dto.ToTicket();
+        //    //await _context.Tickets.AddAsync(ticket);
+        //    //await _context.SaveChangesAsync();
+        //    //return CreatedAtAction(nameof(GetTicketAsync), new GetTicketDto() { TicketId = ticket.TicketId});
+        //    return Ok();
+        //}
 
         [HttpPost]
         [Route("Mark")]

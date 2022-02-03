@@ -38,5 +38,6 @@ namespace ConcertTicketBookingSystemAPI.Models
         [Required]
         public DateTime CreationTime { get; set; }
         public List<Image> Images { get; set; }
+        public List<Ticket> Tickets { get; set; }
     }
 }

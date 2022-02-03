@@ -76,17 +76,17 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             Concert concert;
             if (dto.ConcertType == ConcertType.ClassicConcert)
             {
-                concert = dto.ToClassicConcert();
+                concert = dto.ToClassicConcert(Guid.Parse(HttpContext.User.Identity.Name));
                 await _context.ClassicConcerts.AddAsync((ClassicConcert)concert);
             }
             else if (dto.ConcertType == ConcertType.OpenAirConcert)
             {
-                concert = dto.ToOpenAirConcert();
+                concert = dto.ToOpenAirConcert(Guid.Parse(HttpContext.User.Identity.Name));
                 await _context.OpenAirConcerts.AddAsync((OpenAirConcert)concert);
             }
             else
             {
-                concert = dto.ToPartyConcert();
+                concert = dto.ToPartyConcert(Guid.Parse(HttpContext.User.Identity.Name));
                 await _context.PartyConcerts.AddAsync((PartyConcert)concert);
             }
             await _context.SaveChangesAsync();
@@ -97,7 +97,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> ActivateConcertAsync(ActivateConcertDto dto)
         {
-            var concert = await _context.AbstractConcerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
+            var concert = await _context.Concerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
             if (concert != null && concert.IsActiveFlag == false)
             {
                 concert.IsActiveFlag = true;
@@ -111,7 +111,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> DeactivateConcertAsync(DeactivateConcertDto dto)
         {
-            var concert = await _context.AbstractConcerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
+            var concert = await _context.Concerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
             if (concert != null && concert.IsActiveFlag == true)
             {
                 concert.IsActiveFlag = false;

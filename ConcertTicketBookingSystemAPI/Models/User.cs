@@ -19,6 +19,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         public string Email { get; set; }
         [Required]
         public bool CookieConfirmationFlag { get; set; }
+        public List<Concert> Concerts { get; set; }
         public List<Action> Actions { get; set; }
         public List<Ticket> Tickets { get; set; }
     }

@@ -34,10 +34,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             }
             else return NotFound();
         }
+        [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddImageAsync(AddImageDto dto)
         {
-            var concert = await _context.AbstractConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => c.ConcertId == dto.ConcertId);
+            var concert = await _context.Concerts.Include(c => c.Images).FirstOrDefaultAsync(c => c.ConcertId == dto.ConcertId);
             if (concert != null && concert.Images.Count < 5)
             {
                 var image = dto.ToImage();

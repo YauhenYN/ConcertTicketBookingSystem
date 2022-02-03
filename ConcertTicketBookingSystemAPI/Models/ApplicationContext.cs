@@ -8,11 +8,11 @@ namespace ConcertTicketBookingSystemAPI.Models
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<User> AbstractUsers { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<GoogleUser> GoogleUsers { get; set; }
         public DbSet<FacebookUser> FacebookUsers { get; set; }
         public DbSet<MicrosoftUser> MicrosoftUsers { get; set; }
-        public DbSet<Concert> AbstractConcerts { get; set; }
+        public DbSet<Concert> Concerts { get; set; }
         public DbSet<ClassicConcert> ClassicConcerts { get; set; }
         public DbSet<OpenAirConcert> OpenAirConcerts { get; set; }
         public DbSet<PartyConcert> PartyConcerts { get; set; }
@@ -39,7 +39,7 @@ namespace ConcertTicketBookingSystemAPI.Models
             modelBuilder.Entity<MicrosoftUser>().HasIndex(user => user.MicrosoftId).IsUnique();
             modelBuilder.Entity<Image>().HasIndex(image => image.ConcertId);
             modelBuilder.Entity<Concert>().Property(concert => concert.Cost).HasColumnType("money");
-            //Почему не работает
+            //modelBuilder.Entity<Concert>().HasMany(c => c.Tickets).WithOne(t => t.Concert).HasForeignKey(t => t.ConcertId);
         }
     }
 }

@@ -31,7 +31,5 @@
       "dotnetRunMessages": "true",
       "applicationUrl": "https://api.localhost:5001;http://api.localhost:5000"
     }
-  },
-  "RedirectUrl": "https://localhost",
-  "EmailConfirmationTimeSpan": 600000 //10 minutes
+  }
 }
