@@ -6,11 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.PersonalizationDtos;
 using ConcertTicketBookingSystemAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class PersonalizationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;

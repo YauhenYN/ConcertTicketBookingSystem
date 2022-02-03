@@ -21,5 +21,8 @@ namespace ConcertTicketBookingSystemAPI.Models
         public PromoCode PromoCode { get; set; }
         [Required]
         public bool IsMarkedFlag { get; set; }
+        [Required]
+        public int ConcertId { get; set; }
+        public Concert Concert { get; set; }
     }
 }

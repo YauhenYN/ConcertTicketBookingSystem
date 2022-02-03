@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.ActionsDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class ActionsController : ControllerBase
     {
         private readonly ILogger<ActionsController> _logger;
@@ -32,7 +34,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAsync(AddActionDto dto)
         {
-            var action = dto.ToAction(id);
+            var action = dto.ToAction(Guid.Parse(HttpContext.User.Identity.Name));
             _context.Actions.Add(action);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetManyAsync", new GetManyActionsDto() { UserId = action.UserId});

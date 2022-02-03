@@ -8,6 +8,7 @@ namespace ConcertTicketBookingSystemAPI.Models
 {
     public class ApplicationContext : DbContext
     {
+        public DbSet<User> AbstractUsers { get; set; }
         public DbSet<GoogleUser> GoogleUsers { get; set; }
         public DbSet<FacebookUser> FacebookUsers { get; set; }
         public DbSet<MicrosoftUser> MicrosoftUsers { get; set; }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.ImagesDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -33,6 +34,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             }
             else return NotFound();
         }
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddImageAsync(AddImageDto dto)
         {
             var concert = await _context.AbstractConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => c.ConcertId == dto.ConcertId);

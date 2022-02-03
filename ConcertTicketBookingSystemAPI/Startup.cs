@@ -33,6 +33,7 @@ namespace ConcertTicketBookingSystemAPI
             {
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddAuthentication();
             services.AddControllers(); 
             services.AddSwaggerGen(c =>
             {
@@ -56,7 +57,7 @@ namespace ConcertTicketBookingSystemAPI
             }
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

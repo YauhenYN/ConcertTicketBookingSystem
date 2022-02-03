@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -24,6 +25,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddPromoCodeAsync(AddPromoCodeDto dto)
         {
             if (!await _context.PromoCodes.AnyAsync(p => p.Code == dto.UniqueCode))
@@ -36,6 +38,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             return Conflict();
         }
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<PromoCodeDto[]>> GetManyPromoCodesAsync(GetManyPromoCodesDto dto)
         {
             IQueryable<PromoCode> promoCodes = _context.PromoCodes;
@@ -48,6 +51,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("Activate")]
+        [Authorize]
         public async Task<ActionResult> ActivatePromoCodeAsync(ActivatePromoCodeDto dto)
         {
             var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == dto.UniqueCode);
@@ -62,6 +66,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("Deactivate")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> DeactivatePromoCodeAsync(DeactivatePromoCodeDto dto)
         {
             var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == dto.UniqueCode);

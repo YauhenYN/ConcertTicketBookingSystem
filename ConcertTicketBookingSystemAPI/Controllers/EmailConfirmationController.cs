@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.CustomServices;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
+    [Authorize]
     public class EmailConfirmationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;

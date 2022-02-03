@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -23,6 +24,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _context = context;
         }
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ConcertDto>> GetConcertAsync(GetConcertDto dto)
         {
             if(dto.ConcertType == ConcertType.ClassicConcert)
@@ -46,6 +48,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpGet]
         [Route("light")]
+        [Authorize]
         public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
         {
             IQueryable<Concert> concerts;
@@ -67,6 +70,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             else return NotFound();
         }
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
         {
             Concert concert;
@@ -90,6 +94,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("Activate")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> ActivateConcertAsync(ActivateConcertDto dto)
         {
             var concert = await _context.AbstractConcerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
@@ -103,6 +108,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("Deactivate")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> DeactivateConcertAsync(DeactivateConcertDto dto)
         {
             var concert = await _context.AbstractConcerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
