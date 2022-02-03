@@ -24,5 +24,6 @@ namespace ConcertTicketBookingSystemAPI.Models
         public int LeftCount { get; set; }
         [Required]
         public bool IsActiveFlag { get; set; }
+        public List<Ticket> Tickets { get; set; }
     }
 }

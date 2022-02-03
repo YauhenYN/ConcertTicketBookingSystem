@@ -39,7 +39,9 @@ namespace ConcertTicketBookingSystemAPI.Models
             modelBuilder.Entity<MicrosoftUser>().HasIndex(user => user.MicrosoftId).IsUnique();
             modelBuilder.Entity<Image>().HasIndex(image => image.ConcertId);
             modelBuilder.Entity<Concert>().Property(concert => concert.Cost).HasColumnType("money");
-            //modelBuilder.Entity<Concert>().HasMany(c => c.Tickets).WithOne(t => t.Concert).HasForeignKey(t => t.ConcertId);
+            modelBuilder.Entity<Ticket>().HasOne(c => c.Concert).WithMany(t => t.Tickets).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Ticket>().HasOne(c => c.User).WithMany(u => u.Tickets).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Ticket>().HasOne(c => c.PromoCode).WithMany(p => p.Tickets).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
