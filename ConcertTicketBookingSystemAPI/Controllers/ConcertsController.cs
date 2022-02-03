@@ -69,11 +69,24 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
         {
-            if (dto.ConcertType == ConcertType.ClassicConcert) await _context.ClassicConcerts.AddAsync(dto.ToClassicConcert());
-            else if (dto.ConcertType == ConcertType.OpenAirConcert) await _context.OpenAirConcerts.AddAsync(dto.ToOpenAirConcert());
-            else await _context.PartyConcerts.AddAsync(dto.ToPartyConcert());
+            Concert concert;
+            if (dto.ConcertType == ConcertType.ClassicConcert)
+            {
+                concert = dto.ToClassicConcert();
+                await _context.ClassicConcerts.AddAsync((ClassicConcert)concert);
+            }
+            else if (dto.ConcertType == ConcertType.OpenAirConcert)
+            {
+                concert = dto.ToOpenAirConcert();
+                await _context.OpenAirConcerts.AddAsync((OpenAirConcert)concert);
+            }
+            else
+            {
+                concert = dto.ToPartyConcert();
+                await _context.PartyConcerts.AddAsync((PartyConcert)concert);
+            }
             await _context.SaveChangesAsync();
-            return NoContent();
+            return CreatedAtAction("GetConcertAsync", new GetConcertDto { ConcertId = concert.ConcertId, ConcertType = dto.ConcertType});
         }
         [HttpPost]
         [Route("Activate")]

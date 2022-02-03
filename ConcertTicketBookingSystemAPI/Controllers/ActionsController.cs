@@ -32,9 +32,10 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAsync(AddActionDto dto)
         {
-            _context.Actions.Add(dto.ToAction());
+            var action = dto.ToAction(id);
+            _context.Actions.Add(action);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return CreatedAtAction("GetManyAsync", new GetManyActionsDto() { UserId = action.UserId});
         }
     }
 }
