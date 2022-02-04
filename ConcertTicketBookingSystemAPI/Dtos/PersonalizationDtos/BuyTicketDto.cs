@@ -10,6 +10,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.PersonalizationDtos
     {
         [Range(1, 5)]
         [Required]
-        public int count { get; init; }
+        public int Count { get; init; }
+        [Required]
+        public int ConcertId { get; init; }
+        public Guid? PromoCodeId { get; init; }
     }
 }

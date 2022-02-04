@@ -17,7 +17,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         [Required]
         public int ConcertId { get; set; }
         public Concert Concert { get; set; }
-        public Guid PromoCodeId { get; set; }
+        public Guid? PromoCodeId { get; set; }
         public PromoCode PromoCode { get; set; }
         [Required]
         [Range(1, 5)]
