@@ -29,6 +29,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _logger = logger;
             _context = context;
             _emailSenderService = emailSenderService;
+            _confirmationService = confirmationService;
             _configuration = configuration;
         }
         [HttpPost]
@@ -69,14 +70,25 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("[action]")]
         public async Task<ActionResult> RemoveRightsAsync()
         {
-            return Ok();
+            var user = await CurrentUserAsync();
+            user.IsAdmin = false;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpPost]
         [Route("[action]")]
         public async Task<ActionResult> ActivatePromocodeAsync(ActivatePromocodeDto dto)
         {
-            return Ok();
+            var user = await CurrentUserAsync();
+            var promoCode = await _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == dto.Code);
+            if(promoCode != null && promoCode.Discount > user.PromoCode.Discount)
+            {
+                user.PromoCodeId = promoCode.PromoCodeId;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else return NotFound();
         }
 
         [HttpPost]
