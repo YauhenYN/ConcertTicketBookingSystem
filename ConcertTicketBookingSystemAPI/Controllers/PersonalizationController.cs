@@ -90,14 +90,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             }
             else return NotFound();
         }
-
-        [HttpPost]
-        [Route("[action]")]
-        public async Task<ActionResult> BuyTicket_PayPalAsync(BuyTicketDto dto)
-        {
-            
-            return Ok();
-        }
         private async Task<User> CurrentUserAsync() => await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
     }
 }

@@ -25,9 +25,10 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<TicketDto>> GetTicketAsync(GetTicketDto dto)
+        [Route("{ticketId}")]
+        public async Task<ActionResult<TicketDto>> GetTicketAsync(Guid ticketId)
         {
-            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == dto.TicketId);
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
             //(await _context.Users.Include(u => u.Tickets).FirstAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name)))
             if (ticket != null) return ticket.ToDto();
             else return NotFound();
@@ -58,15 +59,15 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         //    //var ticket = dto.ToTicket();
         //    //await _context.Tickets.AddAsync(ticket);
         //    //await _context.SaveChangesAsync();
-        //    //return CreatedAtAction(nameof(GetTicketAsync), new GetTicketDto() { TicketId = ticket.TicketId});
+        //    //return CreatedAtAction(nameof(GetTicketAsync), new { ticketId = ticket.TicketId});
         //    return Ok();
         //}
 
         [HttpPost]
-        [Route("Mark")]
-        public async Task<ActionResult> MarkTicketAsync(MarkTicketDto dto)
+        [Route("{ticketId}/Mark")]
+        public async Task<ActionResult> MarkTicketAsync(Guid ticketId)
         {
-            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == dto.TicketId);
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
             if (ticket != null && ticket.IsMarkedFlag == false)
             {
                 ticket.IsMarkedFlag = true;
@@ -77,10 +78,10 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Unmark")]
-        public async Task<ActionResult> UnmarkTicketAsync(UnmarkTicketDto dto)
+        [Route("{ticketId}/Unmark")]
+        public async Task<ActionResult> UnmarkTicketAsync(Guid ticketId)
         {
-            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == dto.TicketId);
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
             if (ticket != null && ticket.IsMarkedFlag == true)
             {
                 ticket.IsMarkedFlag = false;

@@ -39,6 +39,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpGet]
         [Authorize(Roles = "admin")]
+        [Route("many")]
         public async Task<ActionResult<PromoCodeDto[]>> GetManyPromoCodesAsync(GetManyPromoCodesDto dto)
         {
             IQueryable<PromoCode> promoCodes = _context.PromoCodes;
@@ -50,11 +51,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Activate")]
+        [Route("{promoCodeId}/Activate")]
         [Authorize]
-        public async Task<ActionResult> ActivatePromoCodeAsync(ActivatePromoCodeDto dto)
+        public async Task<ActionResult> ActivatePromoCodeAsync(Guid promoCodeId)
         {
-            var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == dto.UniqueCode);
+            var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.PromoCodeId == promoCodeId);
             if (ticket != null && ticket.IsActiveFlag == false)
             {
                 ticket.IsActiveFlag = true;
@@ -65,11 +66,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Deactivate")]
+        [Route("{promoCodeId}/Deactivate")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult> DeactivatePromoCodeAsync(DeactivatePromoCodeDto dto)
+        public async Task<ActionResult> DeactivatePromoCodeAsync(Guid promoCodeId)
         {
-            var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == dto.UniqueCode);
+            var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.PromoCodeId == promoCodeId);
             if (ticket != null && ticket.IsActiveFlag == true)
             {
                 ticket.IsActiveFlag = false;

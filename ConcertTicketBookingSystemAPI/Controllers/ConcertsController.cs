@@ -25,29 +25,37 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<ConcertDto>> GetConcertAsync(GetConcertDto dto)
+        [Route("{concertId}")]
+        public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId, AddConcertDto dto)
         {
             if(dto.ConcertType == ConcertType.ClassicConcert)
             {
-                var concert = await _context.ClassicConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
+                var concert = await _context.ClassicConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
                 else return NotFound();
             }
             else if(dto.ConcertType == ConcertType.OpenAirConcert)
             {
-                var concert = await _context.OpenAirConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
+                var concert = await _context.OpenAirConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
                 else return NotFound();
             }
             else
             {
-                var concert = await _context.PartyConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
+                var concert = await _context.PartyConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
                 else return NotFound();
             }
         }
+        [HttpPost]
+        [Route("{concertId}/Buy/PayPal")]
+        public async Task<ActionResult> BuyTicket_PayPalAsync(int ConcertId, BuyTicketDto dto)
+        {
+            return Ok();
+        }
+
         [HttpGet]
-        [Route("light")]
+        [Route("many/light")]
         [Authorize]
         public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
         {
@@ -90,14 +98,14 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 await _context.PartyConcerts.AddAsync((PartyConcert)concert);
             }
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetConcertAsync", new GetConcertDto { ConcertId = concert.ConcertId, ConcertType = dto.ConcertType});
+            return CreatedAtAction("GetConcertAsync", new { concertId = concert.ConcertId, getConcertDto = new GetConcertDto { ConcertType = dto.ConcertType } });
         }
         [HttpPost]
-        [Route("Activate")]
+        [Route("{concertId}/Activate")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult> ActivateConcertAsync(ActivateConcertDto dto)
+        public async Task<ActionResult> ActivateConcertAsync(int concertId)
         {
-            var concert = await _context.Concerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
+            var concert = await _context.Concerts.FirstOrDefaultAsync(c => concertId == c.ConcertId);
             if (concert != null && concert.IsActiveFlag == false)
             {
                 concert.IsActiveFlag = true;
@@ -107,11 +115,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             else return NotFound();
         }
         [HttpPost]
-        [Route("Deactivate")]
+        [Route("{concertId}/Deactivate")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult> DeactivateConcertAsync(DeactivateConcertDto dto)
+        public async Task<ActionResult> DeactivateConcertAsync(int concertId)
         {
-            var concert = await _context.Concerts.FirstOrDefaultAsync(c => dto.ConcertId == c.ConcertId);
+            var concert = await _context.Concerts.FirstOrDefaultAsync(c => concertId == c.ConcertId);
             if (concert != null && concert.IsActiveFlag == true)
             {
                 concert.IsActiveFlag = false;

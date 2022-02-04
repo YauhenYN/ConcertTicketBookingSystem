@@ -25,9 +25,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<ActionDto[]>> GetManyAsync(GetManyActionsDto dto)
+        public async Task<ActionResult<ActionDto[]>> GetManyAsync()
         {
-            var actions = _context.Actions.Where(action => action.UserId == dto.UserId);
+            var actions = _context.Actions.Where(action => action.UserId == Guid.Parse(HttpContext.User.Identity.Name));
             if (actions.Count() > 0) return await actions.ToDtosAsync();
             else return NotFound();
         }
@@ -37,7 +37,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var action = dto.ToAction(Guid.Parse(HttpContext.User.Identity.Name));
             _context.Actions.Add(action);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetManyAsync", new GetManyActionsDto() { UserId = action.UserId});
+            return NoContent();
         }
     }
 }

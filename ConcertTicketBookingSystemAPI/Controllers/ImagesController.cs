@@ -25,9 +25,10 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<FileResult>> GetImageAsync(GetImageDto dto)
+        [Route("{imageId}")]
+        public async Task<ActionResult<FileResult>> GetImageAsync(Guid imageId)
         {
-            var image = await _context.Images.FirstOrDefaultAsync(i => i.ImageId == dto.ImageId);
+            var image = await _context.Images.FirstOrDefaultAsync(i => i.ImageId == imageId);
             if (image != null)
             {
                 return new FileContentResult(image.Source, image.Type);
@@ -44,7 +45,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 var image = dto.ToImage();
                 await _context.AddAsync(image);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetImageAsync", new GetImageDto() { ImageId = image.ImageId });
+                return CreatedAtAction("GetImageAsync", new { imageId = image.ImageId });
             }
             else return Conflict();
         }
