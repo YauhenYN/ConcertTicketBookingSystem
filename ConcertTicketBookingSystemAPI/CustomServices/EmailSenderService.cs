@@ -18,6 +18,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
             _email = email;
             _password = password;
             _name = name;
+            _client = new SmtpClient();
             _client.Connect(host, port, true);
             _client.Authenticate(email, password);
         }

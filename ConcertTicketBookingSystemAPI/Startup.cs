@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.CustomServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ConcertTicketBookingSystemAPI
 {
@@ -33,7 +34,21 @@ namespace ConcertTicketBookingSystemAPI
             {
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            services.AddAuthentication();
+            new JwtAuth.AuthOptions(Configuration);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = JwtAuth.AuthOptions.ISSUER,
+                    ValidateAudience = true,
+                    ValidAudience = JwtAuth.AuthOptions.AUDIENCE,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = JwtAuth.AuthOptions.GetSymmetricSecurityKey(),
+                    ValidateIssuerSigningKey = true
+                };
+            });
             services.AddControllers(); 
             services.AddSwaggerGen(c =>
             {
