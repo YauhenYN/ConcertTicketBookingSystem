@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos;
-using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using PayPalCheckoutSdk.Core;
+using PayPalCheckoutSdk.Orders;
+using PayPalHttp;
+using ConcertTicketBookingSystemAPI.CustomServices;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -16,12 +19,16 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     public class ConcertsController : ControllerBase
     {
         private readonly ILogger<ConcertsController> _logger;
-        private readonly ApplicationContext _context;
+        private readonly Models.ApplicationContext _context;
+        private readonly EmailSenderService _senderService;
+        private readonly PayPalPayment _payment;
 
-        public ConcertsController(ILogger<ConcertsController> logger, ApplicationContext context)
+        public ConcertsController(ILogger<ConcertsController> logger, Models.ApplicationContext context, EmailSenderService senderService, PayPalPayment payment)
         {
             _logger = logger;
             _context = context;
+            _senderService = senderService;
+            _payment = payment;
         }
         [HttpGet]
         [Authorize]
@@ -47,19 +54,20 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 else return NotFound();
             }
         }
-        [HttpPost]
-        [Route("{concertId}/Buy/PayPal")]
-        public async Task<ActionResult> BuyTicket_PayPalAsync(int ConcertId, BuyTicketDto dto)
-        {
-            return Ok();
-        }
+        //[HttpPost]
+        //[Authorize]
+        //[Route("{concertId}/Buy/PayPal")]
+        //public async Task<ActionResult> BuyTicket_PayPalAsync(int ConcertId, BuyTicketDto dto)
+        //{
+        //    await _senderService.SendHtmlAsync("Ticket", "Emailgdsgs", "ticket information");
+        //}
 
         [HttpGet]
         [Route("many/light")]
         [Authorize]
         public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
         {
-            IQueryable<Concert> concerts;
+            IQueryable<Models.Concert> concerts;
             if(dto.ByConcertType == ConcertType.ClassicConcert) concerts = _context.ClassicConcerts;
             else if(dto.ByConcertType == ConcertType.OpenAirConcert) concerts = _context.OpenAirConcerts;
             else concerts = _context.PartyConcerts;
@@ -81,21 +89,21 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
         {
-            Concert concert;
+            Models.Concert concert;
             if (dto.ConcertType == ConcertType.ClassicConcert)
             {
                 concert = dto.ToClassicConcert(Guid.Parse(HttpContext.User.Identity.Name));
-                await _context.ClassicConcerts.AddAsync((ClassicConcert)concert);
+                await _context.ClassicConcerts.AddAsync((Models.ClassicConcert)concert);
             }
             else if (dto.ConcertType == ConcertType.OpenAirConcert)
             {
                 concert = dto.ToOpenAirConcert(Guid.Parse(HttpContext.User.Identity.Name));
-                await _context.OpenAirConcerts.AddAsync((OpenAirConcert)concert);
+                await _context.OpenAirConcerts.AddAsync((Models.OpenAirConcert)concert);
             }
             else
             {
                 concert = dto.ToPartyConcert(Guid.Parse(HttpContext.User.Identity.Name));
-                await _context.PartyConcerts.AddAsync((PartyConcert)concert);
+                await _context.PartyConcerts.AddAsync((Models.PartyConcert)concert);
             }
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetConcertAsync", new { concertId = concert.ConcertId, getConcertDto = new GetConcertDto { ConcertType = dto.ConcertType } });

@@ -40,8 +40,17 @@ namespace ConcertTicketBookingSystemAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConcertTicketBookingSystemAPI", Version = "v1" });
             });
             services.AddGuidConfirmationService(new TimeSpan(Configuration.GetValue<long>("EmailConfirmationTimeSpan")), 10000);
-            var section = Configuration.GetSection("EmailSenderSettings");
-            services.AddEmailSenderService(section["host"], section.GetValue<int>("port"), section["name"], section["email"], section["password"]);
+            var senderSection = Configuration.GetSection("EmailSenderSettings");
+            services.AddEmailSenderService(senderSection["host"], senderSection.GetValue<int>("port"), senderSection["name"], senderSection["email"], senderSection["password"]);
+            var paypalSection = Configuration.GetSection("PayPal");
+            services.AddSingleton<PayPalPayment>(c => new PayPalPayment(new PayPalSetup()
+            {
+                CancelUrl = paypalSection["cancelUrl"],
+                ReturnUrl = paypalSection["returnUrl"],
+                ClientId = paypalSection["clientId"],
+                Secret = paypalSection["secret"],
+                Environment = paypalSection["environment"]
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
