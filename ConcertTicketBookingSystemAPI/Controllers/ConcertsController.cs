@@ -110,7 +110,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Authorize]
-        [Route("/Buy/PayPal")]
+        [Route("Buy/PayPal")]
         public async Task<ActionResult> BuyTicket_PayPalAsync()
         {
             var orderId = Request.Query["token"];
