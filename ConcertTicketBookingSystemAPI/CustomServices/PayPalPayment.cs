@@ -29,19 +29,6 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
                         new PurchaseUnitRequest()
                         {
                             Description = description,
-                            //Items = new List<Item>()
-                            //{
-                            //    new Item()
-                            //    {
-                            //        Quantity = count.ToString(),
-                            //        Name = name,
-                            //        Description = description,
-                            //        UnitAmount = new Money(){ CurrencyCode = currencyCode, Value = amount.ToString() },
-                            //        Category = "Ticket",
-                            //        Sku = "SKUUUUU",
-                            //        Tax = new Money(){CurrencyCode = currencyCode, Value = "0"}
-                            //    }
-                            //},
                             AmountWithBreakdown = new AmountWithBreakdown()
                             {
                                 CurrencyCode = currencyCode,

@@ -36,7 +36,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
         }
         public bool Confirm(Guid confirmationCode)
         {
-            var ex = _expirationElements.FirstOrDefault(e => e.ConfirmationCode == confirmationCode);
+            var ex = _expirationElements.FindLast(e => e.ConfirmationCode == confirmationCode);
             if(ex != null)
             {
                 ex.OnConfirmationAction();

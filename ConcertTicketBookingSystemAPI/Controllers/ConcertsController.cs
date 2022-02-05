@@ -11,6 +11,7 @@ using PayPalCheckoutSdk.Core;
 using PayPalCheckoutSdk.Orders;
 using PayPalHttp;
 using ConcertTicketBookingSystemAPI.CustomServices;
+using Microsoft.Extensions.Configuration;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -22,26 +23,30 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         private readonly Models.ApplicationContext _context;
         private readonly EmailSenderService _senderService;
         private readonly PayPalPayment _payment;
+        private readonly IConfiguration _configuration;
+        private readonly IConfirmationService<Guid> _confirmationService;
 
-        public ConcertsController(ILogger<ConcertsController> logger, Models.ApplicationContext context, EmailSenderService senderService, PayPalPayment payment)
+        public ConcertsController(ILogger<ConcertsController> logger, Models.ApplicationContext context, EmailSenderService senderService, IConfirmationService<Guid> confirmationService, PayPalPayment payment, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
             _senderService = senderService;
             _payment = payment;
+            _configuration = configuration;
+            _confirmationService = confirmationService;
         }
         [HttpGet]
         [Authorize]
         [Route("{concertId}")]
         public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId, AddConcertDto dto)
         {
-            if(dto.ConcertType == ConcertType.ClassicConcert)
+            if (dto.ConcertType == ConcertType.ClassicConcert)
             {
                 var concert = await _context.ClassicConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
                 else return NotFound();
             }
-            else if(dto.ConcertType == ConcertType.OpenAirConcert)
+            else if (dto.ConcertType == ConcertType.OpenAirConcert)
             {
                 var concert = await _context.OpenAirConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
@@ -54,13 +59,71 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 else return NotFound();
             }
         }
-        //[HttpPost]
-        //[Authorize]
-        //[Route("{concertId}/Buy/PayPal")]
-        //public async Task<ActionResult> BuyTicket_PayPalAsync(int ConcertId, BuyTicketDto dto)
-        //{
-        //    await _senderService.SendHtmlAsync("Ticket", "Emailgdsgs", "ticket information");
-        //}
+        [HttpPost]
+        [Authorize]
+        [Route("{concertId}/Buy/PayPal")]
+        public async Task<ActionResult> BuyTicket_PayPalAsync(int concertId, BuyTicketDto dto)
+        {
+            if (_context.Concerts.Any(c => c.ConcertId == concertId))
+            {
+                var concert = await _context.Concerts.FirstOrDefaultAsync(c => c.ConcertId == concertId);
+                var user = await _context.Users.Include(u => u.PromoCode).FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
+                var ticket = dto.ToTicket(Guid.Parse(HttpContext.User.Identity.Name), concertId, user.PromoCodeId.Value);
+                decimal cost = concert.Cost;
+                if (user.PromoCode != null) cost = cost - user.PromoCode.Discount;
+                HttpResponse response = await _payment.CreateOrderAsync("USD", cost, "Count: " + ticket.Count + "\n");
+                Order result = response.Result<Order>();
+                string approveUrl = null;
+                foreach (LinkDescription link in result.Links)
+                {
+                    if (link.Rel.Trim().ToLower() == "approve")
+                    {
+                        approveUrl = link.Href;
+                    }
+                }
+                if (!string.IsNullOrEmpty(approveUrl))
+                {
+                    _confirmationService.Add(Guid.Parse(HttpContext.User.Identity.Name), async () =>
+                    {
+                        if (user.PromoCode != null)
+                        {
+                            ticket.PromoCodeId = user.PromoCodeId;
+                            user.PromoCodeId = null;
+                        }
+                        concert.LeftCount--;
+                        await _context.Tickets.AddAsync(ticket);
+                        await _context.SaveChangesAsync();
+                        await _senderService.SendHtmlAsync("Ticket", user.Email,
+                            $"<p>Id Билета - {ticket.TicketId}</p>" +
+                            $"<p>На количество - {ticket.Count}</p>" +
+                            $"<p>Кому - {user.Name}</p>" +
+                            $"<p>Оплачено - {cost}</p>" +
+                            $"<h1>На концерт:</h1>" +
+                            $"<a href = \"{_configuration["RedirectUrl"]}/Concerts/{concert.ConcertId}\">Концерт</a>");
+                    });
+                    return Redirect(approveUrl);
+                }
+                else return Conflict();
+            }
+            else return NotFound();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("/Buy/PayPal")]
+        public async Task<ActionResult> BuyTicket_PayPalAsync()
+        {
+            var orderId = Request.Query["token"];
+            //this is where actual transaction is carried out
+            HttpResponse response = await _payment.CaptureOrderAsync(orderId);
+            Order result = response.Result<Order>();
+            if (result.Status.Trim().ToUpper() == "COMPLETED")
+            {
+                _confirmationService.Confirm(Guid.Parse(HttpContext.User.Identity.Name));
+                return Redirect(_configuration.GetSection("PayPal").GetValue<string>("successURL"));
+            }
+            else return Conflict();
+        }
 
         [HttpGet]
         [Route("many/light")]
@@ -68,8 +131,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
         {
             IQueryable<Models.Concert> concerts;
-            if(dto.ByConcertType == ConcertType.ClassicConcert) concerts = _context.ClassicConcerts;
-            else if(dto.ByConcertType == ConcertType.OpenAirConcert) concerts = _context.OpenAirConcerts;
+            if (dto.ByConcertType == ConcertType.ClassicConcert) concerts = _context.ClassicConcerts;
+            else if (dto.ByConcertType == ConcertType.OpenAirConcert) concerts = _context.OpenAirConcerts;
             else concerts = _context.PartyConcerts;
             concerts = concerts.Where(c => c.Performer == dto.ByPerformer).Where(c => c.Cost < dto.UntilPrice && c.Cost > dto.FromPrice);
             var concertsCount = concerts.Count();

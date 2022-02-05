@@ -11,6 +11,5 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Range(1, 5)]
         [Required]
         public int Count { get; init; }
-        public bool IsWithPromoCode { get; init; }
     }
 }

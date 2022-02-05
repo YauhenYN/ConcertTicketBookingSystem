@@ -84,6 +84,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var promoCode = await _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == dto.Code);
             if(promoCode != null && promoCode.Discount > user.PromoCode.Discount)
             {
+                promoCode.LeftCount--;
                 user.PromoCodeId = promoCode.PromoCodeId;
                 await _context.SaveChangesAsync();
                 return NoContent();
