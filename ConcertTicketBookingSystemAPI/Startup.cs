@@ -1,20 +1,15 @@
+using System;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.CustomServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ConcertTicketBookingSystemAPI
 {
@@ -35,13 +30,13 @@ namespace ConcertTicketBookingSystemAPI
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             new JwtAuth.AuthOptions(Configuration);
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            services.AddAuthentication("OAuth").AddJwtBearer("OAuth", options =>
             {
                 options.RequireHttpsMetadata = true;
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = JwtAuth.AuthOptions.ISSUER,
+                    ValidIssuer = JwtAuth.AuthOptions.ISSUER, 
                     ValidateAudience = true,
                     ValidAudience = JwtAuth.AuthOptions.AUDIENCE,
                     ValidateLifetime = true,
