@@ -31,7 +31,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("Redirect")]
         public ActionResult RedirectOnOAuthServer()
         {
-            var scope = "https://www.googleapis.com/auth/userinfo.email";
+            var scope = _configuration.GetSection("GoogleOAuth")["scope"];
             var redirectUrl = _configuration["CurrentApiUrl"] + "/GoogleOAuth/Code";
             var codeVerifier = Guid.NewGuid().ToString();
             HttpContext.Session.SetString("codeVerifier", codeVerifier);
@@ -46,18 +46,32 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             string codeVerifier = HttpContext.Session.GetString("codeVerifier");
             var redirectUrl = _configuration["CurrentApiUrl"] + "/GoogleOAuth/Code";
             var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier, redirectUrl);
-            (string id, string email) credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
-            var user = _context.GoogleUsers.FirstOrDefault(u => u.GoogleId == int.Parse(credentials.id));
-            if(user == null)
+            var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
+            string userGoogleId = credentials.id;
+            var user = _context.GoogleUsers.FirstOrDefault(u => u.GoogleId == userGoogleId);
+            if (user == null)
             {
-                user = new GoogleUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, GoogleId = int.Parse(credentials.id), IsAdmin = false, Name = credentials.email, PromoCodeId = null, UserId = Guid.NewGuid() };
+                user = new GoogleUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, GoogleId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
                 await _context.GoogleUsers.AddAsync(user);
                 await _context.SaveChangesAsync();
             }
+            var identity = GetIdentity(user.UserId, user.IsAdmin);
+            var token = new JwtSecurityToken(
+                JwtAuth.AuthOptions.ISSUER,
+                JwtAuth.AuthOptions.AUDIENCE,
+                identity.Claims,
+                notBefore: DateTime.Now,
+                expires: DateTime.Now.Add(TimeSpan.FromMinutes(JwtAuth.AuthOptions.LIFETIME)),
+                signingCredentials: new SigningCredentials(JwtAuth.AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             //Authenticate
-            return Ok();
+            var response = new
+            {
+                access_token = new JwtSecurityTokenHandler().WriteToken(token),
+                username = identity.Name
+            };
+            return new JsonResult(response);
         }
-        private ClaimsIdentity GetIdentity(int id, bool isAdmin)
+        private ClaimsIdentity GetIdentity(Guid id, bool isAdmin)
         {
             var claims = new[]
 {

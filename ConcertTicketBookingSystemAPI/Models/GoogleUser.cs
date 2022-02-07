@@ -11,6 +11,6 @@ namespace ConcertTicketBookingSystemAPI.Models
     public class GoogleUser : User
     {
         [Required]
-        public int GoogleId { get; set; }
+        public string GoogleId { get; set; }
     }
 }

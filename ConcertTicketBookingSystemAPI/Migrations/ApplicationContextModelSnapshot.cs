@@ -170,7 +170,7 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                     b.Property<bool>("IsMarkedFlag")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("PromoCodeId")
+                    b.Property<Guid?>("PromoCodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
@@ -266,8 +266,9 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 {
                     b.HasBaseType("ConcertTicketBookingSystemAPI.Models.User");
 
-                    b.Property<int>("FacebookId")
-                        .HasColumnType("int");
+                    b.Property<string>("FacebookId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasIndex("FacebookId")
                         .IsUnique()
@@ -280,8 +281,9 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 {
                     b.HasBaseType("ConcertTicketBookingSystemAPI.Models.User");
 
-                    b.Property<int>("GoogleId")
-                        .HasColumnType("int");
+                    b.Property<string>("GoogleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasIndex("GoogleId")
                         .IsUnique()
@@ -294,8 +296,9 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 {
                     b.HasBaseType("ConcertTicketBookingSystemAPI.Models.User");
 
-                    b.Property<int>("MicrosoftId")
-                        .HasColumnType("int");
+                    b.Property<string>("MicrosoftId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasIndex("MicrosoftId")
                         .IsUnique()
@@ -346,8 +349,7 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                     b.HasOne("ConcertTicketBookingSystemAPI.Models.PromoCode", "PromoCode")
                         .WithMany("Tickets")
                         .HasForeignKey("PromoCodeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("ConcertTicketBookingSystemAPI.Models.User", "User")
                         .WithMany("Tickets")

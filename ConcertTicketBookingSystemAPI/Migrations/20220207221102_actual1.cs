@@ -102,7 +102,7 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FacebookId = table.Column<int>(type: "int", nullable: false)
+                    FacebookId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,7 +120,7 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GoogleId = table.Column<int>(type: "int", nullable: false)
+                    GoogleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,7 +138,7 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MicrosoftId = table.Column<int>(type: "int", nullable: false)
+                    MicrosoftId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -235,7 +235,7 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                     TicketId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ConcertId = table.Column<int>(type: "int", nullable: false),
-                    PromoCodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PromoCodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Count = table.Column<int>(type: "int", nullable: false),
                     IsMarkedFlag = table.Column<bool>(type: "bit", nullable: false)
                 },

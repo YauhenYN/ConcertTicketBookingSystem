@@ -15,7 +15,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Token")]
     public class PersonalizationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;
@@ -90,6 +90,12 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 return NoContent();
             }
             else return NotFound();
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<ActionResult> UserInfoAsync(ActivatePromocodeDto dto)
+        {
+            return NotFound();
         }
         private async Task<User> CurrentUserAsync() => await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
     }

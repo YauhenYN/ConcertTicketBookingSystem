@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Token")]
     public class EmailConfirmationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;

@@ -31,10 +31,10 @@ namespace ConcertTicketBookingSystemAPI
             {
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            //new JwtAuth.AuthOptions(Configuration);
+            new JwtAuth.AuthOptions(Configuration);
             var googleSection = Configuration.GetSection("GoogleOAuth");
             services.AddSingleton<GoogleOAuthService>(c => new GoogleOAuthService(googleSection["clientId"], googleSection["secret"], googleSection["serverEndPoint"], googleSection["tokenEndPoint"], googleSection["refreshEndPoint"], googleSection["googleApiEndPoint"]));
-            services.AddAuthentication("OAuth")
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer("Token", options =>
             {
                 options.RequireHttpsMetadata = true;

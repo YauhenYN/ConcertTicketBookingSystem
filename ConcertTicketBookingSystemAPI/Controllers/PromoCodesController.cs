@@ -25,7 +25,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
         public async Task<ActionResult> AddPromoCodeAsync(AddPromoCodeDto dto)
         {
             if (!await _context.PromoCodes.AnyAsync(p => p.Code == dto.UniqueCode))
@@ -38,7 +38,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             return Conflict();
         }
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
         [Route("many")]
         public async Task<ActionResult<PromoCodeDto[]>> GetManyPromoCodesAsync(GetManyPromoCodesDto dto)
         {
@@ -52,7 +52,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("{promoCodeId}/Activate")]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "Token")]
         public async Task<ActionResult> ActivatePromoCodeAsync(Guid promoCodeId)
         {
             var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.PromoCodeId == promoCodeId);
@@ -67,7 +67,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("{promoCodeId}/Deactivate")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
         public async Task<ActionResult> DeactivatePromoCodeAsync(Guid promoCodeId)
         {
             var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.PromoCodeId == promoCodeId);

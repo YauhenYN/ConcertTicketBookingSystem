@@ -11,6 +11,6 @@ namespace ConcertTicketBookingSystemAPI.Models
     public class FacebookUser : User
     {
         [Required]
-        public int FacebookId { get; set; }
+        public string FacebookId { get; set; }
     }
 }

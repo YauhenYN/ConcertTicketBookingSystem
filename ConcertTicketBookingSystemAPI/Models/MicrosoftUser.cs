@@ -11,6 +11,6 @@ namespace ConcertTicketBookingSystemAPI.Models
     public class MicrosoftUser : User 
     {
         [Required]
-        public int MicrosoftId { get; set; }
+        public string MicrosoftId { get; set; }
     }
 }

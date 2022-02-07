@@ -65,10 +65,10 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
             var tokenResult = await HttpClientHelper.SendPostRequest<TokenResult>(_refreshEndPoint, refreshParams);
             return tokenResult;
         }
-        public async Task<(string, string)> GetUserCredentialsAsync(string accessToken)
+        public async Task<dynamic> GetUserCredentialsAsync(string accessToken)
         { 
             var response = await HttpClientHelper.SendGetRequest<dynamic>(_googleApiEndPoint + "/oauth2/v2/userinfo", null, accessToken);
-            return (response.id, response.email);
+            return response;
         }
     }
 }

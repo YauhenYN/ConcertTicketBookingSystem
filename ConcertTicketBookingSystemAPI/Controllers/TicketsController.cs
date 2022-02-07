@@ -13,7 +13,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
     public class TicketsController : ControllerBase
     {
         private readonly ILogger<ConcertsController> _logger;
