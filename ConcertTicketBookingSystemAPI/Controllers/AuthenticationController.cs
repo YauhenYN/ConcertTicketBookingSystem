@@ -21,8 +21,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _logger = logger;
             _context = context;
         }
-
-        public string GetToken(Guid id, bool isAdmin)
+        private string GetToken(Guid id, bool isAdmin)
         {
             var claims = new[]
             {

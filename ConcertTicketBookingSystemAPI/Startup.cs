@@ -25,18 +25,23 @@ namespace ConcertTicketBookingSystemAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+            services.AddSession();
             services.AddDbContext<ApplicationContext>(optionsBuilder =>
             {
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-            new JwtAuth.AuthOptions(Configuration);
-            services.AddAuthentication("OAuth").AddJwtBearer("OAuth", options =>
+            //new JwtAuth.AuthOptions(Configuration);
+            var googleSection = Configuration.GetSection("GoogleOAuth");
+            services.AddSingleton<GoogleOAuthService>(c => new GoogleOAuthService(googleSection["clientId"], googleSection["secret"], googleSection["serverEndPoint"], googleSection["tokenEndPoint"], googleSection["refreshEndPoint"], googleSection["googleApiEndPoint"]));
+            services.AddAuthentication("OAuth")
+                .AddJwtBearer("Token", options =>
             {
                 options.RequireHttpsMetadata = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = JwtAuth.AuthOptions.ISSUER, 
+                    ValidIssuer = JwtAuth.AuthOptions.ISSUER,
                     ValidateAudience = true,
                     ValidAudience = JwtAuth.AuthOptions.AUDIENCE,
                     ValidateLifetime = true,
@@ -44,7 +49,7 @@ namespace ConcertTicketBookingSystemAPI
                     ValidateIssuerSigningKey = true
                 };
             });
-            services.AddControllers(); 
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConcertTicketBookingSystemAPI", Version = "v1" });
@@ -76,6 +81,7 @@ namespace ConcertTicketBookingSystemAPI
             {
                 app.UseHsts();
             }
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
