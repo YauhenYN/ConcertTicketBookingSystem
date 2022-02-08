@@ -53,16 +53,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             return NotFound();
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult> AddTicketAsync(AddTicketDto dto)
-        //{ //ПОЛЬЗОВАТЕЛЬ НЕ ДОЛЖЕН ДОБАВЛЯТЬ БИЛЕТЫ
-        //    //var ticket = dto.ToTicket();
-        //    //await _context.Tickets.AddAsync(ticket);
-        //    //await _context.SaveChangesAsync();
-        //    //return CreatedAtAction(nameof(GetTicketAsync), new { ticketId = ticket.TicketId});
-        //    return Ok();
-        //}
-
         [HttpPost]
         [Route("{ticketId}/Mark")]
         public async Task<ActionResult> MarkTicketAsync(Guid ticketId)

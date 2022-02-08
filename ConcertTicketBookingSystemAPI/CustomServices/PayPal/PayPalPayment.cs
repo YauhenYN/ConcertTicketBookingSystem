@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices
+namespace ConcertTicketBookingSystemAPI.CustomServices.PayPal
 {
     public class PayPalPayment
     {

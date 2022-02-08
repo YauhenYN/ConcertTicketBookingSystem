@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ConcertTicketBookingSystemAPI.CustomServices;
 using Microsoft.Extensions.Configuration;
+using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
+using ConcertTicketBookingSystemAPI.CustomServices.EmailSending;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -91,11 +93,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             }
             else return NotFound();
         }
-        [HttpPost]
+        [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult> UserInfoAsync(ActivatePromocodeDto dto)
+        public async Task<ActionResult<UserInfoDto>> UserInfoAsync()
         {
-            return NotFound();
+            return (await _context.Users.FirstAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name))).ToUserInfoDto();
         }
         private async Task<User> CurrentUserAsync() => await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
     }

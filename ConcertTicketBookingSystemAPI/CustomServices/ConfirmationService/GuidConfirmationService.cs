@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices
+namespace ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService
 {
     public class GuidConfirmationService : IConfirmationService<Guid>, IDisposable
     {

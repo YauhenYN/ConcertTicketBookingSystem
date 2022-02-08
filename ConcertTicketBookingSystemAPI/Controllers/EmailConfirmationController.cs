@@ -7,10 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.CustomServices;
 using Microsoft.AspNetCore.Authorization;
+using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [Authorize(AuthenticationSchemes = "Token")]
+    [ApiController]
+    [Route("[controller]")]
     public class EmailConfirmationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;
@@ -24,6 +27,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _confirmationService = confirmationService;
         }
         [HttpGet]
+        [Route("[action]")]
         public RedirectResult Confirm(Guid confirmationCode)
         {
             _confirmationService.Confirm(confirmationCode);

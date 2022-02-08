@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices
+namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
 {
     public class EmailSenderService : IDisposable
     {

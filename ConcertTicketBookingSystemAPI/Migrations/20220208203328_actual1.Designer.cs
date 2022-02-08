@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConcertTicketBookingSystemAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220207221102_actual1")]
+    [Migration("20220208203328_actual1")]
     partial class actual1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -202,16 +202,24 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("PromoCodeId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId");
 

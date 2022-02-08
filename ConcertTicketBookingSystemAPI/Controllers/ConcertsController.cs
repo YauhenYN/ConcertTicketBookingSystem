@@ -12,6 +12,9 @@ using PayPalCheckoutSdk.Orders;
 using PayPalHttp;
 using ConcertTicketBookingSystemAPI.CustomServices;
 using Microsoft.Extensions.Configuration;
+using ConcertTicketBookingSystemAPI.CustomServices.EmailSending;
+using ConcertTicketBookingSystemAPI.CustomServices.PayPal;
+using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {

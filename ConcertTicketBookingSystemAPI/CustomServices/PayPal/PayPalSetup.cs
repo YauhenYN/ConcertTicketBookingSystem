@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices
+namespace ConcertTicketBookingSystemAPI.CustomServices.PayPal
 {
     public record PayPalSetup
     {

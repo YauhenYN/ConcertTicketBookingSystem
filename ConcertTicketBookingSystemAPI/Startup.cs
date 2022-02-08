@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ConcertTicketBookingSystemAPI.CustomServices;
+using ConcertTicketBookingSystemAPI.CustomServices.OAuth;
+using ConcertTicketBookingSystemAPI.CustomServices.PayPal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 

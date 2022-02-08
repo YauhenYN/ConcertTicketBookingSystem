@@ -1,4 +1,6 @@
 ﻿using ConcertTicketBookingSystemAPI.CustomServices;
+using ConcertTicketBookingSystemAPI.CustomServices.OAuth;
+using ConcertTicketBookingSystemAPI.Dtos.AuthenticationDtos;
 using ConcertTicketBookingSystemAPI.Helpers;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.AspNetCore.Http;
@@ -10,12 +12,13 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("Authentication/OAuth/Google")]
     public class GoogleOAuthController : ControllerBase
     {
         private readonly GoogleOAuthService _oAuthService;
@@ -27,12 +30,14 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _configuration = configuration;
             _context = context;
         }
+        private string RedirectURL() => _configuration.GetSection("GoogleOAuth")["OAuthRedirect"];
+
         [HttpGet]
         [Route("Redirect")]
         public ActionResult RedirectOnOAuthServer()
         {
             var scope = _configuration.GetSection("GoogleOAuth")["scope"];
-            var redirectUrl = _configuration["CurrentApiUrl"] + "/GoogleOAuth/Code";
+            var redirectUrl = RedirectURL();
             var codeVerifier = Guid.NewGuid().ToString();
             HttpContext.Session.SetString("codeVerifier", codeVerifier);
             var codeChellange = Sha256Helper.ComputeHash(codeVerifier);
@@ -41,11 +46,13 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpGet]
         [Route("Code")]
-        public async Task<ActionResult> CodeAsync(string code, string scope)
+        public async Task<ActionResult<TokensResponse>> CodeAsync(string code, string scope)
         {
+            if (code == null || scope == null) return BadRequest();
             string codeVerifier = HttpContext.Session.GetString("codeVerifier");
-            var redirectUrl = _configuration["CurrentApiUrl"] + "/GoogleOAuth/Code";
+            var redirectUrl = RedirectURL();
             var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier, redirectUrl);
+            //var refreshTokenResult = await _oAuthService.RefreshTokenAsync(tokenResult.RefreshToken);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
             string userGoogleId = credentials.id;
             var user = _context.GoogleUsers.FirstOrDefault(u => u.GoogleId == userGoogleId);
@@ -53,31 +60,23 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             {
                 user = new GoogleUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, GoogleId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
                 await _context.GoogleUsers.AddAsync(user);
-                await _context.SaveChangesAsync();
             }
-            var identity = GetIdentity(user.UserId, user.IsAdmin);
-            var token = new JwtSecurityToken(
-                JwtAuth.AuthOptions.ISSUER,
-                JwtAuth.AuthOptions.AUDIENCE,
-                identity.Claims,
-                notBefore: DateTime.Now,
-                expires: DateTime.Now.Add(TimeSpan.FromMinutes(JwtAuth.AuthOptions.LIFETIME)),
-                signingCredentials: new SigningCredentials(JwtAuth.AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var response = new
-            {
-                access_token = new JwtSecurityTokenHandler().WriteToken(token),
-                username = identity.Name
-            };
-            return new JsonResult(response);
+            var response = GenerateAndRegisterTokensResponse(user);
+            user.RefreshToken = response.RefreshToken;
+            user.RefreshTokenExpiryTime = response.ExpirationTime;
+            await _context.SaveChangesAsync();
+            return response;
         }
-        private ClaimsIdentity GetIdentity(Guid id, bool isAdmin)
+        private TokensResponse GenerateAndRegisterTokensResponse(User user)
         {
-            var claims = new[]
-{
-                   new Claim(ClaimsIdentity.DefaultNameClaimType, id.ToString()),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, isAdmin ? "admin" : "user")
+            var identity = JwtAuth.AuthOptions.GetIsAdminIdentity(user.UserId, user.IsAdmin);
+            var token = JwtAuth.AuthOptions.GetToken(identity.Claims);
+            return new TokensResponse()
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token), //
+                RefreshToken = JwtAuth.AuthOptions.GenerateRefreshToken(),
+                ExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.REFRESHLIFETIME).ToUniversalTime()
             };
-            return new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
         }
     }
 }
