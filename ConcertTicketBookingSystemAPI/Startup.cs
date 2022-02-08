@@ -19,7 +19,9 @@ namespace ConcertTicketBookingSystemAPI
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder().AddJsonFile("credentials.json");
+            builder.AddConfiguration(configuration);
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }

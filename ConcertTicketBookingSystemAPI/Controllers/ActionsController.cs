@@ -25,6 +25,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _context = context;
         }
         [HttpGet]
+        [Route("many")]
         public async Task<ActionResult<ActionDto[]>> GetManyAsync()
         {
             var actions = _context.Actions.Where(action => action.UserId == Guid.Parse(HttpContext.User.Identity.Name));
@@ -32,6 +33,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             else return NotFound();
         }
         [HttpPost]
+        [Route("Add")]
         public async Task<ActionResult> AddAsync(AddActionDto dto)
         {
             var action = dto.ToAction(Guid.Parse(HttpContext.User.Identity.Name));
