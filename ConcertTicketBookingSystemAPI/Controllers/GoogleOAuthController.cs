@@ -63,7 +63,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 notBefore: DateTime.Now,
                 expires: DateTime.Now.Add(TimeSpan.FromMinutes(JwtAuth.AuthOptions.LIFETIME)),
                 signingCredentials: new SigningCredentials(JwtAuth.AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            //Authenticate
             var response = new
             {
                 access_token = new JwtSecurityTokenHandler().WriteToken(token),
