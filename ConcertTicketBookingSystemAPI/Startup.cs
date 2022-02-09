@@ -37,7 +37,9 @@ namespace ConcertTicketBookingSystemAPI
             });
             new JwtAuth.AuthOptions(Configuration);
             var googleSection = Configuration.GetSection("GoogleOAuth");
-            services.AddSingleton<GoogleOAuthService>(c => new GoogleOAuthService(googleSection["clientId"], googleSection["secret"], googleSection["serverEndPoint"], googleSection["tokenEndPoint"], googleSection["refreshEndPoint"], googleSection["googleApiEndPoint"]));
+            services.AddSingleton<GoogleOAuthService>(c => new GoogleOAuthService(googleSection["clientId"], googleSection["secret"], googleSection["serverEndPoint"], googleSection["tokenEndPoint"], googleSection["googleApiEndPoint"], googleSection["OAuthRedirect"]));
+            var facebookSection = Configuration.GetSection("FacebookOAuth");
+            services.AddSingleton<FacebookOAuthService>(c => new FacebookOAuthService(facebookSection["clientId"], facebookSection["secret"], facebookSection["serverEndPoint"], facebookSection["tokenEndPoint"], facebookSection["OAuthRedirect"], facebookSection["scope"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer("Token", options =>
             {

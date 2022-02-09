@@ -30,18 +30,17 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _configuration = configuration;
             _context = context;
         }
-        private string RedirectURL() => _configuration.GetSection("GoogleOAuth")["OAuthRedirect"];
 
         [HttpGet]
         [Route("Redirect")]
         public ActionResult RedirectOnOAuthServer()
         {
             var scope = _configuration.GetSection("GoogleOAuth")["scope"];
-            var redirectUrl = RedirectURL();
+ 
             var codeVerifier = Guid.NewGuid().ToString();
             HttpContext.Session.SetString("codeVerifier", codeVerifier);
             var codeChellange = Sha256Helper.ComputeHash(codeVerifier);
-            var url = _oAuthService.GenerateOAuthRequstUrl(scope, redirectUrl, codeChellange);
+            var url = _oAuthService.GenerateOAuthRequstUrl(scope, codeChellange);
             return Redirect(url);
         }
         [HttpGet]
@@ -50,8 +49,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             if (code == null || scope == null) return BadRequest();
             string codeVerifier = HttpContext.Session.GetString("codeVerifier");
-            var redirectUrl = RedirectURL();
-            var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier, redirectUrl);
+            var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier);
             //var refreshTokenResult = await _oAuthService.RefreshTokenAsync(tokenResult.RefreshToken);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
             string userGoogleId = credentials.id;

@@ -30,36 +30,29 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _configuration = configuration;
             _context = context;
         }
-        private string RedirectURL() => _configuration.GetSection("FacebookOAuth")["OAuthRedirect"];
 
         [HttpGet]
         [Route("Redirect")]
         public ActionResult RedirectOnOAuthServer()
         {
-            var scope = _configuration.GetSection("FacebookOAuth")["scope"];
-            var redirectUrl = RedirectURL();
             var codeVerifier = Guid.NewGuid().ToString();
             HttpContext.Session.SetString("codeVerifier", codeVerifier);
-            var codeChellange = Sha256Helper.ComputeHash(codeVerifier);
-            var url = _oAuthService.GenerateOAuthRequstUrl(scope, redirectUrl, codeChellange);
+            var url = _oAuthService.GenerateOAuthRequstUrl(codeVerifier);
             return Redirect(url);
         }
         [HttpGet]
         [Route("Code")]
-        public async Task<ActionResult<TokensResponse>> CodeAsync(string code, string scope)
+        public async Task<ActionResult<TokensResponse>> CodeAsync(string code, string state)
         {
-            if (code == null || scope == null) return BadRequest();
-            string codeVerifier = HttpContext.Session.GetString("codeVerifier");
-            var redirectUrl = RedirectURL();
-            var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier, redirectUrl);
-            //var refreshTokenResult = await _oAuthService.RefreshTokenAsync(tokenResult.RefreshToken);
+            if (code == null || state == null && HttpContext.Session.GetString("codeVerifier") == state) return BadRequest(); 
+            var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
-            string userGoogleId = credentials.id;
-            var user = _context.GoogleUsers.FirstOrDefault(u => u.GoogleId == userGoogleId);
+            string userFacebookId = credentials.id;
+            var user = _context.FacebookUsers.FirstOrDefault(u => u.FacebookId == userFacebookId);
             if (user == null)
             {
-                user = new GoogleUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, GoogleId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
-                await _context.GoogleUsers.AddAsync(user);
+                user = new FacebookUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, FacebookId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
+                await _context.FacebookUsers.AddAsync(user);
             }
             var response = GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
