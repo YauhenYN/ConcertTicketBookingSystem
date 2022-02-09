@@ -30,36 +30,33 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _configuration = configuration;
             _context = context;
         }
-        private string RedirectURL() => _configuration.GetSection("GoogleOAuth")["OAuthRedirect"];
 
         [HttpGet]
         [Route("Redirect")]
         public ActionResult RedirectOnOAuthServer()
         {
-            var scope = _configuration.GetSection("GoogleOAuth")["scope"];
-            var redirectUrl = RedirectURL();
+            var scope = _configuration.GetSection("MicrosoftOAuth")["scope"];
             var codeVerifier = Guid.NewGuid().ToString();
             HttpContext.Session.SetString("codeVerifier", codeVerifier);
             var codeChellange = Sha256Helper.ComputeHash(codeVerifier);
-            var url = _oAuthService.GenerateOAuthRequstUrl(scope, redirectUrl, codeChellange);
+            var url = _oAuthService.GenerateOAuthRequstUrl(scope, codeChellange);
             return Redirect(url);
         }
         [HttpGet]
         [Route("Code")]
-        public async Task<ActionResult<TokensResponse>> CodeAsync(string code, string scope)
+        public async Task<ActionResult<TokensResponse>> CodeAsync(string code)
         {
-            if (code == null || scope == null) return BadRequest();
+            var request = HttpContext.Request;
+            if (code == null) return BadRequest();
             string codeVerifier = HttpContext.Session.GetString("codeVerifier");
-            var redirectUrl = RedirectURL();
-            var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier, redirectUrl);
-            //var refreshTokenResult = await _oAuthService.RefreshTokenAsync(tokenResult.RefreshToken);
+            var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
-            string userGoogleId = credentials.id;
-            var user = _context.GoogleUsers.FirstOrDefault(u => u.GoogleId == userGoogleId);
+            string microsoftId = credentials.id;
+            var user = _context.MicrosoftUsers.FirstOrDefault(u => u.MicrosoftId == microsoftId);
             if (user == null)
             {
-                user = new GoogleUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, GoogleId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
-                await _context.GoogleUsers.AddAsync(user);
+                user = new MicrosoftUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.mail != null ? credentials.mail : credentials.userPrincipalName, MicrosoftId = credentials.id, IsAdmin = false, Name = credentials.displayName, PromoCodeId = null, UserId = Guid.NewGuid() };
+                await _context.MicrosoftUsers.AddAsync(user);
             }
             var response = GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;

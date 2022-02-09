@@ -15,41 +15,45 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
         private readonly string _oAuthServerEndPoint;
         private readonly string _tokenEndPoint;
         private readonly string _refreshEndPoint;
-        private readonly string _googleApiEndPoint;
-        public MicrosoftOAuthService(string clientId, string secret, string oAuthServerEndPoint, string tokenEndPoint, string refreshEndPoint, string googleApiEndPoint)
+        private readonly string _redirectUrl;
+        private readonly string _tenant;
+        public MicrosoftOAuthService(string tenant, string clientId, string secret, string oAuthServerEndPoint, string tokenEndPoint, string refreshEndPoint, string redirectUrl)
         {
             _clientId = clientId;
             _secret = secret;
             _oAuthServerEndPoint = oAuthServerEndPoint;
             _tokenEndPoint = tokenEndPoint;
             _refreshEndPoint = refreshEndPoint;
-            _googleApiEndPoint = googleApiEndPoint;
+            _redirectUrl = redirectUrl;
         }
-        public string GenerateOAuthRequstUrl(string scope, string redirectUrl, string codeChallenge)
+        public string GenerateOAuthRequstUrl(string scope, string codeChallenge)
         {
             var queryParams = new Dictionary<string, string>()
             {
+                { "tenant", _tenant},
                 { "client_id", _clientId},
-                { "redirect_uri", redirectUrl},
                 { "response_type", "code"},
+                { "redirect_uri", _redirectUrl},
                 { "scope", scope},
+                { "response_mode", "query"},
                 { "code_challenge", codeChallenge},
-                { "code_challenge_method", "S256" },
-                { "access_type", "offline" }
+                { "code_challenge_method", "S256" }
             };
             var url = QueryHelpers.AddQueryString(_oAuthServerEndPoint, queryParams);
             return url;
         }
-        public async Task<TokenResult> ExchangeCodeOnTokenAsync(string code, string codeVerifier, string redirectUrl)
+        public async Task<TokenResult> ExchangeCodeOnTokenAsync(string code, string codeVerifier)
         {
             var authParams = new Dictionary<string, string>()
             {
+                { "tenant", _tenant},
                 { "client_id", _clientId},
-                { "client_secret", _secret},
+                { "response_mode", "query"},
                 { "code", code},
-                { "code_verifier", codeVerifier},
+                { "redirect_uri", _redirectUrl},
                 { "grant_type", "authorization_code"},
-                { "redirect_uri", redirectUrl}
+                { "code_verifier", codeVerifier},
+                { "client_secret", _secret},
             };
             var tokenResult = await HttpClientHelper.SendPostRequest<TokenResult>(_tokenEndPoint, authParams);
             return tokenResult;
@@ -58,17 +62,19 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
         {
             var refreshParams = new Dictionary<string, string>()
             {
+                { "tenant", _tenant},
                 { "client_id", _clientId},
-                { "client_secret", _secret},
+                { "response_mode", "query"},
                 { "grant_type", "refresh_token"},
-                { "refresh_token", refreshToken}
+                { "refresh_token", refreshToken},
+                { "client_secret", _secret}
             };
             var tokenResult = await HttpClientHelper.SendPostRequest<TokenResult>(_refreshEndPoint, refreshParams);
             return tokenResult;
         }
         public async Task<dynamic> GetUserCredentialsAsync(string accessToken)
         { 
-            var response = await HttpClientHelper.SendGetRequest<dynamic>(_googleApiEndPoint + "/oauth2/v2/userinfo", null, accessToken);
+            var response = await HttpClientHelper.SendGetRequest<dynamic>("https://graph.microsoft.com/v1.0/me", null, accessToken);
             return response;
         }
     }

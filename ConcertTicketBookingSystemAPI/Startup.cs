@@ -40,6 +40,8 @@ namespace ConcertTicketBookingSystemAPI
             services.AddSingleton<GoogleOAuthService>(c => new GoogleOAuthService(googleSection["clientId"], googleSection["secret"], googleSection["serverEndPoint"], googleSection["tokenEndPoint"], googleSection["googleApiEndPoint"], googleSection["OAuthRedirect"]));
             var facebookSection = Configuration.GetSection("FacebookOAuth");
             services.AddSingleton<FacebookOAuthService>(c => new FacebookOAuthService(facebookSection["clientId"], facebookSection["secret"], facebookSection["serverEndPoint"], facebookSection["tokenEndPoint"], facebookSection["OAuthRedirect"], facebookSection["scope"]));
+            var microsoftSection = Configuration.GetSection("MicrosoftOAuth");
+            services.AddSingleton<MicrosoftOAuthService>(c => new MicrosoftOAuthService(microsoftSection["tenant"], microsoftSection["clientId"], microsoftSection["secret"], microsoftSection["serverEndPoint"], microsoftSection["tokenEndPoint"], microsoftSection["refreshEndPoint"], microsoftSection["OAuthRedirect"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer("Token", options =>
             {
