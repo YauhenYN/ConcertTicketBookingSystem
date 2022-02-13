@@ -41,27 +41,16 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Token")]
         [Route("{concertId}")]
-        public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId, ConcertType type)
+        public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId)
         {
-            if (type == ConcertType.ClassicConcert)
+            var concert = await _context.Concerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
+            if (concert != null)
             {
-                var concert = await _context.ClassicConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
-                if (concert != null) return concert.ToDto();
-                else return NotFound();
+                if (concert is Models.ClassicConcert) return ((Models.ClassicConcert)concert).ToDto();
+                else if (concert is Models.OpenAirConcert) return ((Models.OpenAirConcert)concert).ToDto();
+                else return ((Models.PartyConcert)concert).ToDto();
             }
-            else if (type == ConcertType.OpenAirConcert)
-            {
-                var concert = await _context.OpenAirConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
-                if (concert != null) return concert.ToDto();
-                else return NotFound();
-            }
-            else if (type == ConcertType.PartyConcert)
-            {
-                var concert = await _context.PartyConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
-                if (concert != null) return concert.ToDto();
-                else return NotFound();
-            }
-            else return BadRequest();
+            else return NotFound();
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Token")]

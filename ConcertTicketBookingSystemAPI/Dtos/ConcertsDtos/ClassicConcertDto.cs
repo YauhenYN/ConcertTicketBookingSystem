@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConcertTicketBookingSystemAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,5 +18,10 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         [MaxLength(30)]
         public string Compositor { get; init; }
+
+        public static explicit operator ClassicConcertDto(Concert v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
