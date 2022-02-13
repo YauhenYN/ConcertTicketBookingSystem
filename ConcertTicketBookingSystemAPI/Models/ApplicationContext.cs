@@ -8,18 +8,18 @@ namespace ConcertTicketBookingSystemAPI.Models
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<GoogleUser> GoogleUsers { get; set; }
-        public DbSet<FacebookUser> FacebookUsers { get; set; }
-        public DbSet<MicrosoftUser> MicrosoftUsers { get; set; }
-        public DbSet<Concert> Concerts { get; set; }
-        public DbSet<ClassicConcert> ClassicConcerts { get; set; }
-        public DbSet<OpenAirConcert> OpenAirConcerts { get; set; }
-        public DbSet<PartyConcert> PartyConcerts { get; set; }
-        public DbSet<Action> Actions { get; set; }
-        public DbSet<Image> Images { get; set; }
-        public DbSet<PromoCode> PromoCodes { get; set; }
-        public DbSet<Ticket> Tickets { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<GoogleUser> GoogleUsers { get; set; }
+        public virtual DbSet<FacebookUser> FacebookUsers { get; set; }
+        public virtual DbSet<MicrosoftUser> MicrosoftUsers { get; set; }
+        public virtual DbSet<Concert> Concerts { get; set; }
+        public virtual DbSet<ClassicConcert> ClassicConcerts { get; set; }
+        public virtual DbSet<OpenAirConcert> OpenAirConcerts { get; set; }
+        public virtual DbSet<PartyConcert> PartyConcerts { get; set; }
+        public virtual DbSet<Action> Actions { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<PromoCode> PromoCodes { get; set; }
+        public virtual DbSet<Ticket> Tickets { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options)
         {

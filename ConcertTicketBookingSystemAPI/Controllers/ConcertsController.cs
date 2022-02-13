@@ -41,26 +41,27 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Token")]
         [Route("{concertId}")]
-        public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId, AddConcertDto dto)
+        public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId, ConcertType type)
         {
-            if (dto.ConcertType == ConcertType.ClassicConcert)
+            if (type == ConcertType.ClassicConcert)
             {
                 var concert = await _context.ClassicConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
                 else return NotFound();
             }
-            else if (dto.ConcertType == ConcertType.OpenAirConcert)
+            else if (type == ConcertType.OpenAirConcert)
             {
                 var concert = await _context.OpenAirConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
                 else return NotFound();
             }
-            else
+            else if (type == ConcertType.PartyConcert)
             {
                 var concert = await _context.PartyConcerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
                 if (concert != null) return concert.ToDto();
                 else return NotFound();
             }
+            else return BadRequest();
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Token")]

@@ -16,7 +16,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
         }
         public static void AddEmailSenderService(this IServiceCollection collection, string host, int port, string name, string email, string password)
         {
-            collection.AddSingleton<EmailSenderService>(provider => new EmailSenderService(host, port, name, email, password));
+            collection.AddSingleton<EmailSenderService>(provider => new EmailSenderService(host, port, name).ConnectAndAuthenticate(email, password));
         }
     }
 }

@@ -10,17 +10,24 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
     public class EmailSenderService : IDisposable
     {
         private readonly SmtpClient _client;
-        private readonly string _email;
-        private readonly string _password;
-        private readonly string _name;
-        public EmailSenderService(string host, int port, string name, string email, string password)
+        private string _email;
+        private string _password;
+        private string _name;
+        private readonly string _host;
+        private int _port;
+        public EmailSenderService(string host, int port, string name)
+        {
+            _name = name;
+            _host = host;
+            _port = port;
+            _client = new SmtpClient();
+        }
+        public EmailSenderService ConnectAndAuthenticate(string email, string password)
         {
             _email = email;
-            _password = password;
-            _name = name;
-            _client = new SmtpClient();
-            _client.Connect(host, port, true);
+            _client.Connect(_host, _port, true);
             _client.Authenticate(email, password);
+            return this;
         }
         public async Task<string> SendHtmlAsync(string topic, string toEmail, string htmlMessage)
         {
