@@ -11,7 +11,6 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
     {
         private readonly SmtpClient _client;
         private string _email;
-        private string _password;
         private string _name;
         private readonly string _host;
         private int _port;

@@ -12,7 +12,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         public int NextPage { get; init; }
         [Required]
         public int NeededCount { get; init; }
-        public ConcertType ByConcertType { get; init; }
+        public ConcertType? ByConcertType { get; init; }
         public string ByPerformer { get; init; }
         public decimal UntilPrice { get; init; }
         public decimal FromPrice { get; init; }

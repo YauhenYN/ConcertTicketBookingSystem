@@ -33,7 +33,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 var promoCode = dto.ToPromoCode();
                 await _context.PromoCodes.AddAsync(promoCode);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetManyPromoCodesAsync", new GetManyPromoCodesDto() { IsActive = dto.IsActive, Count = 1, ById = promoCode.PromoCodeId });
+                return CreatedAtAction("GetManyPromoCodesAsync", new GetManyPromoCodesDto() { IsActiveFlag = dto.IsActiveFlag, Count = 1, ById = promoCode.PromoCodeId });
             }
             return Conflict();
         }
@@ -45,7 +45,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             IQueryable<PromoCode> promoCodes = _context.PromoCodes;
             if (dto.ById != null) promoCodes = promoCodes.Where(p => dto.ById == p.PromoCodeId);
             if (dto.ByCode != null) promoCodes = promoCodes.Where(p => dto.ByCode == p.Code);
-            promoCodes = promoCodes.Where(p => dto.IsActive == p.IsActiveFlag).Take(dto.Count);
+            promoCodes = promoCodes.Where(p => dto.IsActiveFlag == p.IsActiveFlag).Take(dto.Count);
             if (promoCodes.Count() > 0) return await promoCodes.ToDtosAsync();
             else return NotFound();
         }

@@ -124,10 +124,15 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
         {
             IQueryable<Models.Concert> concerts;
-            if (dto.ByConcertType == ConcertType.ClassicConcert) concerts = _context.ClassicConcerts;
-            else if (dto.ByConcertType == ConcertType.OpenAirConcert) concerts = _context.OpenAirConcerts;
-            else concerts = _context.PartyConcerts;
-            concerts = concerts.Where(c => c.Performer == dto.ByPerformer).Where(c => c.Cost < dto.UntilPrice && c.Cost > dto.FromPrice);
+            if (dto.ByConcertType != null)
+            {
+                if (dto.ByConcertType == ConcertType.ClassicConcert) concerts = _context.ClassicConcerts;
+                else if (dto.ByConcertType == ConcertType.OpenAirConcert) concerts = _context.OpenAirConcerts;
+                else concerts = _context.PartyConcerts;
+            }
+            else concerts = _context.Concerts;
+            if(dto.ByPerformer != null) concerts = concerts.Where(c => c.Performer == dto.ByPerformer);
+            concerts = concerts.Where(c => c.Cost < dto.UntilPrice && c.Cost > dto.FromPrice);
             var concertsCount = concerts.Count();
             if (concertsCount > 0)
             {
@@ -135,7 +140,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 {
                     PagesCount = concertsCount / dto.NeededCount,
                     CurrentPage = dto.NextPage,
-                    Concerts = await concerts.Skip((dto.NextPage - 1) * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync(dto.ByConcertType)
+                    Concerts = await concerts.Skip((dto.NextPage - 1) * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync()
                 };
                 return selector;
             }
@@ -162,7 +167,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 await _context.PartyConcerts.AddAsync((Models.PartyConcert)concert);
             }
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetConcertAsync", new { concertId = concert.ConcertId, getConcertDto = new GetConcertDto { ConcertType = dto.ConcertType } });
+            return CreatedAtAction("GetConcertAsync", new { concertId = concert.ConcertId });
         }
         [HttpPost]
         [Route("{concertId}/Activate")]

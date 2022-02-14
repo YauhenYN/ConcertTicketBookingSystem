@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ConcertTicketBookingSystemAPI.Dtos.AdministrationDtos;
 using Microsoft.AspNetCore.Authorization;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +26,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> AddAdminAsync(AddAdminDto dto)
+        public async Task<ActionResult> AddAdminAsync(Guid id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == dto.Id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
             if (user != null)
             {
                 if (!user.IsAdmin)
@@ -44,9 +43,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> RemoveAdminAsync(RemoveAdminDto dto)
+        public async Task<ActionResult> RemoveAdminAsync(Guid id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == dto.Id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
             if (user != null)
             {
                 if (user.IsAdmin)

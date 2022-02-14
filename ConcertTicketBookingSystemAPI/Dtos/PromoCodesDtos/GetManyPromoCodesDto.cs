@@ -9,7 +9,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos
     public record GetManyPromoCodesDto
     {
         [Required]
-        public bool IsActive { get; init; }
+        public bool IsActiveFlag { get; init; }
         [Required]
         public int Count { get; init; }
         public Guid? ById { get; init; }

@@ -2,11 +2,13 @@ using ConcertTicketBookingSystemAPI.Controllers;
 using ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MockQueryable.Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using Xunit;
 
 namespace UnitTests
@@ -23,18 +25,17 @@ namespace UnitTests
 
             var context = StaticInstances.ApplicationContextMock;
             context.Setup(context => context.Concerts).Returns(mockSet.Object);
-            var controller = new ConcertsController(StaticInstances.LoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
+            var controller = new ConcertsController(StaticInstances.ConcertsLoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
             //Act
             var result = await controller.GetConcertAsync(int.MaxValue);
             //Assert
-            Assert.IsType<NotFoundResult>(result.Result);
+            result.Result.Should().BeOfType<NotFoundResult>();
         }
         [Fact]
         public async void GetConcert_ExpectedClassicConcert_ReturnsExpectedConcert()
         {
-            var expectedConcert = CreateRandomClassicConcert();
-
             //Arrange
+            var expectedConcert = CreateRandomClassicConcert();
             var mockSet = new List<Concert>
             {
                 expectedConcert
@@ -42,11 +43,109 @@ namespace UnitTests
 
             var context = StaticInstances.ApplicationContextMock;
             context.Setup(context => context.Concerts).Returns(mockSet.Object);
-            var controller = new ConcertsController(StaticInstances.LoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
+            var controller = new ConcertsController(StaticInstances.ConcertsLoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
             //Act
             var result = await controller.GetConcertAsync(expectedConcert.ConcertId);
             //Assert
             Assert.Equal(result.Value.ConcertId, expectedConcert.ConcertId);
+        }
+        [Fact]
+        public async void GetManyLightConcerts_ExpectedFiveFirstLightConcerts_ReturnsExpectedConcerts()
+        {
+            var list = new List<Concert>();
+            for (int step = 0; step < 10; step++) list.Add(CreateRandomClassicConcert());
+            //Arrange
+            var mockSet = list.AsQueryable().BuildMockDbSet();
+
+            var context = StaticInstances.ApplicationContextMock;
+            context.Setup(context => context.Concerts).Returns(mockSet.Object);
+            var controller = new ConcertsController(StaticInstances.ConcertsLoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
+            //Act
+            var result = await controller.GetManyLightConcertsAsync(new ConcertSelectParametersDto() { FromPrice = 0, UntilPrice = int.MaxValue, NextPage = 1, NeededCount = 5 });
+            //Assert
+            result.Value.CurrentPage.Should().Be(1);
+            result.Value.PagesCount.Should().Be(2);
+            result.Value.Concerts.Should().BeEquivalentTo(list.Take(5), options => options.ExcludingMissingMembers());
+        }
+        [Fact]
+        public async void AddClassicConcert_ExpectedAddedConcert_ReturnsAddedResult()
+        {
+            var from = CreateRandomClassicConcert();
+            from.ConcertId = 0;
+            var itemToCreate = new AddConcertDto()
+            {
+                ClassicConcertInfo = new ClassicConcertDto
+                {
+                    Compositor = from.Compositor,
+                    ConcertName = from.ConcertName,
+                    VoiceType = from.VoiceType
+                },
+                ConcertType = ConcertType.ClassicConcert,
+                Cost = from.Cost,
+                ConcertDate = from.ConcertDate,
+                IsActiveFlag = from.IsActiveFlag,
+                Latitude = from.Latitude,
+                Longitude = from.Longitude,
+                Performer = from.Performer,
+                PreImage = from.PreImage,
+                PreImageType = from.PreImageType,
+                TotalCount = from.TotalCount,
+            };
+            var context = StaticInstances.ApplicationContextMock;
+            var mockSet = new List<ClassicConcert>()
+            {
+                CreateRandomClassicConcert(),
+                CreateRandomClassicConcert()
+            }.AsQueryable().BuildMockDbSet();
+            context.Setup(context => context.ClassicConcerts).Returns(mockSet.Object);
+            var controller = new ConcertsController(StaticInstances.ConcertsLoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
+            var claims = new[]
+{
+                   new Claim(ClaimsIdentity.DefaultNameClaimType, Guid.NewGuid().ToString()),
+                   new Claim(ClaimsIdentity.DefaultRoleClaimType, "user")
+            };
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            controller.ControllerContext.HttpContext.User = new ClaimsPrincipal(ConcertTicketBookingSystemAPI.JwtAuth.AuthOptions.GetIsAdminIdentity(Guid.NewGuid(), false));
+            //Act
+            var result = await controller.AddConcertAsync(itemToCreate);
+            //Assert
+            result.Should().BeOfType<CreatedAtActionResult>();
+            ((int)result.As<CreatedAtActionResult>().Value.GetType().GetProperty("concertId").GetValue(result.As<CreatedAtActionResult>().Value, null)).Should().Be(0);
+        }
+        [Fact]
+        public async void ActivateConcert_UnActivatedConcert_ActivatesConcert()
+        {
+            var list = new List<Concert>();
+            list.Add(CreateRandomClassicConcert());
+            list.Last().IsActiveFlag = false;
+            //Arrange
+            var mockSet = list.AsQueryable().BuildMockDbSet();
+
+            var context = StaticInstances.ApplicationContextMock;
+            context.Setup(context => context.Concerts).Returns(mockSet.Object);
+            var controller = new ConcertsController(StaticInstances.ConcertsLoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
+            //Act
+            var result = await controller.ActivateConcertAsync(list.Last().ConcertId);
+            //Assert
+            result.Should().BeOfType<NoContentResult>();
+            list.Last().IsActiveFlag.Should().BeTrue();
+        }
+        [Fact]
+        public async void DeactivateConcert_ActivatedConcert_DeactivatesConcert()
+        {
+            var list = new List<Concert>();
+            list.Add(CreateRandomClassicConcert());
+            //Arrange
+            var mockSet = list.AsQueryable().BuildMockDbSet();
+
+            var context = StaticInstances.ApplicationContextMock;
+            context.Setup(context => context.Concerts).Returns(mockSet.Object);
+            var controller = new ConcertsController(StaticInstances.ConcertsLoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
+            //Act
+            var result = await controller.DeactivateConcertAsync(list.Last().ConcertId);
+            //Assert
+            result.Should().BeOfType<NoContentResult>();
+            list.Last().IsActiveFlag.Should().BeFalse();
         }
         private ClassicConcert CreateRandomClassicConcert()
         {

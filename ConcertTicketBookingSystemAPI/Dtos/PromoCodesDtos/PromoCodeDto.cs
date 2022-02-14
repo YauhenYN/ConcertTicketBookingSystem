@@ -14,7 +14,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos
         [Required]
         public decimal Discount { get; init; }
         [Required]
-        public bool IsActive { get; init; }
+        public bool IsActiveFlag { get; init; }
         public int LeftCount { get; init; }
     }
 }

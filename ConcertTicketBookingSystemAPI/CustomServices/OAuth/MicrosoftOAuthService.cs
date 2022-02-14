@@ -25,6 +25,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
             _tokenEndPoint = tokenEndPoint;
             _refreshEndPoint = refreshEndPoint;
             _redirectUrl = redirectUrl;
+            _tenant = tenant;
         }
         public string GenerateOAuthRequstUrl(string scope, string codeChallenge)
         {
