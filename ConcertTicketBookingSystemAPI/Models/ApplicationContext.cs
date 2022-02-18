@@ -18,6 +18,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         public virtual DbSet<PartyConcert> PartyConcerts { get; set; }
         public virtual DbSet<Action> Actions { get; set; }
         public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<AdditionalImage> AdditionalImages { get; set; }
         public virtual DbSet<PromoCode> PromoCodes { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
@@ -37,11 +38,12 @@ namespace ConcertTicketBookingSystemAPI.Models
             modelBuilder.Entity<GoogleUser>().HasIndex(user => user.GoogleId).IsUnique();
             modelBuilder.Entity<FacebookUser>().HasIndex(user => user.FacebookId).IsUnique();
             modelBuilder.Entity<MicrosoftUser>().HasIndex(user => user.MicrosoftId).IsUnique();
-            modelBuilder.Entity<Image>().HasIndex(image => image.ConcertId);
+            modelBuilder.Entity<AdditionalImage>().HasIndex(image => image.ConcertId);
             modelBuilder.Entity<Concert>().Property(concert => concert.Cost).HasColumnType("money");
             modelBuilder.Entity<Ticket>().HasOne(c => c.Concert).WithMany(t => t.Tickets).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Ticket>().HasOne(c => c.User).WithMany(u => u.Tickets).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Ticket>().HasOne(c => c.PromoCode).WithMany(p => p.Tickets).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<AdditionalImage>().HasOne(i => i.Image).WithOne().OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

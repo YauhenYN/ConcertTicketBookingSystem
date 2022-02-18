@@ -11,10 +11,10 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public bool IsActiveFlag { get; init; }
         [Required]
-        public string PreImageType { get; init; }
+        public string ImageType { get; init; }
         [Required]
         [Range(100, 50000)] //still don't khow how much an image must have weigh
-        public byte[] PreImage { get; init; }
+        public byte[] Image { get; init; }
         [Required]
         public decimal Cost { get; init; }
         [Required]

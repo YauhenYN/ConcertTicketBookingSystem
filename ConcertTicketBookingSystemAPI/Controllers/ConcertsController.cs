@@ -43,7 +43,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("{concertId}")]
         public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId)
         {
-            var concert = await _context.Concerts.Include(c => c.Images).FirstOrDefaultAsync(c => concertId == c.ConcertId);
+            var concert = await _context.Concerts.Include(c => c.AdditionalImages).FirstOrDefaultAsync(c => concertId == c.ConcertId);
             if (concert != null)
             {
                 if (concert is Models.ClassicConcert) return ((Models.ClassicConcert)concert).ToDto();
@@ -151,19 +151,22 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
         {
             Models.Concert concert;
+            var image = new Models.Image() { Source = dto.Image, Type = dto.ImageType };
+            _context.Images.Add(image);
+            _context.SaveChanges();
             if (dto.ConcertType == ConcertType.ClassicConcert)
             {
-                concert = dto.ToClassicConcert(Guid.Parse(HttpContext.User.Identity.Name));
+                concert = dto.ToClassicConcert(Guid.Parse(HttpContext.User.Identity.Name), image.ImageId);
                 await _context.ClassicConcerts.AddAsync((Models.ClassicConcert)concert);
             }
             else if (dto.ConcertType == ConcertType.OpenAirConcert)
             {
-                concert = dto.ToOpenAirConcert(Guid.Parse(HttpContext.User.Identity.Name));
+                concert = dto.ToOpenAirConcert(Guid.Parse(HttpContext.User.Identity.Name), image.ImageId);
                 await _context.OpenAirConcerts.AddAsync((Models.OpenAirConcert)concert);
             }
             else
             {
-                concert = dto.ToPartyConcert(Guid.Parse(HttpContext.User.Identity.Name));
+                concert = dto.ToPartyConcert(Guid.Parse(HttpContext.User.Identity.Name), image.ImageId);
                 await _context.PartyConcerts.AddAsync((Models.PartyConcert)concert);
             }
             await _context.SaveChangesAsync();

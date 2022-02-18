@@ -13,9 +13,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public bool IsActiveFlag { get; init; }
         [Required]
-        public string PreImageType { get; init; }
-        [Required]
-        public byte[] PreImage { get; init; }
+        public int ImageId { get; init; }
         [Required]
         public decimal Cost { get; init; }
         [Required]
@@ -35,7 +33,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public DateTime CreationTime { get; init; }
         [Range(0, 5)]
-        public Guid[] ImageIds { get; init; }
+        public int[] ImageIds { get; init; }
         public ClassicConcertDto ClassicConcertInfo { get; init; }
         public OpenAirConcertDto OpenAirConcertInfo { get; init; }
         public PartyConcertDto PartyConcertInfo { get; init; }

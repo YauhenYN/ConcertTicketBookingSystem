@@ -15,11 +15,10 @@ namespace ConcertTicketBookingSystemAPI.Models
         [Required]
         public bool IsActiveFlag { get; set; }
         [Required]
-        public string PreImageType { get; set; }
-        [Required]
-        public byte[] PreImage { get; set; }
-        [Required]
         public decimal Cost { get; set; }
+        [Required]
+        public int ImageId { get; set; }
+        public Image Image { get; set; }
         [Required]
         public string Performer { get; set; }
         [Required]
@@ -37,7 +36,7 @@ namespace ConcertTicketBookingSystemAPI.Models
         public int LeftCount { get; set; }
         [Required]
         public DateTime CreationTime { get; set; }
-        public List<Image> Images { get; set; }
+        public List<AdditionalImage> AdditionalImages { get; set; }
         public List<Ticket> Tickets { get; set; }
     }
 }

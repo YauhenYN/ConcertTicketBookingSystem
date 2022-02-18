@@ -45,6 +45,21 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                     b.ToTable("Actions");
                 });
 
+            modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.AdditionalImage", b =>
+                {
+                    b.Property<int>("ImageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ConcertId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("ConcertId");
+
+                    b.ToTable("AdditionalImages");
+                });
+
             modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.Concert", b =>
                 {
                     b.Property<int>("ConcertId")
@@ -63,6 +78,9 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getutcdate()");
 
+                    b.Property<int>("ImageId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActiveFlag")
                         .HasColumnType("bit");
 
@@ -79,14 +97,6 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("PreImage")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("PreImageType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("TotalCount")
                         .HasColumnType("int");
 
@@ -95,6 +105,8 @@ namespace ConcertTicketBookingSystemAPI.Migrations
 
                     b.HasKey("ConcertId");
 
+                    b.HasIndex("ImageId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Concerts");
@@ -102,12 +114,10 @@ namespace ConcertTicketBookingSystemAPI.Migrations
 
             modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.Image", b =>
                 {
-                    b.Property<Guid>("ImageId")
+                    b.Property<int>("ImageId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ConcertId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<byte[]>("Source")
                         .IsRequired()
@@ -118,8 +128,6 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ImageId");
-
-                    b.HasIndex("ConcertId");
 
                     b.ToTable("Images");
                 });
@@ -326,24 +334,40 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.AdditionalImage", b =>
+                {
+                    b.HasOne("ConcertTicketBookingSystemAPI.Models.Concert", null)
+                        .WithMany("AdditionalImages")
+                        .HasForeignKey("ConcertId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConcertTicketBookingSystemAPI.Models.Image", "Image")
+                        .WithOne()
+                        .HasForeignKey("ConcertTicketBookingSystemAPI.Models.AdditionalImage", "ImageId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Image");
+                });
+
             modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.Concert", b =>
                 {
+                    b.HasOne("ConcertTicketBookingSystemAPI.Models.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ConcertTicketBookingSystemAPI.Models.User", "User")
                         .WithMany("Concerts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
-                });
+                    b.Navigation("Image");
 
-            modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.Image", b =>
-                {
-                    b.HasOne("ConcertTicketBookingSystemAPI.Models.Concert", null)
-                        .WithMany("Images")
-                        .HasForeignKey("ConcertId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.Ticket", b =>
@@ -437,7 +461,7 @@ namespace ConcertTicketBookingSystemAPI.Migrations
 
             modelBuilder.Entity("ConcertTicketBookingSystemAPI.Models.Concert", b =>
                 {
-                    b.Navigation("Images");
+                    b.Navigation("AdditionalImages");
 
                     b.Navigation("Tickets");
                 });

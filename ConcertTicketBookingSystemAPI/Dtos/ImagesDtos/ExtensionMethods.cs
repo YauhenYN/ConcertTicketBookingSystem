@@ -8,6 +8,6 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ImagesDtos
 {
     public static class ExtensionMethods
     {
-        public static Image ToImage(this AddImageDto dto) => new Image() { ImageId = Guid.NewGuid(), ConcertId = dto.ConcertId, Type = dto.ImageType, Source = dto.Image };
+        public static AdditionalImage ToImage(this AddImageDto dto) => new AdditionalImage() { ConcertId = dto.ConcertId, Image = new Image() { Type = dto.ImageType, Source = dto.Image } };
     }
 }

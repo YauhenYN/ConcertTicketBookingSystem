@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.Models
 {
-    public class Image
+    public class AdditionalImage
     {
         [Required]
+        [Key]
         public int ImageId { get; set; }
+        public Image Image { get; set; }
         [Required]
-        public string Type { get; set; }
-        [Required]
-        public byte[] Source { get; set; }
+        public int ConcertId { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpGet]
         [Route("{imageId}")]
-        public async Task<ActionResult<FileResult>> GetImageAsync(Guid imageId)
+        public async Task<ActionResult<FileResult>> GetImageAsync(int imageId)
         {
             var image = await _context.Images.FirstOrDefaultAsync(i => i.ImageId == imageId);
             if (image != null)
@@ -37,13 +37,13 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
-        public async Task<ActionResult> AddImageAsync(AddImageDto dto)
+        public async Task<ActionResult> AddAdditionalImageAsync(AddImageDto dto)
         {
-            var concert = await _context.Concerts.Include(c => c.Images).FirstOrDefaultAsync(c => c.ConcertId == dto.ConcertId);
-            if (concert != null && concert.Images.Count < 5)
+            var concert = await _context.Concerts.Include(c => c.AdditionalImages).FirstOrDefaultAsync(c => c.ConcertId == dto.ConcertId);
+            if (concert != null && concert.AdditionalImages.Count < 5)
             {
                 var image = dto.ToImage();
-                await _context.AddAsync(image);
+                await _context.AdditionalImages.AddAsync(image);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetImageAsync", new { imageId = image.ImageId });
             }

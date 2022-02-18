@@ -3,10 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ConcertTicketBookingSystemAPI.Migrations
 {
-    public partial class actual1 : Migration
+    public partial class actual_1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    ImageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Source = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.ImageId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "PromoCodes",
                 columns: table => new
@@ -76,9 +90,8 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                     ConcertId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsActiveFlag = table.Column<bool>(type: "bit", nullable: false),
-                    PreImageType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PreImage = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Cost = table.Column<decimal>(type: "money", nullable: false),
+                    ImageId = table.Column<int>(type: "int", nullable: false),
                     Performer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConcertDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Latitude = table.Column<double>(type: "float", nullable: false),
@@ -91,6 +104,12 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Concerts", x => x.ConcertId);
+                    table.ForeignKey(
+                        name: "FK_Concerts_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "ImageId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Concerts_Users_UserId",
                         column: x => x.UserId,
@@ -154,6 +173,29 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AdditionalImages",
+                columns: table => new
+                {
+                    ImageId = table.Column<int>(type: "int", nullable: false),
+                    ConcertId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdditionalImages", x => x.ImageId);
+                    table.ForeignKey(
+                        name: "FK_AdditionalImages_Concerts_ConcertId",
+                        column: x => x.ConcertId,
+                        principalTable: "Concerts",
+                        principalColumn: "ConcertId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AdditionalImages_Images_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Images",
+                        principalColumn: "ImageId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ClassicConcerts",
                 columns: table => new
                 {
@@ -171,26 +213,6 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                         principalTable: "Concerts",
                         principalColumn: "ConcertId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Source = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    ConcertId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.ImageId);
-                    table.ForeignKey(
-                        name: "FK_Images_Concerts_ConcertId",
-                        column: x => x.ConcertId,
-                        principalTable: "Concerts",
-                        principalColumn: "ConcertId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -267,6 +289,16 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AdditionalImages_ConcertId",
+                table: "AdditionalImages",
+                column: "ConcertId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Concerts_ImageId",
+                table: "Concerts",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Concerts_UserId",
                 table: "Concerts",
                 column: "UserId");
@@ -284,11 +316,6 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 column: "GoogleId",
                 unique: true,
                 filter: "[GoogleId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Images_ConcertId",
-                table: "Images",
-                column: "ConcertId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MicrosoftUsers_MicrosoftId",
@@ -330,6 +357,9 @@ namespace ConcertTicketBookingSystemAPI.Migrations
                 name: "Actions");
 
             migrationBuilder.DropTable(
+                name: "AdditionalImages");
+
+            migrationBuilder.DropTable(
                 name: "ClassicConcerts");
 
             migrationBuilder.DropTable(
@@ -337,9 +367,6 @@ namespace ConcertTicketBookingSystemAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "GoogleUsers");
-
-            migrationBuilder.DropTable(
-                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "MicrosoftUsers");
@@ -355,6 +382,9 @@ namespace ConcertTicketBookingSystemAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Concerts");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "Users");

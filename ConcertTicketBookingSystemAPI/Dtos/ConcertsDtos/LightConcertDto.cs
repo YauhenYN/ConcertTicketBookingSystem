@@ -13,9 +13,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public bool IsActiveFlag { get; init; }
         [Required]
-        public string PreImageType { get; init; }
-        [Required]
-        public byte[] PreImage { get; init; }
+        public int ImageId { get; init; }
         [Required]
         public decimal Cost { get; init; }
         [Required]

@@ -87,17 +87,19 @@ namespace UnitTests
                 Latitude = from.Latitude,
                 Longitude = from.Longitude,
                 Performer = from.Performer,
-                PreImage = from.PreImage,
-                PreImageType = from.PreImageType,
+                Image = new byte[] {0, 5, 1, 20},
+                ImageType = ".jpg",
                 TotalCount = from.TotalCount,
             };
             var context = StaticInstances.ApplicationContextMock;
-            var mockSet = new List<ClassicConcert>()
+            var concertsSet = new List<ClassicConcert>()
             {
                 CreateRandomClassicConcert(),
                 CreateRandomClassicConcert()
             }.AsQueryable().BuildMockDbSet();
-            context.Setup(context => context.ClassicConcerts).Returns(mockSet.Object);
+            var imagesSet = new List<Image>().AsQueryable().BuildMockDbSet();
+            context.Setup(context => context.ClassicConcerts).Returns(concertsSet.Object);
+            context.Setup(context => context.Images).Returns(imagesSet.Object);
             var controller = new ConcertsController(StaticInstances.ConcertsLoggerMock.Object, context.Object, StaticInstances.EmailSenderServiceMock.Object, StaticInstances.GuidConfirmationServiceMock.Object, StaticInstances.PayPalPaymentMock.Object, StaticInstances.ConfigurationMock.Object);
             var claims = new[]
 {
@@ -166,8 +168,7 @@ namespace UnitTests
                 TotalCount = rand.Next(500),
                 VoiceType = Guid.NewGuid().ToString().Substring(10),
                 UserId = Guid.NewGuid(),
-                PreImage = new byte[100],
-                PreImageType = ".jpg",
+                ImageId = rand.Next(int.MaxValue)
             };
         }
     }
