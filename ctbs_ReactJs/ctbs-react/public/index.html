@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>CTBS</title>
+    <style>
+        body {
+            margin: 0%;
+            background-color: #edeef0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #inBody {
+            position: relative;
+        }
+
+        .element-common {
+            background-color: #ffffff;
+            border-radius: 5em;
+            margin: 1% 0%;
+        }
+
+        #header_color {
+            background-color: #ffffff;
+            width: 100%;
+            position: fixed;
+            top: 0px;
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            z-index: 1;
+        }
+
+        #header_image {
+            -webkit-user-drag: none;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            padding-left: 5%;
+        }
+
+        #submit_button {
+            flex-grow: 1;
+            min-width: 5em;
+            max-width: 6vw;
+        }
+
+        .header_element {
+            height: 6vh;
+        }
+
+        #search {
+            flex-grow: 3;
+        }
+
+        #login_popup {
+            display: none;
+            position: fixed;
+            top: 8%;
+            left: 70%;
+        }
+
+        #searchForm {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+        }
+
+        #login_button {
+            flex-grow: 1;
+            flex-shrink: 0;
+            min-width: 5em;
+            max-width: 6vw;
+        }
+
+        #personalization_button {
+            flex-grow: 1;
+            max-width: 9vw;
+            min-width: 9em;
+        }
+
+        #logout {
+            flex-grow: 1;
+            max-width: 5vw;
+            min-width: 4em;
+        }
+
+        #emptyElement {
+            margin-right: 5%;
+        }
+
+        #bodyElement {
+            margin-top: 7vh;
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+        #footer{
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            bottom: 0%;
+            padding: 1% 0%;
+        }
+        .privacy{
+            display: flex;
+            margin-left: 50%;
+        }
+        .year{
+            margin-right: 2vw;
+            margin-left: 1vw;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
