@@ -22,13 +22,13 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     public class FacebookOAuthController : ControllerBase
     {
         private readonly FacebookOAuthService _oAuthService;
-        private readonly IConfiguration _configuration;
         private readonly ApplicationContext _context;
+        private readonly IConfigurationSection _facebookSection;
         public FacebookOAuthController(FacebookOAuthService oAuthService, IConfiguration configuration, ApplicationContext context)
         {
             _oAuthService = oAuthService;
-            _configuration = configuration;
             _context = context;
+            _facebookSection = configuration.GetSection("FacebookOAuth");
         }
 
         [HttpGet]
@@ -54,22 +54,19 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 user = new FacebookUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, FacebookId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
                 await _context.FacebookUsers.AddAsync(user);
             }
-            var response = GenerateAndRegisterTokensResponse(user);
+            var response = OAuthHelper.GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiryTime = response.ExpirationTime;
             await _context.SaveChangesAsync();
-            return response;
-        }
-        private TokensResponse GenerateAndRegisterTokensResponse(User user)
-        {
-            var identity = JwtAuth.AuthOptions.GetIsAdminIdentity(user.UserId, user.IsAdmin);
-            var token = JwtAuth.AuthOptions.GetToken(identity.Claims);
-            return new TokensResponse()
+            HttpContext.Response.Cookies.Append("AccessToken", response.AccessToken, new CookieOptions()
             {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token), //
-                RefreshToken = JwtAuth.AuthOptions.GenerateRefreshToken(),
-                ExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.REFRESHLIFETIME).ToUniversalTime()
-            };
+                Expires = response.ExpirationTime,
+            });
+            HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
+            {
+                Expires = response.RefreshExpirationTime,
+            });
+            return RedirectPermanent(_facebookSection["redirectUrl"]);
         }
     }
 }

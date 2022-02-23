@@ -22,20 +22,20 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     public class MicrosoftOAuthController : ControllerBase
     {
         private readonly MicrosoftOAuthService _oAuthService;
-        private readonly IConfiguration _configuration;
         private readonly ApplicationContext _context;
+        private readonly IConfigurationSection _facebookSection;
         public MicrosoftOAuthController(MicrosoftOAuthService oAuthService, IConfiguration configuration, ApplicationContext context)
         {
             _oAuthService = oAuthService;
-            _configuration = configuration;
             _context = context;
+            _facebookSection = configuration.GetSection("MicrosoftOAuth");
         }
 
         [HttpGet]
         [Route("Redirect")]
         public ActionResult RedirectOnOAuthServer()
         {
-            var scope = _configuration.GetSection("MicrosoftOAuth")["scope"];
+            var scope = _facebookSection["scope"];
             var codeVerifier = Guid.NewGuid().ToString();
             HttpContext.Session.SetString("codeVerifier", codeVerifier);
             var codeChellange = Sha256Helper.ComputeHash(codeVerifier);
@@ -58,22 +58,19 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 user = new MicrosoftUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.mail != null ? credentials.mail : credentials.userPrincipalName, MicrosoftId = credentials.id, IsAdmin = false, Name = credentials.displayName, PromoCodeId = null, UserId = Guid.NewGuid() };
                 await _context.MicrosoftUsers.AddAsync(user);
             }
-            var response = GenerateAndRegisterTokensResponse(user);
+            var response = OAuthHelper.GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiryTime = response.ExpirationTime;
             await _context.SaveChangesAsync();
-            return response;
-        }
-        private TokensResponse GenerateAndRegisterTokensResponse(User user)
-        {
-            var identity = JwtAuth.AuthOptions.GetIsAdminIdentity(user.UserId, user.IsAdmin);
-            var token = JwtAuth.AuthOptions.GetToken(identity.Claims);
-            return new TokensResponse()
+            HttpContext.Response.Cookies.Append("AccessToken", response.AccessToken, new CookieOptions()
             {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token), //
-                RefreshToken = JwtAuth.AuthOptions.GenerateRefreshToken(),
-                ExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.REFRESHLIFETIME).ToUniversalTime()
-            };
+                Expires = response.ExpirationTime,
+            });
+            HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
+            {
+                Expires = response.RefreshExpirationTime,
+            });
+            return RedirectPermanent(_facebookSection["redirectUrl"]);
         }
     }
 }

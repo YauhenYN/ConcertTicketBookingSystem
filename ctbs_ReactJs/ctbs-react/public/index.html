@@ -28,7 +28,7 @@
         .element-common {
             background-color: #ffffff;
             border-radius: 5em;
-            margin: 1% 0%;
+            padding: 1% 0%;
         }
 
         #header_color {
@@ -37,7 +37,6 @@
             position: fixed;
             top: 0px;
             display: flex;
-            justify-content: center;
             flex-direction: row;
             z-index: 1;
         }
@@ -110,8 +109,7 @@
             position: relative;
             display: flex;
             flex-direction: row;
-            bottom: 0%;
-            padding: 1% 0%;
+            min-width: 37em;
         }
         .privacy{
             display: flex;
@@ -122,6 +120,9 @@
             margin-left: 1vw;
         }
     </style>
+    <script type="text/javascript">
+        window.location.hash = '';
+    </script>
   </head>
   <body>
     <div id="root"></div>
