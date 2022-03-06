@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './Elements/App';
 import reportWebVitals from './reportWebVitals';
+import store from "./store";
+import { loggedOutAction } from './actionCreators';
+
+store.dispatch(loggedOutAction());
 
 ReactDOM.render(
   <React.StrictMode>

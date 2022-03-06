@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "redux": "4.0",
     "source-map-resolve": "^0.6.0"
   }
 }

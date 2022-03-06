@@ -28,17 +28,19 @@
         .element-common {
             background-color: #ffffff;
             border-radius: 5em;
-            padding: 1% 0%;
+            padding: 1em 0em;
         }
 
         #header_color {
             background-color: #ffffff;
-            width: 100%;
             position: fixed;
             top: 0px;
             display: flex;
             flex-direction: row;
             z-index: 1;
+            min-width: 41em;
+            width: 90%;
+            margin: 0% 5%;
         }
 
         #header_image {
@@ -47,7 +49,6 @@
             -moz-user-select: none;
             -webkit-user-select: none;
             -ms-user-select: none;
-            padding-left: 5%;
         }
 
         #submit_button {
@@ -96,10 +97,6 @@
             min-width: 4em;
         }
 
-        #emptyElement {
-            margin-right: 5%;
-        }
-
         #bodyElement {
             margin-top: 7vh;
             margin-left: 5%;
@@ -109,19 +106,19 @@
             position: relative;
             display: flex;
             flex-direction: row;
-            min-width: 37em;
+            min-width: 41em;
         }
         .privacy{
             display: flex;
             margin-left: 50%;
         }
         .year{
-            margin-right: 2vw;
+            margin-right: 2em;
             margin-left: 1vw;
         }
     </style>
     <script type="text/javascript">
-        window.location.hash = '';
+        window.location.href.replace(location.hash, "");
     </script>
   </head>
   <body>
