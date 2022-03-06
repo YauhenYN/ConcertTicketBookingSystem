@@ -1,2 +1,2 @@
-export const LoggedIn = "loggedin";
-export const LoggedOut = "loggedout";
+export const LogIn = "login";
+export const RefreshCode = "refreshcode";

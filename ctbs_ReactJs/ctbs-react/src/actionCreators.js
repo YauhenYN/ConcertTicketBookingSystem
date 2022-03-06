@@ -1,12 +1,12 @@
 import * as actions from "./actionTypes";
 
-export const loggedInAction = () => {
+export const logInAction = () => {
     return {
-        type: actions.LoggedIn,
+        type: actions.LogIn,
     }
 };
-export const loggedOutAction = () => {
+export const RefreshCodeAction = () => {
     return {
-        type: actions.LoggedOut,
+        type: actions.RefreshCode,
     }
 };

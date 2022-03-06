@@ -4,10 +4,9 @@ import './index.css';
 import App from './Elements/App';
 import reportWebVitals from './reportWebVitals';
 import store from "./store";
-import { loggedOutAction } from './actionCreators';
+import * as actions from './actionCreators';
 
-store.dispatch(loggedOutAction());
-
+store.dispatch(actions.logInAction());
 ReactDOM.render(
   <React.StrictMode>
     <App />
