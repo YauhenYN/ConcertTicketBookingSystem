@@ -31,6 +31,7 @@ namespace ConcertTicketBookingSystemAPI
         {
             services.AddDistributedMemoryCache();
             services.AddSession();
+            services.AddCors();
             services.AddDbContext<ApplicationContext>(optionsBuilder =>
             {
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -92,6 +93,12 @@ namespace ConcertTicketBookingSystemAPI
             app.UseSession();
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(options =>
+            {
+                options.WithOrigins(Configuration["RedirectUrl"]);
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+            });
             app.UseAuthentication();
             app.UseAuthorization();
 

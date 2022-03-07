@@ -50,8 +50,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token), //
                 RefreshToken = JwtAuth.AuthOptions.GenerateRefreshToken(),
-                ExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.REFRESHLIFETIME).ToUniversalTime()
-        };
+                RefreshExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.REFRESHLIFETIME).ToUniversalTime(),
+                ExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.LIFETIME).ToUniversalTime()
+            };
         }
     }
 }

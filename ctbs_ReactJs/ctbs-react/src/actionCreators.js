@@ -5,8 +5,3 @@ export const logInAction = () => {
         type: actions.LogIn,
     }
 };
-export const RefreshCodeAction = () => {
-    return {
-        type: actions.RefreshCode,
-    }
-};

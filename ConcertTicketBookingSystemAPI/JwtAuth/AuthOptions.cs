@@ -29,7 +29,7 @@ namespace ConcertTicketBookingSystemAPI.JwtAuth
         }
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
+            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY)); /////////////////////////
         }
         public static string GenerateRefreshToken()
         {
