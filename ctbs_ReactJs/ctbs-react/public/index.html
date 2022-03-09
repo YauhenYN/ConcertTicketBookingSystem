@@ -41,6 +41,7 @@
             min-width: 41em;
             width: 90%;
             padding: 0% 5%;
+            max-height: 6vh;
         }
 
         #header_image {
@@ -74,6 +75,14 @@
             max-width: inherit;
             width: 100%;
         }
+        #userPopup{
+            display: none;
+            position: inherit;
+            flex-direction: column;
+            top: 6vh;
+            width: inherit;
+            max-width: inherit;
+        }
         .popup_button{
             width: 100%;
             height: 5vh;
@@ -89,22 +98,6 @@
             display: flex;
             flex-direction: row;
             flex-grow: 1;
-        }
-
-        #login_button {
-            
-        }
-
-        #personalization_button {
-            flex-grow: 1;
-            max-width: 9vw;
-            min-width: 9em;
-        }
-
-        #logout {
-            flex-grow: 1;
-            max-width: 5vw;
-            min-width: 4em;
         }
 
         #bodyElement {
@@ -125,6 +118,26 @@
         .year{
             margin-right: 2em;
             margin-left: 1vw;
+        }
+        #userName{
+            padding: 0vw 1vw;
+            display: flex;
+            align-items: center;
+            border-style: dashed;
+            box-sizing: border-box;
+            height: inherit;
+        }
+        #userMenu{
+            z-index: 1;
+        }
+        #userNameText{
+            margin: 0%;
+        }
+        .adminPanel{
+            border-color:crimson;
+        }
+        .userPanel{
+            border-color: darkgrey;
         }
     </style>
     <script type="text/javascript">

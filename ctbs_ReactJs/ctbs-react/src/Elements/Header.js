@@ -1,18 +1,21 @@
 import OAuthPopUp from "./OAuthPopUp";
 import SearchForm from "./SearchForm";
 import store from "../store";
+import UserNamePanel from "./UserNamePanel";
+
 
 function Header() {
     return (
         <div id="header_color">
             <img id="header_image" className="header_element" src="icon.png" alt="icon" />
             <SearchForm />
-            {!store.getState().payload.isLoggedIn && <div id = "login_form">
+            {!store.getState().isLoggedIn && <div id = "login_form">
                 <input id="login_button" className="header_element" type="button" onClick={openCloseForm} value="Войти" />
                 <OAuthPopUp />
             </div>}
-            {store.getState().payload.isLoggedIn && <input id="personalization_button" className="header_element" type="button" value="Персонализация" />}
-            {store.getState().payload.isLoggedIn && <input id="logout" className="header_element" type="button" value="Выйти" />}
+            {store.getState().isLoggedIn && <>
+            <UserNamePanel/>
+            </>}
         </div>
     );
 }

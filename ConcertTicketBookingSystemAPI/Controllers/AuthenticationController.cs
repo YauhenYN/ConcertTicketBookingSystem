@@ -1,15 +1,11 @@
 ﻿using ConcertTicketBookingSystemAPI.Dtos.AuthenticationDtos;
+using ConcertTicketBookingSystemAPI.Helpers;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
@@ -34,25 +30,13 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
             if (user.RefreshToken != null && refreshToken == user.RefreshToken && DateTime.Now.ToUniversalTime() < user.RefreshTokenExpiryTime)
             {
-                var response = GenerateAndRegisterTokensResponse(user);
+                var response = OAuthHelper.GenerateAndRegisterTokensResponse(user);
                 user.RefreshToken = response.RefreshToken;
-                user.RefreshTokenExpiryTime = response.ExpirationTime;
+                user.RefreshTokenExpiryTime = response.RefreshExpirationTime;
                 await _context.SaveChangesAsync();
                 return response;
             }
             else return Conflict();
-        }
-        private TokensResponse GenerateAndRegisterTokensResponse(User user)
-        {
-            var identity = JwtAuth.AuthOptions.GetIsAdminIdentity(user.UserId, user.IsAdmin);
-            var token = JwtAuth.AuthOptions.GetToken(identity.Claims);
-            return new TokensResponse()
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token), //
-                RefreshToken = JwtAuth.AuthOptions.GenerateRefreshToken(),
-                RefreshExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.REFRESHLIFETIME).ToUniversalTime(),
-                ExpirationTime = DateTime.Now.AddMinutes(JwtAuth.AuthOptions.LIFETIME).ToUniversalTime()
-            };
         }
     }
 }
