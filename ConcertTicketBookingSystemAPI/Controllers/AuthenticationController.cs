@@ -2,6 +2,7 @@
 using ConcertTicketBookingSystemAPI.Helpers;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -34,6 +35,14 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 user.RefreshToken = response.RefreshToken;
                 user.RefreshTokenExpiryTime = response.RefreshExpirationTime;
                 await _context.SaveChangesAsync();
+                HttpContext.Response.Cookies.Append("AccessToken", response.AccessToken, new CookieOptions()
+                {
+                    Expires = response.ExpirationTime,
+                });
+                HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
+                {
+                    Expires = response.RefreshExpirationTime,
+                });
                 return response;
             }
             else return Conflict();

@@ -5,11 +5,12 @@ export default function reducer(state, action) {
         return {
             ...state,
             isLoggedIn: action.isLoggedIn,
+            loading: 0
         }
     }
     else if (action.type === actionTypes.RefreshCode) {
         return{
-            ...state,
+            ...state
         }
     }
     else if (action.type === actionTypes.GetUserInfo) {
@@ -24,11 +25,30 @@ export default function reducer(state, action) {
                 email: action.email,
                 cookieConfirmationFlag: action.cookieConfirmationFlag
             },
+            error: ''
+        }
+    }
+    else if(action.type === actionTypes.GetUserInfoFailure){
+        return {
+            ...state,
+            error: action.error
         }
     }
     else if (action.type === actionTypes.LogOut) {
         return{
             ...state,
+        }
+    }
+    else if (action.type === actionTypes.Loading) {
+        return{
+            ...state,
+            loading: state.loading + 1
+        }
+    }
+    else if(action.type === actionTypes.Loaded){
+        return{
+            ...state,
+            loading: state.loading - 1
         }
     }
 };

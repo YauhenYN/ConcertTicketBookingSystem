@@ -12,6 +12,7 @@ using ConcertTicketBookingSystemAPI.CustomServices.OAuth;
 using ConcertTicketBookingSystemAPI.CustomServices.PayPal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI
 {
@@ -56,6 +57,14 @@ namespace ConcertTicketBookingSystemAPI
                     ValidateLifetime = true,
                     IssuerSigningKey = JwtAuth.AuthOptions.GetSymmetricSecurityKey(),
                     ValidateIssuerSigningKey = true
+                };
+                options.Events = new JwtBearerEvents()
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["AccessToken"];
+                        return Task.CompletedTask;
+                    }
                 };
             });
             services.AddControllers();

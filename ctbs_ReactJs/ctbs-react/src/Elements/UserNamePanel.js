@@ -1,40 +1,44 @@
 import store from "../store";
-import React, { useEffect, useState } from 'react';
-import * as conf from '../configuration';
+import React, { useEffect, } from 'react';
 import * as thunks from '../thunkActionCreators';
 import * as actionCreators from "../actionCreators";
+import { connect } from "react-redux";
 
-function UserNamePanel() {
-    const [userInfo, setUserInfo] = useState({
-        name: '',
-        isAdmin: false
-    });
+function UserNamePanel({ state, getUserInfo }) {
     useEffect(() => {
-        store.dispatch(thunks.GetUserInfoThunkAction(conf.cookies.get('AccessToken'), () => {
-            setUserInfo({ name: store.getState().user.name });
-        }));
-    }, []);
+        getUserInfo();
+    }, [getUserInfo]);
     return (
-        <div id = "userMenu" className = "header_element" onMouseEnter={openForm} onMouseLeave={closeForm}>
-            <div id="userName" className = {userInfo.isAdmin ? "adminPanel" : "userPanel"}>
-                <p id="userNameText">{userInfo.name}</p>
-            </div>
-            <div id="userPopup">
-                <input className = "popup_button" type="button" value="Персонализ." />
-                <input type = "button" className = "popup_button" onClick={logOut} value="Выйти" />
-            </div>
-        </div>
+        state.isLoading > 0 ? (
+            <p>LOADING</p>
+        ) : (
+            <div id="userMenu" className="header_element">
+                <div id="userName" className={state.user.isAdmin ? "adminPanel" : "userPanel"}>
+                    <p id="userNameText">{state.user.name}</p>
+                </div>
+                <div id="userPopup">
+                    <input className="popup_button" type="button" value="Персонализ." />
+                    <input type="button" className="popup_button" onClick={logOut} value="Выйти" />
+                </div>
+            </div>)
     );
 }
-export default UserNamePanel;
 
-function openForm() {
-    document.getElementById("userPopup").style.display = "flex";
-};
-function closeForm() {
-    document.getElementById("userPopup").style.display = "none";
-};
+const mapStateToProps = state => {
+    return {
+        user: state.user,
+        isLoading: state.loading
+    }
+}
 
-function logOut(){
+const mapDispatchToProps = dispatch => {
+    return {
+        getUserInfo: dispatch(thunks.GetUserInfoThunkAction())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserNamePanel);
+
+function logOut() {
     store.dispatch(actionCreators.logOutAction());
 }

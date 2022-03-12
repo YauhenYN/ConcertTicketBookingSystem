@@ -12,14 +12,15 @@ export const logInAction = () => {
     }
     else {
         setTimeout(() => {
-            store.dispatch(thunks.RefreshCodeThunkAction(conf.cookies.get('AccessToken'), conf.cookies.get('RefreshToken')));
+            store.dispatch(thunks.RefreshCodeThunkAction(conf.cookies.get('RefreshToken')));
         }, conf.firstInterval);
         return {
             type: actions.LogIn,
             isLoggedIn: true
-        }
+        } 
     }
 };
+
 export const logOutAction = () => {
     conf.cookies.remove('AccessToken');
     conf.cookies.remove('RefreshToken');
@@ -28,3 +29,20 @@ export const logOutAction = () => {
         type: actions.LogOut,
     }
 };
+export const getUserInfoFailure = (error) => {
+    return {
+        type: actions.GetUserInfoFailure,
+        error: error
+    }
+}
+
+export const loaded = () => {
+    return {
+        type: actions.Loaded
+    }
+}
+export const loading = () => {
+    return {
+        type: actions.Loading
+    }
+}
