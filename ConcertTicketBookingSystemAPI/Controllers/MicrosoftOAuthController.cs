@@ -1,18 +1,12 @@
-﻿using ConcertTicketBookingSystemAPI.CustomServices;
-using ConcertTicketBookingSystemAPI.CustomServices.OAuth;
+﻿using ConcertTicketBookingSystemAPI.CustomServices.OAuth;
 using ConcertTicketBookingSystemAPI.Dtos.AuthenticationDtos;
 using ConcertTicketBookingSystemAPI.Helpers;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
@@ -49,6 +43,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var request = HttpContext.Request;
             if (code == null) return BadRequest();
             string codeVerifier = HttpContext.Session.GetString("codeVerifier");
+            HttpContext.Session.Remove("codeVerifier");
             var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
             string microsoftId = credentials.id;
@@ -58,18 +53,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 user = new MicrosoftUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.mail != null ? credentials.mail : credentials.userPrincipalName, MicrosoftId = credentials.id, IsAdmin = false, Name = credentials.displayName, PromoCodeId = null, UserId = Guid.NewGuid() };
                 await _context.MicrosoftUsers.AddAsync(user);
             }
-            var response = OAuthHelper.GenerateAndRegisterTokensResponse(user);
+            var response = JwtHelper.GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiryTime = response.ExpirationTime;
             await _context.SaveChangesAsync();
-            HttpContext.Response.Cookies.Append("AccessToken", response.AccessToken, new CookieOptions()
-            {
-                Expires = response.ExpirationTime,
-            });
-            HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
-            {
-                Expires = response.RefreshExpirationTime,
-            });
+            HttpContext.AppendTokens(response);
             return RedirectPermanent(_facebookSection["redirectUrl"]);
         }
     }

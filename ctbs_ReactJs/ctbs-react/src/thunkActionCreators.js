@@ -1,28 +1,26 @@
 import * as conf from './configuration';
 import * as actionTypes from "./actionTypes"
 import * as thunks from './thunkActionCreators';
-import store from "./store";
 import * as actionCreators from "./actionCreators"
+import axios from 'axios';
+
+const axiosParams = {
+    crossDomain: true,
+    withCredentials: true
+};
 
 export const RefreshCodeThunkAction = (refresh) => {
     return async function fetchTokenThunk(dispatch) {
         if (typeof conf.cookies.get('AccessToken') !== 'undefined') {
-            fetch(conf.apiLink + conf.refreshAddition + '?refreshToken=' + refresh, {
-                method: 'POST'
-            })
-                .then(res => res.json()).then((result) => {
+            axios.post(conf.apiLink + conf.refreshAddition + '?refreshToken=' + refresh, { withCredentials: true })
+                .then((result) => {
+                    //conf.cookies.set('AccessToken', result.accessToken, { path: '/', expires: new Date(result.expirationTime) });
+                    //conf.cookies.set('RefreshToken', result.refreshToken, { path: '/', expires: new Date(result.refreshExpirationTime) });
+                    console.log(result);
                     setTimeout(() => {
-                        store.dispatch(thunks.RefreshCodeThunkAction(conf.cookies.get('RefreshToken')));
-                    }, new Date(result.expirationTime) - new Date() - 5000);
-                    if(result.accessToken !== undefined) dispatch({
-                        type: actionTypes.RefreshCode,
-                        accessToken: result.accessToken,
-                        accessTokenExpires: result.expirationTime,
-                        refreshToken: result.refreshToken,
-                        refreshTokenExpires: result.refreshExpirationTime
-                    })
-
-                })
+                        dispatch(thunks.RefreshCodeThunkAction(conf.cookies.get('RefreshToken')));
+                    }, new Date(result.data.expirationTime) - new Date() - 5000);
+                });
         }
         else {
             window.location.reload(false);
@@ -31,21 +29,20 @@ export const RefreshCodeThunkAction = (refresh) => {
 };
 export const GetUserInfoThunkAction = () => {
     return async function fetchTokenThunk(dispatch) {
-        dispatch(actionCreators.loading);
-        fetch(conf.apiLink + conf.userInfoAddition, {
-            method: 'GET'
-        }).then(res => res.json()).then((result) => {
+        dispatch(actionCreators.loading());
+        axios.get(conf.apiLink + conf.userInfoAddition, axiosParams)
+            .then((result) => {
                 dispatch({
                     type: actionTypes.GetUserInfo,
-                    userId: result.userId,
-                    isAdmin: result.isAdmin, 
-                    birthDate: result.birthDate,
-                    promoCodeId: result.promoCodeId,
-                    name: result.name,
-                    email: result.email,
-                    cookieConfirmationFlag: result.cookieConfirmationFlag
+                    userId: result.data.userId,
+                    isAdmin: result.data.isAdmin,
+                    birthDate: result.data.birthDate,
+                    promoCodeId: result.data.promoCodeId,
+                    name: result.data.name,
+                    email: result.data.email,
+                    cookieConfirmationFlag: result.data.cookieConfirmationFlag
                 });
-                dispatch(actionCreators.loaded);
+                dispatch(actionCreators.loaded());
             }).catch(error => {
                 dispatch(actionCreators.getUserInfoFailure(error.message));
             });

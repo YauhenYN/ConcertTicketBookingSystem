@@ -1,20 +1,21 @@
 import store from "../store";
 import React, { useEffect, } from 'react';
+import { connect } from "react-redux";
 import * as thunks from '../thunkActionCreators';
 import * as actionCreators from "../actionCreators";
-import { connect } from "react-redux";
 
-function UserNamePanel({ state, getUserInfo }) {
+function UserNamePanel({ props, getUserInfo }) {
     useEffect(() => {
         getUserInfo();
     }, [getUserInfo]);
+    console.log(props);
     return (
-        state.isLoading > 0 ? (
+        props.isLoading !== 0 ? (
             <p>LOADING</p>
         ) : (
             <div id="userMenu" className="header_element">
-                <div id="userName" className={state.user.isAdmin ? "adminPanel" : "userPanel"}>
-                    <p id="userNameText">{state.user.name}</p>
+                <div id="userName" className={props.user.isAdmin ? "adminPanel" : "userPanel"}>
+                    <p id="userNameText">{props.user.name}</p>
                 </div>
                 <div id="userPopup">
                     <input className="popup_button" type="button" value="Персонализ." />
@@ -26,14 +27,16 @@ function UserNamePanel({ state, getUserInfo }) {
 
 const mapStateToProps = state => {
     return {
-        user: state.user,
-        isLoading: state.loading
+        props: {
+            user: state.user,
+            isLoading: state.isLoading
+        }
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        getUserInfo: dispatch(thunks.GetUserInfoThunkAction())
+        getUserInfo: () => dispatch(thunks.GetUserInfoThunkAction())
     }
 }
 

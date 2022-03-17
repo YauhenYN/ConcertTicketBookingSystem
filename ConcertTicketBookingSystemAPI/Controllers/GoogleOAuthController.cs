@@ -51,6 +51,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             if (code == null || scope == null) return BadRequest();
             string codeVerifier = HttpContext.Session.GetString("codeVerifier");
+            HttpContext.Session.Remove("codeVerifier");
             var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier);
             //var refreshTokenResult = await _oAuthService.RefreshTokenAsync(tokenResult.RefreshToken);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
@@ -61,18 +62,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 user = new GoogleUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, GoogleId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
                 await _context.GoogleUsers.AddAsync(user);
             }
-            var response = OAuthHelper.GenerateAndRegisterTokensResponse(user);
+            var response = JwtHelper.GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiryTime = response.RefreshExpirationTime;
             await _context.SaveChangesAsync();
-            HttpContext.Response.Cookies.Append("AccessToken", response.AccessToken, new CookieOptions()
-            {
-                Expires = response.ExpirationTime,
-            });
-            HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
-            {
-                Expires = response.RefreshExpirationTime,
-            });
+            HttpContext.AppendTokens(response);
             return RedirectPermanent(_googleSection["redirectUrl"]);
         }
     }

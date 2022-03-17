@@ -25,25 +25,17 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        [Authorize(AuthenticationSchemes = "Token")]
-        public async Task<ActionResult<TokensResponse>> RefreshAsync(string refreshToken)
+        public async Task<ActionResult<string>> RefreshAsync()
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
-            if (user.RefreshToken != null && refreshToken == user.RefreshToken && DateTime.Now.ToUniversalTime() < user.RefreshTokenExpiryTime)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == HttpContext.Request.Cookies["RefreshToken"]);
+            if (user != null && user.RefreshTokenExpiryTime > DateTime.UtcNow)
             {
-                var response = OAuthHelper.GenerateAndRegisterTokensResponse(user);
+                var response = JwtHelper.GenerateAndRegisterTokensResponse(user);
                 user.RefreshToken = response.RefreshToken;
                 user.RefreshTokenExpiryTime = response.RefreshExpirationTime;
                 await _context.SaveChangesAsync();
-                HttpContext.Response.Cookies.Append("AccessToken", response.AccessToken, new CookieOptions()
-                {
-                    Expires = response.ExpirationTime,
-                });
-                HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
-                {
-                    Expires = response.RefreshExpirationTime,
-                });
-                return response;
+                HttpContext.AppendTokens(response);
+                return response.AccessToken;
             }
             else return Conflict();
         }

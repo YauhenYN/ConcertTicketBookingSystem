@@ -5,7 +5,6 @@ export default function reducer(state, action) {
         return {
             ...state,
             isLoggedIn: action.isLoggedIn,
-            loading: 0
         }
     }
     else if (action.type === actionTypes.RefreshCode) {
@@ -42,13 +41,13 @@ export default function reducer(state, action) {
     else if (action.type === actionTypes.Loading) {
         return{
             ...state,
-            loading: state.loading + 1
+            isLoading: typeof state.isLoading === 'undefined' ? 1 : state.isLoading + 1
         }
     }
     else if(action.type === actionTypes.Loaded){
         return{
             ...state,
-            loading: state.loading - 1
+            isLoading: state.isLoading - 1
         }
     }
 };

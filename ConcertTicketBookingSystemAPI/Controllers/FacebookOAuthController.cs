@@ -44,7 +44,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("Code")]
         public async Task<ActionResult<TokensResponse>> CodeAsync(string code, string state)
         {
-            if (code == null || state == null && HttpContext.Session.GetString("codeVerifier") == state) return BadRequest(); 
+            if (code == null || state == null && HttpContext.Session.GetString("codeVerifier") == state) return BadRequest();
+            HttpContext.Session.Remove("codeVerifier");
             var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
             string userFacebookId = credentials.id;
@@ -54,18 +55,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 user = new FacebookUser() { BirthDate = null, CookieConfirmationFlag = false, Email = credentials.email, FacebookId = credentials.id, IsAdmin = false, Name = credentials.name, PromoCodeId = null, UserId = Guid.NewGuid() };
                 await _context.FacebookUsers.AddAsync(user);
             }
-            var response = OAuthHelper.GenerateAndRegisterTokensResponse(user);
+            var response = JwtHelper.GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiryTime = response.ExpirationTime;
             await _context.SaveChangesAsync();
-            HttpContext.Response.Cookies.Append("AccessToken", response.AccessToken, new CookieOptions()
-            {
-                Expires = response.ExpirationTime,
-            });
-            HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
-            {
-                Expires = response.RefreshExpirationTime,
-            });
+            HttpContext.AppendTokens(response);
             return RedirectPermanent(_facebookSection["redirectUrl"]);
         }
     }

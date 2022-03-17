@@ -13,6 +13,7 @@ using ConcertTicketBookingSystemAPI.CustomServices.PayPal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace ConcertTicketBookingSystemAPI
 {
@@ -44,10 +45,12 @@ namespace ConcertTicketBookingSystemAPI
             services.AddSingleton<FacebookOAuthService>(c => new FacebookOAuthService(facebookSection["clientId"], facebookSection["secret"], facebookSection["serverEndPoint"], facebookSection["tokenEndPoint"], facebookSection["OAuthRedirect"], facebookSection["scope"]));
             var microsoftSection = Configuration.GetSection("MicrosoftOAuth");
             services.AddSingleton<MicrosoftOAuthService>(c => new MicrosoftOAuthService(microsoftSection["tenant"], microsoftSection["clientId"], microsoftSection["secret"], microsoftSection["serverEndPoint"], microsoftSection["tokenEndPoint"], microsoftSection["refreshEndPoint"], microsoftSection["OAuthRedirect"]));
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer("Token", options =>
+            services.AddAuthentication(configureOptions =>
             {
-                options.RequireHttpsMetadata = true;
+                configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -57,14 +60,6 @@ namespace ConcertTicketBookingSystemAPI
                     ValidateLifetime = true,
                     IssuerSigningKey = JwtAuth.AuthOptions.GetSymmetricSecurityKey(),
                     ValidateIssuerSigningKey = true
-                };
-                options.Events = new JwtBearerEvents()
-                {
-                    OnMessageReceived = context =>
-                    {
-                        context.Token = context.Request.Cookies["AccessToken"];
-                        return Task.CompletedTask;
-                    }
                 };
             });
             services.AddControllers();
@@ -99,14 +94,20 @@ namespace ConcertTicketBookingSystemAPI
             {
                 app.UseHsts();
             }
-            app.UseSession();
             app.UseHttpsRedirection();
+            app.UseCookiePolicy(new CookiePolicyOptions()
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+                Secure = CookieSecurePolicy.Always
+            });
+            app.UseSession();
             app.UseRouting();
             app.UseCors(options =>
             {
-                options.WithOrigins(Configuration["RedirectUrl"]);
+                options.WithOrigins(new[] { Configuration["RedirectUrl"] });
                 options.AllowAnyHeader();
                 options.AllowAnyMethod();
+                options.AllowCredentials();
             });
             app.UseAuthentication();
             app.UseAuthorization();

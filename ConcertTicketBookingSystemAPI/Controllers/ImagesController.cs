@@ -36,7 +36,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             else return NotFound();
         }
         [HttpPost]
-        [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> AddAdditionalImageAsync(AddImageDto dto)
         {
             var concert = await _context.Concerts.Include(c => c.AdditionalImages).FirstOrDefaultAsync(c => c.ConcertId == dto.ConcertId);

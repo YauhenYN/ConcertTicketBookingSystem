@@ -39,7 +39,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _confirmationService = confirmationService;
         }
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("{concertId}")]
         public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId)
         {
@@ -53,7 +53,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             else return NotFound();
         }
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("{concertId}/Buy/PayPal")]
         public async Task<ActionResult> BuyTicket_PayPalAsync(int concertId, BuyTicketDto dto)
         {
@@ -102,7 +102,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("Buy/PayPal")]
         public async Task<ActionResult> BuyTicket_PayPalAsync()
         {
@@ -120,7 +120,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpGet]
         [Route("many/light")]
-        [Authorize(AuthenticationSchemes = "Token")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
         {
             IQueryable<Models.Concert> concerts;
@@ -147,7 +147,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             else return NotFound();
         }
         [HttpPost]
-        [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
         {
             Models.Concert concert;
@@ -174,7 +174,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("{concertId}/Activate")]
-        [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> ActivateConcertAsync(int concertId)
         {
             var concert = await _context.Concerts.FirstOrDefaultAsync(c => concertId == c.ConcertId);
@@ -188,7 +188,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("{concertId}/Deactivate")]
-        [Authorize(Roles = "admin", AuthenticationSchemes = "Token")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> DeactivateConcertAsync(int concertId)
         {
             var concert = await _context.Concerts.FirstOrDefaultAsync(c => concertId == c.ConcertId);

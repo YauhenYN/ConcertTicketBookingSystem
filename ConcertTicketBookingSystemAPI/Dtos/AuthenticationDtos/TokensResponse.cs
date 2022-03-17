@@ -20,8 +20,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.AuthenticationDtos
         public QueryString ToQueryString()
         {
             return QueryString.Create("AccessToken", AccessToken)
-                .Add("RefreshToken", RefreshToken).
-                Add("RefreshExpirationTime", RefreshExpirationTime.ToString());
+                .Add("RefreshToken", RefreshToken);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.Helpers
 {
-    public static class OAuthHelper
+    public static class JwtHelper
     {
         public static TokensResponse GenerateAndRegisterTokensResponse(User user)
         {

@@ -11,7 +11,7 @@ using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Token")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("[controller]")]
     public class EmailConfirmationController : ControllerBase

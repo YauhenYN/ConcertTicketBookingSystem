@@ -17,7 +17,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = "Token")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class PersonalizationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;
