@@ -1,21 +1,12 @@
 import store from "../store";
-import React, { useEffect, } from 'react';
-import { connect } from "react-redux";
-import * as thunks from '../thunkActionCreators';
 import * as actionCreators from "../actionCreators";
 
-function UserNamePanel({ props, getUserInfo }) {
-    useEffect(() => {
-        getUserInfo();
-    }, [getUserInfo]);
-    console.log(props);
+function UserNamePanel() {
     return (
-        props.isLoading !== 0 ? (
-            <p>LOADING</p>
-        ) : (
+        store.getState().isLoading !== 0 ? <></> : (
             <div id="userMenu" className="header_element">
-                <div id="userName" className={props.user.isAdmin ? "adminPanel" : "userPanel"}>
-                    <p id="userNameText">{props.user.name}</p>
+                <div id="userName" className={store.getState().isAdmin ? "adminPanel" : "userPanel"}>
+                    <p id="userNameText">{store.getState().user.name}</p>
                 </div>
                 <div id="userPopup">
                     <input className="popup_button" type="button" value="Персонализ." />
@@ -25,22 +16,7 @@ function UserNamePanel({ props, getUserInfo }) {
     );
 }
 
-const mapStateToProps = state => {
-    return {
-        props: {
-            user: state.user,
-            isLoading: state.isLoading
-        }
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        getUserInfo: () => dispatch(thunks.GetUserInfoThunkAction())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserNamePanel);
+export default UserNamePanel;
 
 function logOut() {
     store.dispatch(actionCreators.logOutAction());

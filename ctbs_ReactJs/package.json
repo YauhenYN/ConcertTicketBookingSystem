@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "jwt-decode": "^3.1.2",
     "openssl": "^2.0.0",
     "react-redux": "^7.2.6",
     "redux": "4.0",

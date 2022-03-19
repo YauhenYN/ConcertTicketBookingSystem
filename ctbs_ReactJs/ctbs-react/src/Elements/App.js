@@ -2,22 +2,42 @@ import Footer from './Footer';
 import Header from './Header';
 import CookieModalWindow from './CookieModalWindow';
 import store from "../store";
-import React, { useEffect, useState } from 'react';
-import * as conf from '../configuration';
-import * as thunks from '../thunkActionCreators';
+import * as actionCreators from "../actionCreators";
+import React, { useEffect, } from 'react';
+import { connect } from "react-redux";
 
+store.dispatch(actionCreators.EmptyState());
 
-function App() {
+function App({ props, logIn }) {
+  useEffect(() => {
+    logIn();
+  }, [logIn]);
   return (
-    <><Header />
+    props.isLoading !== 0 ? (
+      <p>LOADING</p>
+    ) : (<><Header />
       <div id="bodyElement">
         <div id="inBody">
 
         </div>
         <Footer />
       </div>
-      {store.getState().isLoggedIn && <CookieModalWindow />}</>
+      {store.getState().isLoggedIn && !store.getState().user.cookieConfirmationFlag && <CookieModalWindow />}</>)
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    props: {
+      isLoading: state.isLoading
+    }
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    logIn: () => dispatch(actionCreators.logInThunkAction())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

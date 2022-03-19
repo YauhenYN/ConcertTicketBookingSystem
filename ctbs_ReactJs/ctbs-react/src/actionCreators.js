@@ -1,48 +1,96 @@
-import * as actions from "./actionTypes";
-import store from "./store";
-import * as thunks from './thunkActionCreators';
+import * as actionTypes from "./actionTypes";
 import * as conf from './configuration';
+import axios from 'axios';
+import jwt from 'jwt-decode'
 
-export const logInAction = () => {
-    if (typeof conf.cookies.get('AccessToken') === 'undefined' || conf.cookies.get('AccessToken') === 'undefined') {
-        return {
-            type: actions.LogIn,
-            isLoggedIn: false
-        }
+
+let accessToken;
+
+export const RefreshCodeThunkAction = () => {
+    return async function fetchTokenThunk(dispatch) {
+        return axios.post(conf.apiLink + conf.refreshAddition, {}, {
+            withCredentials: true
+        }).then((result) => {
+                accessToken = result.data;
+                setTimeout(() => {
+                    dispatch(RefreshCodeThunkAction());
+                }, new Date(jwt(result.data).exp));
+            });
     }
-    else {
-        setTimeout(() => {
-            store.dispatch(thunks.RefreshCodeThunkAction(conf.cookies.get('RefreshToken')));
-        }, conf.firstInterval);
-        return {
-            type: actions.LogIn,
-            isLoggedIn: true
-        } 
+};
+export const GetUserInfoThunkAction = () => {
+    return async function fetchTokenThunk(dispatch) {
+        dispatch(loading());
+        axios.get(conf.apiLink + conf.userInfoAddition, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }).then((result) => {
+            dispatch({
+                type: actionTypes.GetUserInfo,
+                userId: result.data.userId,
+                isAdmin: result.data.isAdmin,
+                birthDate: result.data.birthDate,
+                promoCodeId: result.data.promoCodeId,
+                name: result.data.name,
+                email: result.data.email,
+                cookieConfirmationFlag: result.data.cookieConfirmationFlag
+            });
+            dispatch(loaded());
+        }).catch(error => {
+            dispatch(getUserInfoFailure(error.message));
+        });
+    }
+};
+
+export const EmptyState = () => {
+    return { type: actionTypes.EmptyState }
+}
+
+export const logInThunkAction = () => {
+    return async function checkLogInThunk(dispatch) {
+        dispatch(loading());
+        try {
+            await dispatch(RefreshCodeThunkAction())
+            dispatch(loaded());
+            dispatch(GetUserInfoThunkAction());
+            dispatch({
+                type: actionTypes.LogIn,
+                isLoggedIn: true
+            })
+        }
+        catch (error) {
+            dispatch(loaded());
+            dispatch({
+                type: actionTypes.LogIn,
+                isLoggedIn: false
+            });
+        };
     }
 };
 
 export const logOutAction = () => {
-    conf.cookies.remove('AccessToken');
     conf.cookies.remove('RefreshToken');
     window.location.reload(false);
     return {
-        type: actions.LogOut,
+        type: actionTypes.LogOut,
     }
 };
+
 export const getUserInfoFailure = (error) => {
     return {
-        type: actions.GetUserInfoFailure,
+        type: actionTypes.GetUserInfoFailure,
         error: error
     }
 }
 
 export const loaded = () => {
     return {
-        type: actions.Loaded
+        type: actionTypes.Loaded
     }
 }
 export const loading = () => {
     return {
-        type: actions.Loading
+        type: actionTypes.Loading
     }
 }

@@ -1,6 +1,11 @@
 import * as actionTypes from "./actionTypes"
 
 export default function reducer(state, action) {
+    if(action.type === actionTypes.EmptyState){
+        return {
+            ...state
+        }
+    }
     if (action.type === actionTypes.LogIn) { 
         return {
             ...state,
@@ -41,7 +46,7 @@ export default function reducer(state, action) {
     else if (action.type === actionTypes.Loading) {
         return{
             ...state,
-            isLoading: typeof state.isLoading === 'undefined' ? 1 : state.isLoading + 1
+            isLoading: typeof state === 'undefined' || typeof state.isLoading === 'undefined' ? 1 : state.isLoading + 1
         }
     }
     else if(action.type === actionTypes.Loaded){

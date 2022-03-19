@@ -4,10 +4,9 @@ import './index.css';
 import App from './Elements/App';
 import reportWebVitals from './reportWebVitals';
 import store from "./store";
-import * as actions from './actionCreators';
 import { Provider } from 'react-redux'
 
-store.dispatch(actions.logInAction());
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

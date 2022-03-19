@@ -1,4 +1,3 @@
-import store from "../store";
 
 
 function CookieModalWindow() {

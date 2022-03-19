@@ -27,8 +27,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("[action]")]
         public async Task<ActionResult<string>> RefreshAsync()
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == HttpContext.Request.Cookies["RefreshToken"]);
-            if (user != null && user.RefreshTokenExpiryTime > DateTime.UtcNow)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshTokenExpiryTime > DateTime.UtcNow && u.RefreshToken == HttpContext.Request.Cookies["RefreshToken"]);
+            if (user != null)
             {
                 var response = JwtHelper.GenerateAndRegisterTokensResponse(user);
                 user.RefreshToken = response.RefreshToken;
