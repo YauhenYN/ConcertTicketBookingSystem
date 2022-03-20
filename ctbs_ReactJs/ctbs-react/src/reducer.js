@@ -32,6 +32,20 @@ export default function reducer(state, action) {
             error: ''
         }
     }
+    else if(action.type === actionTypes.ConfirmCookies){
+        return {
+            ...state,
+            user: {
+                userId: state.user.userId,
+                isAdmin: state.user.isAdmin,
+                birthDate: state.user.birthDate,
+                promoCodeId: state.user.promoCodeId,
+                name: state.user.name,
+                email: state.user.email,
+                cookieConfirmationFlag: true
+            },
+        }
+    }
     else if(action.type === actionTypes.GetUserInfoFailure){
         return {
             ...state,

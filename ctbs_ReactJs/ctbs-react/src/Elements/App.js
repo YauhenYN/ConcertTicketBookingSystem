@@ -5,6 +5,7 @@ import store from "../store";
 import * as actionCreators from "../actionCreators";
 import React, { useEffect, } from 'react';
 import { connect } from "react-redux";
+import Loading from './Loading';
 
 store.dispatch(actionCreators.EmptyState());
 
@@ -14,7 +15,7 @@ function App({ props, logIn }) {
   }, [logIn]);
   return (
     props.isLoading !== 0 ? (
-      <p>LOADING</p>
+      <Loading/>
     ) : (<><Header />
       <div id="bodyElement">
         <div id="inBody">

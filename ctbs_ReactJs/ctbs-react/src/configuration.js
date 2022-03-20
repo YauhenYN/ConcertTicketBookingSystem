@@ -12,3 +12,4 @@ export const cookies = new Cookies();
 export const apiLink = "https://localhost:44345";
 export const refreshAddition = "/Authentication/Refresh";
 export const userInfoAddition = "/Personalization/UserInfo";
+export const cookieConfirmationAddition = "/Personalization/ConfirmCookies";

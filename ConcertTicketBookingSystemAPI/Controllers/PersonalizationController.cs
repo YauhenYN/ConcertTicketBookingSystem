@@ -95,13 +95,14 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> ConfirmCookiesAsync(ActivatePromocodeDto dto)
+        public async Task<ActionResult> ConfirmCookiesAsync()
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
             if (user.CookieConfirmationFlag == true) return Conflict();
             else
             {
                 user.CookieConfirmationFlag = true;
+                await _context.SaveChangesAsync();
                 return NoContent();
             }
         }

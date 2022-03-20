@@ -11,11 +11,11 @@ export const RefreshCodeThunkAction = () => {
         return axios.post(conf.apiLink + conf.refreshAddition, {}, {
             withCredentials: true
         }).then((result) => {
-                accessToken = result.data;
-                setTimeout(() => {
-                    dispatch(RefreshCodeThunkAction());
-                }, new Date(jwt(result.data).exp));
-            });
+            accessToken = result.data;
+            setTimeout(() => {
+                dispatch(RefreshCodeThunkAction());
+            }, new Date(jwt(result.data).exp));
+        });
     }
 };
 export const GetUserInfoThunkAction = () => {
@@ -68,6 +68,24 @@ export const logInThunkAction = () => {
         };
     }
 };
+
+export const confirmCookiesThunkAction = () => {
+    return async function confirmCookiesThunck(dispatch) {
+        try {
+            await axios.post(conf.apiLink + conf.cookieConfirmationAddition, {}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            dispatch({
+                type: actionTypes.ConfirmCookies
+            })
+        }
+        catch {
+
+        }
+    }
+}
 
 export const logOutAction = () => {
     conf.cookies.remove('RefreshToken');

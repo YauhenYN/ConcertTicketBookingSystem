@@ -10,7 +10,9 @@ function Header() {
             <img id="header_image" className="header_element" src="icon.png" alt="icon" />
             <SearchForm />
             {!store.getState().isLoggedIn && <div id = "login_form">
-                <input id="login_button" className="header_element" type="button" onClick={openCloseForm} value="Войти" />
+                <div id = "login_button" className="header_element">
+                    <p className="">Войти</p>
+                </div>
                 <OAuthPopUp />
             </div>}
             {store.getState().isLoggedIn && <>
@@ -19,9 +21,4 @@ function Header() {
         </div>
     );
 }
-function openCloseForm() {
-    let display = document.getElementById("login_popup").style.display;
-    if (display === "none" || display === "") document.getElementById("login_popup").style.display = "flex";
-    else document.getElementById("login_popup").style.display = "none";
-};
 export default Header;

@@ -1,4 +1,5 @@
-
+import store from "../store";
+import * as actionCreators from "../actionCreators";
 
 function CookieModalWindow() {
     return (<div className="modal">
@@ -11,7 +12,7 @@ function CookieModalWindow() {
 }
 
 function cookieButtonOnClick(){
-    document.getElementById("cookieButton").style.display = "flex";
+    store.dispatch(actionCreators.confirmCookiesThunkAction());
 }
 
 export default CookieModalWindow;
