@@ -1,6 +1,6 @@
 import OAuthPopUp from "./OAuthPopUp";
 import SearchForm from "./SearchForm";
-import store from "../store";
+import store from "../../store";
 import UserNamePanel from "./UserNamePanel";
 
 
@@ -11,7 +11,7 @@ function Header() {
             <SearchForm />
             {!store.getState().isLoggedIn && <div id = "login_form">
                 <div id = "login_button" className="header_element">
-                    <p className="">Войти</p>
+                    <p>Войти</p>
                 </div>
                 <OAuthPopUp />
             </div>}

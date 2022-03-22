@@ -1,4 +1,4 @@
-import * as conf from "../configuration";
+import * as conf from "../../configuration";
 
 function OAuthPopUp() {
     return (

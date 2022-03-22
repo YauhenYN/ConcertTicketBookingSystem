@@ -39,5 +39,19 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             }
             else return Conflict();
         }
+        [HttpPost]
+        [Route("[action]")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<ActionResult> LogOutAsync()
+        {
+            var user = (await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name)));
+            user.RefreshToken = "";
+            await _context.SaveChangesAsync();
+            foreach (var cookie in HttpContext.Request.Cookies)
+            {
+                Response.Cookies.Delete(cookie.Key);
+            }
+            return Ok();
+        }
     }
 }

@@ -1,0 +1,15 @@
+.dateInput{
+    padding: 0.5em 1em;
+    margin: 0.5em;
+    border-style: solid;
+    border-color: #92392f;
+    border-width: medium;
+    outline: none;
+}
+.dateInput:focus{
+    border-color: #d5a460;
+
+}
+.dateInput:valid{
+    border-color: darkolivegreen;
+}

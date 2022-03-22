@@ -1,5 +1,5 @@
-import store from "../store";
-import * as actionCreators from "../actionCreators";
+import store from "../../store";
+import * as actionCreators from "../../actionCreators";
 
 function UserNamePanel() {
     return (
@@ -9,10 +9,13 @@ function UserNamePanel() {
                     <p id="userNameText" className="header_text">{store.getState().user.name}</p>
                 </div>
                 <div id="userPopup">
-                    <div className="popup_button" value="" >
+                    <div className="popup_button" >
                         <p className="header_text">Персонализ.</p>
                     </div>
-                    <div className="popup_button" onClick={logOut} value="Выйти">
+                    <div className="popup_button">
+                        <p className="header_text">Поиск</p>
+                    </div>
+                    <div className="popup_button" onClick={logOut}>
                         <p className="header_text">Выйти</p>
                     </div>
                 </div>

@@ -70,7 +70,7 @@ export const logInThunkAction = () => {
 };
 
 export const confirmCookiesThunkAction = () => {
-    return async function confirmCookiesThunck(dispatch) {
+    return async function confirmCookiesThunk(dispatch) {
         try {
             await axios.post(conf.apiLink + conf.cookieConfirmationAddition, {}, {
                 headers: {
@@ -88,10 +88,18 @@ export const confirmCookiesThunkAction = () => {
 }
 
 export const logOutAction = () => {
-    conf.cookies.remove('RefreshToken');
-    window.location.reload(false);
-    return {
-        type: actionTypes.LogOut,
+    return async function LogOutThunk(dispatch) {
+        await axios.post(conf.apiLink + conf.removeCookiesAddition, {}, {
+            withCredentials: true,
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }).then(() => {
+            window.location.reload(false);
+            dispatch({
+                type: actionTypes.LogOut,
+            })
+        });
     }
 };
 
@@ -110,5 +118,28 @@ export const loaded = () => {
 export const loading = () => {
     return {
         type: actionTypes.Loading
+    }
+}
+export const UpdateBirthDateThunkAction = (birthYear) => {
+    return async function updateBirthDateThunk(dispatch) {
+        try {
+            await axios.post(conf.apiLink + conf.updateBirthDateAddition, { birthYear: birthYear}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            dispatch({
+                type: actionTypes.UpdateBirthDate
+            })
+        }
+        catch {
+            window.location.reload(false);
+        }
+    }
+} 
+export const CancelUpdateBirthDateAction = () => {
+    document.querySelector("body").style.overflow = "auto";
+    return {
+        type: actionTypes.UpdateBirthDate
     }
 }

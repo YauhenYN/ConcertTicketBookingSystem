@@ -69,4 +69,10 @@ export default function reducer(state, action) {
             isLoading: state.isLoading - 1
         }
     }
+    else if(action.type === actionTypes.UpdateBirthDate){
+        return{
+            ...state,
+            birthDateModalDisabled: true
+        }
+    }
 };

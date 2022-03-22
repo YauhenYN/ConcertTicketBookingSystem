@@ -1,0 +1,47 @@
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.Modal {
+    background-color: #fefefe;
+    padding: 1em;
+    border: 1px solid #888;
+    min-width: 20em;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 1em;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+#cookieButton {
+    margin-left: 1em;
+}
+.modalWindowText{
+    text-align: center;
+}
+.row-center{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.row-stretch{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.modalWindowText{
+    margin-left: 0.5em;
+    font-family: cursive;
+}

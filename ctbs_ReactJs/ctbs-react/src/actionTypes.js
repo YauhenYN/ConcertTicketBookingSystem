@@ -7,3 +7,4 @@ export const Loading = "loading";
 export const Loaded = "loaded";
 export const GetUserInfoFailure = "userinfofailure";
 export const ConfirmCookies = "confirmcookies";
+export const UpdateBirthDate = "birthDate";

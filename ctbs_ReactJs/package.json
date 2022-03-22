@@ -3,6 +3,7 @@
     "jwt-decode": "^3.1.2",
     "openssl": "^2.0.0",
     "react-redux": "^7.2.6",
+    "react-router-dom": "^6.2.2",
     "redux": "4.0",
     "redux-thunk": "^2.4.1",
     "source-map-resolve": "^0.6.0",
