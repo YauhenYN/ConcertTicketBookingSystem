@@ -131,9 +131,10 @@ export const UpdateBirthDateThunkAction = (birthYear) => {
             dispatch({
                 type: actionTypes.UpdateBirthDate
             })
+            document.querySelector("body").style.overflow = "auto";
         }
         catch {
-            window.location.reload(false);
+            
         }
     }
 } 

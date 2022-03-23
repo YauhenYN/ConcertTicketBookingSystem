@@ -43,7 +43,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var request = HttpContext.Request;
             if (code == null) return BadRequest();
             string codeVerifier = HttpContext.Session.GetString("codeVerifier");
-            HttpContext.Session.Remove("codeVerifier");
             var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code, codeVerifier);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
             string microsoftId = credentials.id;

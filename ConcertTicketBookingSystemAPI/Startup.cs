@@ -94,13 +94,12 @@ namespace ConcertTicketBookingSystemAPI
             {
                 app.UseHsts();
             }
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseCookiePolicy(new CookiePolicyOptions()
             {
-                MinimumSameSitePolicy = SameSiteMode.Strict,
                 Secure = CookieSecurePolicy.Always
             });
-            app.UseSession();
             app.UseRouting();
             app.UseCors(options =>
             {

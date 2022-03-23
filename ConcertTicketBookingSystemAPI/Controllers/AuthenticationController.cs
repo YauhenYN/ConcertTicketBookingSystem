@@ -47,10 +47,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var user = (await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name)));
             user.RefreshToken = "";
             await _context.SaveChangesAsync();
-            foreach (var cookie in HttpContext.Request.Cookies)
-            {
-                Response.Cookies.Delete(cookie.Key);
-            }
+            Response.Cookies.Delete("RefreshToken");
             return Ok();
         }
     }

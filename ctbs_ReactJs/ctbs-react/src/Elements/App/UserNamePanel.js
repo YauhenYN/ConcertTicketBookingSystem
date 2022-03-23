@@ -1,5 +1,6 @@
 import store from "../../store";
 import * as actionCreators from "../../actionCreators";
+import { Link } from 'react-router-dom';
 
 function UserNamePanel() {
     return (
@@ -9,14 +10,16 @@ function UserNamePanel() {
                     <p id="userNameText" className="header_text">{store.getState().user.name}</p>
                 </div>
                 <div id="userPopup">
-                    <div className="popup_button" >
-                        <p className="header_text">Персонализ.</p>
-                    </div>
+                    <Link to="/personalization">
+                        <div className="popup_button" >
+                            Персонализ.
+                        </div>
+                    </Link>
                     <div className="popup_button">
-                        <p className="header_text">Поиск</p>
+                        Поиск
                     </div>
                     <div className="popup_button" onClick={logOut}>
-                        <p className="header_text">Выйти</p>
+                        Выйти
                     </div>
                 </div>
             </div>)

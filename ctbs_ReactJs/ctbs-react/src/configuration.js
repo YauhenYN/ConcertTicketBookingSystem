@@ -13,5 +13,5 @@ export const apiLink = "https://localhost:44345";
 export const refreshAddition = "/Authentication/Refresh";
 export const userInfoAddition = "/Personalization/UserInfo";
 export const cookieConfirmationAddition = "/Personalization/ConfirmCookies";
-export const updateBirthDateAddition = "/Personalization/UpdateName";
+export const updateBirthDateAddition = "/Personalization/UpdateBirthYear";
 export const removeCookiesAddition = "/Authentication/LogOut";

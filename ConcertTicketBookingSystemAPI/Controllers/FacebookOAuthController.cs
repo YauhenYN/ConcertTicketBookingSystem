@@ -44,8 +44,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("Code")]
         public async Task<ActionResult<TokensResponse>> CodeAsync(string code, string state)
         {
-            if (code == null || state == null && HttpContext.Session.GetString("codeVerifier") == state) return BadRequest();
-            HttpContext.Session.Remove("codeVerifier");
+            if (code == null || state == null || HttpContext.Session.GetString("codeVerifier") != state) return BadRequest();
             var tokenResult = await _oAuthService.ExchangeCodeOnTokenAsync(code);
             var credentials = await _oAuthService.GetUserCredentialsAsync(tokenResult.AccessToken);
             string userFacebookId = credentials.id;

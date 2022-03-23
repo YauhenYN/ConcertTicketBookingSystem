@@ -8,7 +8,7 @@ function CookieModalWindow() {
     return (
         <div className="modal">
             <div id="cookiesModal" className="Modal">
-                <strong>Если вы согласны с использованием нами Cookies, нажмите кнопку</strong>
+                <strong className="modalWindowText">Если вы согласны с использованием нами Cookies, нажмите кнопку</strong>
                 <Button text="Согласен" onClick={cookieButtonOnClick} />
             </div>
         </div>

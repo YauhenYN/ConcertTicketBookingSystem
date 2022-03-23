@@ -14,7 +14,8 @@ namespace ConcertTicketBookingSystemAPI.Helpers
             context.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions()
             {
                 Expires = response.RefreshExpirationTime,
-                HttpOnly = true
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict
             });
         }
     }
