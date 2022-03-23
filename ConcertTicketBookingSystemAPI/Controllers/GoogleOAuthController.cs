@@ -64,6 +64,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var response = JwtHelper.GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiryTime = response.RefreshExpirationTime;
+            await _context.AddActionAsync(user.UserId, "Logged In with Google");
             await _context.SaveChangesAsync();
             HttpContext.AppendTokens(response);
             return RedirectPermanent(_googleSection["redirectUrl"]);

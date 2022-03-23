@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using ConcertTicketBookingSystemAPI.CustomServices.EmailSending;
 using ConcertTicketBookingSystemAPI.CustomServices.PayPal;
 using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
+using ConcertTicketBookingSystemAPI.Helpers;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -170,6 +171,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 await _context.PartyConcerts.AddAsync((Models.PartyConcert)concert);
             }
             await _context.SaveChangesAsync();
+            await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Added Concert with id = " + concert.ConcertId + " and type = " + dto.ConcertType);
+            await _context.SaveChangesAsync();
             return CreatedAtAction("GetConcertAsync", new { concertId = concert.ConcertId });
         }
         [HttpPost]
@@ -181,6 +184,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (concert != null && concert.IsActiveFlag == false)
             {
                 concert.IsActiveFlag = true;
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Activated concert with id = " + concert.ConcertId);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
@@ -195,6 +199,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (concert != null && concert.IsActiveFlag == true)
             {
                 concert.IsActiveFlag = false;
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Deactivated concert with id = " + concert.ConcertId);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

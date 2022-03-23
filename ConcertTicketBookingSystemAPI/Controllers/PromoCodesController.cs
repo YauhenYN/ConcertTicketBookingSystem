@@ -8,6 +8,7 @@ using ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using ConcertTicketBookingSystemAPI.Helpers;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -32,6 +33,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             {
                 var promoCode = dto.ToPromoCode();
                 await _context.PromoCodes.AddAsync(promoCode);
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Added PromoCode");
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetManyPromoCodesAsync", new GetManyPromoCodesDto() { IsActiveFlag = dto.IsActiveFlag, Count = 1, ById = promoCode.PromoCodeId });
             }
@@ -59,6 +61,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (ticket != null && ticket.IsActiveFlag == false)
             {
                 ticket.IsActiveFlag = true;
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Activated PromoCode = " + promoCodeId);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
@@ -74,6 +77,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (ticket != null && ticket.IsActiveFlag == true)
             {
                 ticket.IsActiveFlag = false;
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Deactivated PromoCode = " + promoCodeId);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

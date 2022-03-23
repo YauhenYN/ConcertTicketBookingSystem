@@ -46,6 +46,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             var user = (await _context.Users.FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name)));
             user.RefreshToken = "";
+            await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Log out");
             await _context.SaveChangesAsync();
             Response.Cookies.Delete("RefreshToken");
             return Ok();

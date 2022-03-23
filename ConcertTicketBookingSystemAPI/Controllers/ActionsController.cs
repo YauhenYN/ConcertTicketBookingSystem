@@ -32,14 +32,5 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (actions.Count() > 0) return await actions.ToDtosAsync();
             else return NotFound();
         }
-        [HttpPost]
-        [Route("Add")]
-        public async Task<ActionResult> AddAsync(AddActionDto dto)
-        {
-            var action = dto.ToAction(Guid.Parse(HttpContext.User.Identity.Name));
-            _context.Actions.Add(action);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
     }
 }

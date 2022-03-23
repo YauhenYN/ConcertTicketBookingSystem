@@ -8,6 +8,7 @@ using ConcertTicketBookingSystemAPI.Dtos.TicketsDtos;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using ConcertTicketBookingSystemAPI.Helpers;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -61,6 +62,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (ticket != null && ticket.IsMarkedFlag == false)
             {
                 ticket.IsMarkedFlag = true;
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Marked Ticket = " + ticketId);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
@@ -75,6 +77,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (ticket != null && ticket.IsMarkedFlag == true)
             {
                 ticket.IsMarkedFlag = false;
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Unmarked Ticket = " + ticketId);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

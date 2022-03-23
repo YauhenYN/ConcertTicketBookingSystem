@@ -12,6 +12,7 @@ using ConcertTicketBookingSystemAPI.CustomServices;
 using Microsoft.Extensions.Configuration;
 using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
 using ConcertTicketBookingSystemAPI.CustomServices.EmailSending;
+using ConcertTicketBookingSystemAPI.Helpers;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -40,6 +41,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             var user = await CurrentUserAsync();
             user.BirthDate = dto.BirthYear;
+            await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Updated BirthYear");
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -50,6 +52,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             var user = await CurrentUserAsync();
             user.Name = dto.NewName;
+            await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Updated Name");
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -63,6 +66,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _confirmationService.Add(secretGuid, async () =>
             {
                 user.Email = dto.NewEmail;
+                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Updated Email");
                 await _context.SaveChangesAsync();
             });
             return NoContent();

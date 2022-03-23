@@ -57,6 +57,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             var response = JwtHelper.GenerateAndRegisterTokensResponse(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiryTime = response.RefreshExpirationTime;
+            await _context.AddActionAsync(user.UserId, "Logged In with Facebook");
             await _context.SaveChangesAsync();
             HttpContext.AppendTokens(response);
             return RedirectPermanent(_facebookSection["redirectUrl"]);
