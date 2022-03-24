@@ -57,18 +57,6 @@ export default function reducer(state, action) {
             ...state,
         }
     }
-    else if (action.type === actionTypes.Loading) {
-        return{
-            ...state,
-            isLoading: typeof state === 'undefined' || typeof state.isLoading === 'undefined' ? 1 : state.isLoading + 1
-        }
-    }
-    else if(action.type === actionTypes.Loaded){
-        return{
-            ...state,
-            isLoading: state.isLoading - 1
-        }
-    }
     else if(action.type === actionTypes.UpdateBirthDate){
         return{
             ...state,

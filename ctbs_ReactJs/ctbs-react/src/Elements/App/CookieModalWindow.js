@@ -16,7 +16,7 @@ function CookieModalWindow() {
 }
 
 function cookieButtonOnClick() {
-    store.dispatch(actionCreators.confirmCookiesThunkAction());
+    store.dispatch(actionCreators.confirmCookiesThunkActionCreator());
 }
 
 export default CookieModalWindow;

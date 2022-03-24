@@ -36,8 +36,11 @@ body {
 #header_image {
     -webkit-user-drag: none;
     user-select: none;
+    cursor: pointer;
 }
-
+.href{
+    color: #083259;
+}
 .header_button {
     padding: 0% 2em;
     align-items: center;

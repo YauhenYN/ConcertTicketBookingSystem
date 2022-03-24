@@ -1,7 +1,6 @@
 import Footer from './Footer';
 import Header from './Header';
 import CookieModalWindow from './CookieModalWindow';
-import store from "../../store";
 import * as actionCreators from "../../actionCreators";
 import React, { useEffect, } from 'react';
 import { connect } from "react-redux";
@@ -12,29 +11,31 @@ import Main from './Main/Main';
 import Personalization from './Personalization/Personalization';
 import MainAuthorized from './Main/MainAuthorized';
 import BirthYearModalWindow from './BirthYearModalWindow';
-
-store.dispatch(actionCreators.EmptyState());
+import { useState } from 'react';
 
 function App({ props, logIn }) {
+  const [isLoading, setisLoading] = useState(true);
   useEffect(() => {
-    logIn();
+    logIn().then(() =>{
+      setisLoading(false);
+    });
   }, [logIn]);
    return (
-    props.isLoading !== 0 ? (
-      <Loading />
-    ) : (<><div id='invisibleTop'/>
+    isLoading === true ? (<Loading />) : (<>
+    <div id='invisibleTop'/>
     <Header />
       <div id="bodyElement">
         <div id="inBody">
           <Routes>
-            {store.getState().isLoggedIn ? <Route path="/" element={<MainAuthorized/>}/> : <Route path="/" element={<Main/>}/>}
-            {store.getState().isLoggedIn && <Route path="/personalization" element={<Personalization/>}></Route>}
+            {props.isLoggedIn ? <Route path="/" element={<MainAuthorized/>}/> : <Route path="/" element={<Main/>}/>}
+            {props.isLoggedIn && <Route path="/personalization" element={<Personalization/>}></Route>}
           </Routes>
         </div>
         <Footer />
       </div>
-      {store.getState().isLoggedIn && !store.getState().user.cookieConfirmationFlag && <CookieModalWindow />}
-      {store.getState().isLoggedIn && store.getState().user.cookieConfirmationFlag && store.getState().user.birthDate === null && store.getState().birthDateModalDisabled !== true && <BirthYearModalWindow />}
+      {props.isLoggedIn && !props.user.cookieConfirmationFlag && <CookieModalWindow />}
+      {props.isLoggedIn && props.user.cookieConfirmationFlag && props.user.birthDate === null && props.birthDateModalDisabled !== true 
+      && <BirthYearModalWindow />}
       </>)
   );
 }
@@ -42,14 +43,16 @@ function App({ props, logIn }) {
 const mapStateToProps = state => {
   return {
     props: {
-      isLoading: state.isLoading
+      isLoggedIn: state.isLoggedIn,
+      user: state.user,
+      birthDateModalDisabled: state.birthDateModalDisabled
     }
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    logIn: () => dispatch(actionCreators.logInThunkAction())
+    logIn: () => dispatch(actionCreators.logInThunkActionCreator())
   }
 }
 

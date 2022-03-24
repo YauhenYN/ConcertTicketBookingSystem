@@ -27,11 +27,11 @@ function BirthYearModalWindow() {
 
 function birthYearButtonOnClickFunc(birthDate) {
     return function birthYearButtonOnClick() {
-        store.dispatch(actionCreators.UpdateBirthDateThunkAction(birthDate));
+        store.dispatch(actionCreators.UpdateBirthDateThunkActionCreator(birthDate));
     }
 }
 function cancelButtonOnClick() {
-    store.dispatch(actionCreators.CancelUpdateBirthDateAction());
+    store.dispatch(actionCreators.CancelUpdateBirthDateActionCreator());
 }
 
 export default BirthYearModalWindow;

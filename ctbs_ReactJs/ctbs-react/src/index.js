@@ -8,7 +8,10 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import Privacy from './Elements/Privacy/Privacy';
+import * as actionCreators from "./actionCreators";
 
+
+store.dispatch(actionCreators.EmptyStateActionCreator());
 
 ReactDOM.render(
   <React.StrictMode>

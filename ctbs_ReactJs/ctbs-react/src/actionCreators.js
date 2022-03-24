@@ -3,25 +3,23 @@ import * as conf from './configuration';
 import axios from 'axios';
 import jwt from 'jwt-decode'
 
-
 let accessToken;
 
-export const RefreshCodeThunkAction = () => {
+export const RefreshCodeThunkActionСreator = () => {
     return async function fetchTokenThunk(dispatch) {
         return axios.post(conf.apiLink + conf.refreshAddition, {}, {
             withCredentials: true
         }).then((result) => {
             accessToken = result.data;
             setTimeout(() => {
-                dispatch(RefreshCodeThunkAction());
+                dispatch(RefreshCodeThunkActionСreator());
             }, new Date(jwt(result.data).exp));
         });
     }
 };
-export const GetUserInfoThunkAction = () => {
+export const GetUserInfoThunkActionCreator = () => {
     return async function fetchTokenThunk(dispatch) {
-        dispatch(loading());
-        axios.get(conf.apiLink + conf.userInfoAddition, {
+        return axios.get(conf.apiLink + conf.userInfoAddition, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             }
@@ -36,32 +34,28 @@ export const GetUserInfoThunkAction = () => {
                 email: result.data.email,
                 cookieConfirmationFlag: result.data.cookieConfirmationFlag
             });
-            dispatch(loaded());
         }).catch(error => {
-            dispatch(getUserInfoFailure(error.message));
+            dispatch(getUserInfoFailureActionCreator(error.message));
         });
     }
 };
 
-export const EmptyState = () => {
+export const EmptyStateActionCreator = () => {
     return { type: actionTypes.EmptyState }
 }
 
-export const logInThunkAction = () => {
+export const logInThunkActionCreator = () => {
     return async function checkLogInThunk(dispatch) {
-        dispatch(loading());
         try {
-            await dispatch(RefreshCodeThunkAction())
-            dispatch(loaded());
-            dispatch(GetUserInfoThunkAction());
-            dispatch({
+            await dispatch(RefreshCodeThunkActionСreator());
+            await dispatch(GetUserInfoThunkActionCreator());
+            await dispatch({
                 type: actionTypes.LogIn,
                 isLoggedIn: true
-            })
+            });
         }
         catch (error) {
-            dispatch(loaded());
-            dispatch({
+            await dispatch({
                 type: actionTypes.LogIn,
                 isLoggedIn: false
             });
@@ -69,7 +63,7 @@ export const logInThunkAction = () => {
     }
 };
 
-export const confirmCookiesThunkAction = () => {
+export const confirmCookiesThunkActionCreator = () => {
     return async function confirmCookiesThunk(dispatch) {
         try {
             await axios.post(conf.apiLink + conf.cookieConfirmationAddition, {}, {
@@ -87,7 +81,7 @@ export const confirmCookiesThunkAction = () => {
     }
 }
 
-export const logOutAction = () => {
+export const logOutThunkActionCreator = () => {
     return async function LogOutThunk(dispatch) {
         await axios.post(conf.apiLink + conf.removeCookiesAddition, {}, {
             withCredentials: true,
@@ -103,27 +97,17 @@ export const logOutAction = () => {
     }
 };
 
-export const getUserInfoFailure = (error) => {
+export const getUserInfoFailureActionCreator = (error) => {
     return {
         type: actionTypes.GetUserInfoFailure,
         error: error
     }
 }
 
-export const loaded = () => {
-    return {
-        type: actionTypes.Loaded
-    }
-}
-export const loading = () => {
-    return {
-        type: actionTypes.Loading
-    }
-}
-export const UpdateBirthDateThunkAction = (birthYear) => {
+export const UpdateBirthDateThunkActionCreator = (birthYear) => {
     return async function updateBirthDateThunk(dispatch) {
         try {
-            await axios.post(conf.apiLink + conf.updateBirthDateAddition, { birthYear: birthYear}, {
+            await axios.post(conf.apiLink + conf.updateBirthDateAddition, { birthYear: birthYear }, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken
                 }
@@ -134,13 +118,23 @@ export const UpdateBirthDateThunkAction = (birthYear) => {
             document.querySelector("body").style.overflow = "auto";
         }
         catch {
-            
+
         }
     }
-} 
-export const CancelUpdateBirthDateAction = () => {
+}
+export const CancelUpdateBirthDateActionCreator = () => {
     document.querySelector("body").style.overflow = "auto";
     return {
         type: actionTypes.UpdateBirthDate
+    }
+}
+export const GetActionsActionCreator = () => {
+    return async function GetActionsThunk() {
+        const get = await axios.get(conf.apiLink + conf.actionsManyAddition, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+        return get;
     }
 }

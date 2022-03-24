@@ -15,3 +15,5 @@ export const userInfoAddition = "/Personalization/UserInfo";
 export const cookieConfirmationAddition = "/Personalization/ConfirmCookies";
 export const updateBirthDateAddition = "/Personalization/UpdateBirthYear";
 export const removeCookiesAddition = "/Authentication/LogOut";
+
+export const actionsManyAddition = "/Actions/many";
