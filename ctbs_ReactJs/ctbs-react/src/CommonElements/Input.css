@@ -1,4 +1,4 @@
-.dateInput{
+.Input{
     padding: 0.5em 1em;
     margin: 0.5em;
     border-style: solid;
@@ -6,10 +6,10 @@
     border-width: medium;
     outline: none;
 }
-.dateInput:focus{
+.Input:focus{
     border-color: #d5a460;
 
 }
-.dateInput:valid{
+.Input:valid{
     border-color: darkolivegreen;
 }

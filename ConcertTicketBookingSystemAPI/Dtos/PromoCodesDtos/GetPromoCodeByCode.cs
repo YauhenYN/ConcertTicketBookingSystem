@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.Dtos.PromoCodesDtos
 {
-    public record GetManyPromoCodesDto
+    public class GetPromoCodeByCode
     {
         [Required]
-        public bool IsActiveFlag { get; init; }
-        [Required]
-        public int Count { get; init; }
+        [StringLength(20, MinimumLength = 5)]
+        public string Code { get; init; }
     }
 }

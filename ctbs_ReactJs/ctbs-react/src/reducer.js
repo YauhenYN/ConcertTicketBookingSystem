@@ -36,12 +36,7 @@ export default function reducer(state, action) {
         return {
             ...state,
             user: {
-                userId: state.user.userId,
-                isAdmin: state.user.isAdmin,
-                birthDate: state.user.birthDate,
-                promoCodeId: state.user.promoCodeId,
-                name: state.user.name,
-                email: state.user.email,
+                ...state.user,
                 cookieConfirmationFlag: true
             },
         }
@@ -60,7 +55,20 @@ export default function reducer(state, action) {
     else if(action.type === actionTypes.UpdateBirthDate){
         return{
             ...state,
-            birthDateModalDisabled: true
+            birthDateModalDisabled: true,
+            user: {
+                ...state.user,
+                birthDate: action.newBirthDate,
+            },
+        }
+    }
+    else if(action.type === actionTypes.UpdateName){
+        return{
+            ...state,
+            user: {
+                ...state.user,
+                name: action.name
+            },
         }
     }
 };

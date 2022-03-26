@@ -113,7 +113,8 @@ export const UpdateBirthDateThunkActionCreator = (birthYear) => {
                 }
             });
             dispatch({
-                type: actionTypes.UpdateBirthDate
+                type: actionTypes.UpdateBirthDate,
+                newBirthDate: birthYear
             })
             document.querySelector("body").style.overflow = "auto";
         }
@@ -136,5 +137,48 @@ export const GetActionsActionCreator = () => {
             }
         });
         return get;
+    }
+}
+export const UpdateNameActionCreator = (name) => {
+    return async function UpdateNameThunk(dispatch) {
+        try {
+            await axios.post(conf.apiLink + conf.updateNameAddition, { newName: name }, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            dispatch({
+                type: actionTypes.UpdateName,
+                name: name
+            });
+        }
+        catch { }
+    }
+}
+export const ActivatePromoCodeActionCreator = (promoCode) => {
+    return async function ActivatePromoCodeThunk(dispatch) {
+        await axios.post(conf.apiLink + conf.activatePromoCodeAddition, { code: promoCode }, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+export const GetPromoCodeByIdThunkActionCreator = (promoCodeId) => {
+    return async function fetchTokenThunk(dispatch) {
+        return axios.get(conf.apiLink + conf.getOnePromoCodeByIdAddition, { promoCodeId: promoCodeId }, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+};
+export const UpdateEmailActionCreator = (email) => {
+    return async function UpdateEmailThunk() {
+        await axios.post(conf.apiLink + conf.updateEmailAddition, { newEmail: email }, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
     }
 }

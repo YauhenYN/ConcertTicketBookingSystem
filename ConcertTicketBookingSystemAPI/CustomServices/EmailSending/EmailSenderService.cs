@@ -11,6 +11,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
     {
         private readonly SmtpClient _client;
         private string _email;
+        private string _password;
         private string _name;
         private readonly string _host;
         private int _port;
@@ -24,12 +25,14 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
         public EmailSenderService ConnectAndAuthenticate(string email, string password)
         {
             _email = email;
+            _password = password;
             _client.Connect(_host, _port, true);
             _client.Authenticate(email, password);
             return this;
         }
         public async Task<string> SendHtmlAsync(string topic, string toEmail, string htmlMessage)
         {
+            if(!_client.IsConnected) ConnectAndAuthenticate(_email, _password);
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress(_name, _email));
             emailMessage.To.Add(new MailboxAddress("", toEmail));

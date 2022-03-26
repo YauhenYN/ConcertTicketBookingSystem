@@ -8,20 +8,23 @@ using System.Threading.Tasks;
 using ConcertTicketBookingSystemAPI.CustomServices;
 using Microsoft.AspNetCore.Authorization;
 using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
+using Microsoft.EntityFrameworkCore;
+using ConcertTicketBookingSystemAPI.Models;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("[controller]")]
     public class EmailConfirmationController : ControllerBase
     {
         private readonly ILogger<PersonalizationController> _logger;
         private readonly IConfiguration _configuration;
-        private readonly IConfirmationService<Guid> _confirmationService;
+        private readonly IConfirmationService<Guid, DbContext> _confirmationService;
+        private readonly ApplicationContext _context;
 
-        public EmailConfirmationController(ILogger<PersonalizationController> logger, IConfiguration configuration, IConfirmationService<Guid> confirmationService)
+        public EmailConfirmationController(ILogger<PersonalizationController> logger, ApplicationContext context, IConfiguration configuration, IConfirmationService<Guid, DbContext> confirmationService)
         {
+            _context = context;
             _logger = logger;
             _configuration = configuration;
             _confirmationService = confirmationService;
@@ -30,7 +33,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("[action]")]
         public RedirectResult Confirm(Guid confirmationCode)
         {
-            _confirmationService.Confirm(confirmationCode);
+            _confirmationService.Confirm(confirmationCode, _context);
             return RedirectPermanent(_configuration["RedirectUrl"]);
         }
     }

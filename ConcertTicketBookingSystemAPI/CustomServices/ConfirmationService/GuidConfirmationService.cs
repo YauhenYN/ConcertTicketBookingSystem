@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService
 {
-    public class GuidConfirmationService : IConfirmationService<Guid>, IDisposable
+    public class GuidConfirmationService<T> : IConfirmationService<Guid, T>, IDisposable
     {
         private class ExpirationElement
         {
             public DateTime CreationTime { get; }
             public Guid ConfirmationCode { get; }
-            public Action OnConfirmationAction { get; }
-            public ExpirationElement(Guid confirmationCode, Action onConfirmationAction)
+            public Action<T> OnConfirmationAction { get; }
+            public ExpirationElement(Guid confirmationCode, Action<T> onConfirmationAction)
             {
                 CreationTime = DateTime.Now;
                 ConfirmationCode = confirmationCode;
@@ -21,25 +21,26 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService
             }
         }
 
-        private readonly TimeSpan _expirationSpan;
+        private readonly int _expirationSpanMinutes;
         private readonly List<ExpirationElement> _expirationElements;
         private readonly Timer _timer;
-        public GuidConfirmationService(TimeSpan exprirationSpan, int timerPeriod)
+
+        public GuidConfirmationService(int expirationSpanMinutes, int timerPeriod)
         {
-            _expirationSpan = exprirationSpan;
+            _expirationSpanMinutes = expirationSpanMinutes;
             _expirationElements = new List<ExpirationElement>();
             _timer = new Timer(TimerInvoke, 0, 0, timerPeriod);
         }
-        public void Add(Guid confirmationCode, Action onConfirmationAction)
+        public void Add(Guid confirmationCode, Action<T> onConfirmationAction)
         {
             _expirationElements.Add(new ExpirationElement(confirmationCode, onConfirmationAction));
         }
-        public bool Confirm(Guid confirmationCode)
+        public bool Confirm(Guid confirmationCode, T into)
         {
-            var ex = _expirationElements.FindLast(e => e.ConfirmationCode == confirmationCode);
+            var ex = _expirationElements.FirstOrDefault(e => e.ConfirmationCode == confirmationCode);
             if(ex != null)
             {
-                ex.OnConfirmationAction();
+                ex.OnConfirmationAction(into);
                 _expirationElements.Remove(ex);
                 return true;
             }
@@ -50,7 +51,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService
         {
             while(0 < _expirationElements.Count)
             {
-                if (_expirationElements.First().CreationTime + _expirationSpan < DateTime.Now)
+                if (_expirationElements.First().CreationTime.AddMinutes(_expirationSpanMinutes) < DateTime.Now)
                 {
                     _expirationElements.RemoveAt(0);
                 }

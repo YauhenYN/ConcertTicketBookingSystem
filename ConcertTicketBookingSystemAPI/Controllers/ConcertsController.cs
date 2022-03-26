@@ -28,9 +28,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         private readonly EmailSenderService _senderService;
         private readonly PayPalPayment _payment;
         private readonly IConfiguration _configuration;
-        private readonly IConfirmationService<Guid> _confirmationService;
+        private readonly IConfirmationService<Guid, DbContext> _confirmationService;
 
-        public ConcertsController(ILogger<ConcertsController> logger, Models.ApplicationContext context, EmailSenderService senderService, IConfirmationService<Guid> confirmationService, PayPalPayment payment, IConfiguration configuration)
+        public ConcertsController(ILogger<ConcertsController> logger, Models.ApplicationContext context, EmailSenderService senderService, IConfirmationService<Guid, DbContext> confirmationService, PayPalPayment payment, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
@@ -77,7 +77,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 }
                 if (!string.IsNullOrEmpty(approveUrl))
                 {
-                    _confirmationService.Add(Guid.Parse(HttpContext.User.Identity.Name), async () =>
+                    _confirmationService.Add(Guid.Parse(HttpContext.User.Identity.Name), async (context) =>
                     {
                         if (user.PromoCode != null)
                         {
@@ -113,7 +113,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             Order result = response.Result<Order>();
             if (result.Status.Trim().ToUpper() == "COMPLETED")
             {
-                _confirmationService.Confirm(Guid.Parse(HttpContext.User.Identity.Name));
+                _confirmationService.Confirm(Guid.Parse(HttpContext.User.Identity.Name), _context);
                 return Redirect(_configuration.GetSection("PayPal").GetValue<string>("successURL"));
             }
             else return Conflict();

@@ -8,3 +8,4 @@ export const Loaded = "loaded";
 export const GetUserInfoFailure = "userinfofailure";
 export const ConfirmCookies = "confirmcookies";
 export const UpdateBirthDate = "birthDate";
+export const UpdateName = "updatename";

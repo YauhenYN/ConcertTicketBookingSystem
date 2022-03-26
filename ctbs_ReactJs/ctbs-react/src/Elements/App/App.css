@@ -18,6 +18,8 @@ body {
     padding: 1em 1vw;
     margin: 1em 0%;
     min-width: 41em;
+    display: flex;
+    flex-direction: column;
 }
 
 #header_color {
@@ -190,4 +192,13 @@ body {
 
 .userPanel {
     border-color: darkgrey;
+}
+.textHeader{
+    margin: 1em 2em;
+    font-family: sans-serif;
+    font-size: large;
+}
+.simpleP{
+    font-family: sans-serif;
+    margin: 1em;
 }

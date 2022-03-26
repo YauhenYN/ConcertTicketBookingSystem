@@ -1,5 +1,6 @@
 ﻿using ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService;
 using ConcertTicketBookingSystemAPI.CustomServices.EmailSending;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
 {
     public static class ExtensionMethods
     {
-        public static void AddGuidConfirmationService(this IServiceCollection collection, TimeSpan expirationSpan, int timerPeriod)
+        public static void AddGuidConfirmationService(this IServiceCollection collection, int expirationSpan, int timerPeriod)
         {
-            collection.AddSingleton<IConfirmationService<Guid>, GuidConfirmationService>(provider => new GuidConfirmationService(expirationSpan, timerPeriod));
+            collection.AddSingleton<IConfirmationService<Guid, DbContext>, GuidConfirmationService<DbContext>>(provider => new GuidConfirmationService<DbContext>(expirationSpan, timerPeriod));
         }
         public static void AddEmailSenderService(this IServiceCollection collection, string host, int port, string name, string email, string password)
         {

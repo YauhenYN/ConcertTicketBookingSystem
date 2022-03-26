@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService
 {
-    public interface IConfirmationService<T>
+    public interface IConfirmationService<T, V>
     {
-        public void Add(T confirmationItem, Action onConfirmationAction);
-        public bool Confirm(T confirmationItem);
+        public void Add(T confirmationItem, Action<V> onConfirmationAction);
+        public bool Confirm(T confirmationItem, V into);
     }
 }

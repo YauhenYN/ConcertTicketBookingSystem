@@ -23,11 +23,11 @@ namespace ConcertTicketBookingSystemAPI.Controllers
     {
         private readonly ILogger<PersonalizationController> _logger;
         private readonly ApplicationContext _context;
-        private readonly IConfirmationService<Guid> _confirmationService;
+        private readonly IConfirmationService<Guid, DbContext> _confirmationService;
         private readonly EmailSenderService _emailSenderService;
         private readonly IConfiguration _configuration;
 
-        public PersonalizationController(ILogger<PersonalizationController> logger, ApplicationContext context, IConfirmationService<Guid> confirmationService, EmailSenderService emailSenderService, IConfiguration configuration)
+        public PersonalizationController(ILogger<PersonalizationController> logger, ApplicationContext context, IConfirmationService<Guid, DbContext> confirmationService, EmailSenderService emailSenderService, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
@@ -62,12 +62,13 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             var user = await CurrentUserAsync();
             var secretGuid = Guid.NewGuid();
-            await _emailSenderService.SendHtmlAsync("EmailConfirmation", dto.NewEmail, "<a href=\"" + _configuration["CurrentApiUrl"] + "\\EmailConfirmation\\Confirm" + secretGuid +"\">Подтвердить новый Email</a>");
-            _confirmationService.Add(secretGuid, async () =>
+            await _emailSenderService.SendHtmlAsync("EmailConfirmation", dto.NewEmail, "<a href=\"" + _configuration["CurrentApiUrl"] + "/EmailConfirmation/Confirm?confirmationCode=" + secretGuid +"\">Подтвердить новый Email</a>");
+            _confirmationService.Add(secretGuid, (context) =>
             {
+                user = ((ApplicationContext)context).Users.FirstOrDefault(u => u.UserId == user.UserId);
                 user.Email = dto.NewEmail;
-                await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Updated Email");
-                await _context.SaveChangesAsync();
+                ((ApplicationContext)context).AddAction(user.UserId, "Updated Email");
+                ((ApplicationContext)context).SaveChanges();
             });
             return NoContent();
         }

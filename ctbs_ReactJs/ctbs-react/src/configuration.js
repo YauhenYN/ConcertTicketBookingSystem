@@ -12,8 +12,18 @@ export const cookies = new Cookies();
 export const apiLink = "https://localhost:44345";
 export const refreshAddition = "/Authentication/Refresh";
 export const userInfoAddition = "/Personalization/UserInfo";
+
+
 export const cookieConfirmationAddition = "/Personalization/ConfirmCookies";
 export const updateBirthDateAddition = "/Personalization/UpdateBirthYear";
+export const updateNameAddition = "/Personalization/UpdateName";
+export const updateEmailAddition = "/Personalization/UpdateEmail";
+export const activatePromoCodeAddition = "/Personalization/ActivatePromocode";
+
 export const removeCookiesAddition = "/Authentication/LogOut";
 
 export const actionsManyAddition = "/Actions/many";
+
+
+export const getOnePromoCodeByIdAddition = "/PromoCodes/id";
+

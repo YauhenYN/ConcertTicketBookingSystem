@@ -1,0 +1,43 @@
+.boxRow{
+    display: flex;
+    flex-direction: row;
+    border-color: #083259;
+    border-width: initial;
+    border-style: ridge;
+    margin: 0.5em 0em;
+}
+.boxColumn{
+    display: flex;
+    flex-direction: column;
+    border-color: #083259;
+    border-width: initial;
+    border-style: ridge;
+    padding: 1em;
+}
+#personalizationBox{
+    width: 50%;
+    min-width: 35em;
+    align-self: center;
+}
+.boxRowIn{
+    display: flex;
+    flex-direction: row;
+    width: 300%;
+    margin: 1em;
+    align-items: center;
+    font-family: system-ui;
+}
+.boxRowIn input{
+    margin: 0em 1em;
+    width: 100%;
+}
+.boxRowRightText{
+    padding-left: 1em;
+}
+.boxRowLeftText{
+    padding-right: 1em;
+    font-weight: bold;
+    white-space: nowrap;
+    border-right-style:dashed;
+    color: #083259;
+}

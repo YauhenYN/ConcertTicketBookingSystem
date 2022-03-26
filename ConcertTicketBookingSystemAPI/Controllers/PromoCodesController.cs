@@ -35,18 +35,37 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 await _context.PromoCodes.AddAsync(promoCode);
                 await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Added PromoCode");
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetManyPromoCodesAsync", new GetManyPromoCodesDto() { IsActiveFlag = dto.IsActiveFlag, Count = 1, ById = promoCode.PromoCodeId });
+                return CreatedAtAction("GetPromoCodeByIdAsync", promoCode.PromoCodeId);
             }
             return Conflict();
         }
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Route("id")]
+        public async Task<ActionResult<PromoCodeDto>> GetPromoCodeByIdAsync(Guid promoCodeId)
+        {
+            var promoCode = await _context.PromoCodes.FirstOrDefaultAsync(p => promoCodeId == p.PromoCodeId);
+            if (promoCode != null) return promoCode.ToDto();
+            else return NotFound();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
+        [Route("code")]
+
+        public async Task<ActionResult<PromoCodeDto>> GetPromoCodeByCodeAsync(GetPromoCodeByCode dto)
+        {
+            var promoCode = await _context.PromoCodes.FirstOrDefaultAsync(p => dto.Code == p.Code);
+            if (promoCode != null) return promoCode.ToDto();
+            else return NotFound();
+        }
+
         [HttpGet]
         [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         [Route("many")]
         public async Task<ActionResult<PromoCodeDto[]>> GetManyPromoCodesAsync(GetManyPromoCodesDto dto)
         {
             IQueryable<PromoCode> promoCodes = _context.PromoCodes;
-            if (dto.ById != null) promoCodes = promoCodes.Where(p => dto.ById == p.PromoCodeId);
-            if (dto.ByCode != null) promoCodes = promoCodes.Where(p => dto.ByCode == p.Code);
             promoCodes = promoCodes.Where(p => dto.IsActiveFlag == p.IsActiveFlag).Take(dto.Count);
             if (promoCodes.Count() > 0) return await promoCodes.ToDtosAsync();
             else return NotFound();
@@ -54,7 +73,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("{promoCodeId}/Activate")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> ActivatePromoCodeAsync(Guid promoCodeId)
         {
             var ticket = await _context.PromoCodes.FirstOrDefaultAsync(p => p.PromoCodeId == promoCodeId);

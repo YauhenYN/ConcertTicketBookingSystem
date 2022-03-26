@@ -1,0 +1,51 @@
+#actionTable{
+    max-height: 30vh;
+    padding-bottom: 0.5em;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+#outOfActionTable{
+    position: relative;
+    border-color: #083259;
+    border-width: initial;
+    border-style: ridge;
+}
+#actionHeaderCreationTime{
+    margin-left: 0.9em;
+    font-weight: bold;
+}
+#actionHeaderDescription{
+    font-weight: bold;
+}
+#actionHeader{
+    display: flex;
+    flex-direction: row;
+    background-color:#083259;
+    padding: 0.5em 0em;
+    position: absolute;
+    width: 100%;
+    color: #d6a667;
+}
+.actionItem{
+    display: flex;
+    flex-direction: row;
+    margin: 0.3em 0em;
+    border-bottom-style: groove;
+    border-top-style: groove;
+    border-width: medium;
+    border-color: #d5a460;
+    padding: 0.3em;
+}
+.actionCreationTime{
+    width: 12em;
+    margin-left: 0.5em;
+    font-family: cursive;
+    font-size: small;
+    border-right-style: dashed;
+}
+.actionDescription{
+    margin-left: 1em;
+    margin-right: 0.5em;
+    font-family: cursive;
+    font-size: small;
+}

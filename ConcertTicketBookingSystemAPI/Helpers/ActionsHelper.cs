@@ -17,5 +17,14 @@ namespace ConcertTicketBookingSystemAPI.Helpers
                 Description = description
             });
         }
+        public static void AddAction(this ApplicationContext context, Guid userId, string description)
+        {
+            context.Actions.Add(new Models.Action()
+            {
+                Date = DateTime.Now,
+                UserId = userId,
+                Description = description
+            });
+        }
     }
 }
