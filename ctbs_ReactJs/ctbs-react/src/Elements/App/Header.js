@@ -9,7 +9,7 @@ function Header() {
     return (
         <div id="header_color">
             <Link to="/">
-                <img id="header_image" className="header_element" src="icon.png" alt="icon" />
+                <img id="header_image" className="header_element" src="/icon.png" alt="icon" />
             </Link>
             <SearchForm />
             {!store.getState().isLoggedIn && <div id="login_form">

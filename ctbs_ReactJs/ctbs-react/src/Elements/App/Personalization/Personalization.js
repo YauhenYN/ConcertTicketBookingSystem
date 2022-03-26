@@ -15,9 +15,11 @@ function Personalization() {
     const [actions, setActions] = useState();
     const [isLoading, setisLoading] = useState(true);
     const [isActiveEmailModalWindow, setisActiveEmailModalWindow] = useState(false);
+    const [isActiveGiveRightsModalWindow, setisActiveGiveRightsModalWindow] = useState(false);
     const [userName, setuserName] = useState(store.getState().user.name);
     const [userEmail, setuserEmail] = useState(store.getState().user.email);
     const [userPromoCode, setuserPromoCode] = useState();
+    const [giveRights, setgiveRights] = useState("Id");
     const [birthDate, setBirthDate] = useState(store.getState().user.birthDate !== null && typeof store.getState().user.birthDate !== 'undefined' ? store.getState().user.birthDate.split('T')[0] : "");
     useEffect(() => {
         async function dispatches() {
@@ -27,7 +29,7 @@ function Personalization() {
             if (store.getState().user.promoCodeId !== null) {
                 await store.dispatch(actionCreators.GetPromoCodeByIdThunkActionCreator(store.getState().user.promoCodeId))
                     .then((result) => {
-                        if(result.isActiveFlag) setuserPromoCode(result.data);
+                        if (result.isActiveFlag) setuserPromoCode(result.data);
                     });
             }
             else {
@@ -41,7 +43,7 @@ function Personalization() {
     return (<>
         {isLoading === true ? (<Loading />) : (<div className="element-common">
             <div className="textHeader">Персонализация</div>
-            <div id="personalizationBox" className="boxColumn">
+            <div className="centerBox boxColumn">
                 <div className="boxRow">
                     <div className="boxRowIn">
                         <div className="boxRowLeftText">Id</div>
@@ -75,21 +77,50 @@ function Personalization() {
                     <div className="boxRowIn">
                         <div className="boxRowLeftText">Промокод</div>
                         <TextInput value={userPromoCode.uniqueCode} onChange={event => setuserPromoCode(event.target.value)} minLength={5} maxLength={20} />
-                        {userPromoCode.discount && <div>Discount: {userPromoCode.discount}</div>}
+                        {userPromoCode.discount && <div className="personalizationText">Discount: {userPromoCode.discount}</div>}
                     </div>
                     <SubmitButton text="Активировать" />
-                    {isActiveEmailModalWindow && <SimpleModalWindow text="Письмо с подтверждением отправлено на ваш новый email" buttonText="Ok" onClick={closeEmailModalWindow(setisActiveEmailModalWindow)} />}
                 </form>
             </div>
+            {store.getState().user.isAdmin && <>
+                <div className="textHeader">Администрирование</div>
+                <div className="administrationBox boxColumn">
+                    <div className="boxRow">
+                        <div className="boxRowIn">
+                            <div className="boxRowLeftText">Выдать права администратора</div>
+                            <TextInput value={giveRights} onChange={event => setgiveRights(event.target.value)} />
+                        </div>
+                        <Button text="Подтвердить" onClick={giveAdminRights(giveRights, setisActiveGiveRightsModalWindow)} />
+                    </div>
+                    {isActiveGiveRightsModalWindow && <SimpleModalWindow text="Права администратора выданы успешно" buttonText="Ok" onClick={closeGiveRightsModalWindow(setisActiveGiveRightsModalWindow)} />}
+                </div>
+            </>}
             <div className="textHeader">Последние действия</div>
             <ActionList actionList={actions} />
         </div>)}</>
     );
 }
 
+function giveAdminRights(id, setisActiveGiveRightsModalWindow) {
+
+    return function action() {
+        if (id !== "Id") {
+            store.dispatch(actionCreators.GiveAdminRightsActionCreator(id)).then(() => {
+                setisActiveGiveRightsModalWindow(true);
+            });
+        }
+    }
+}
+
 function closeEmailModalWindow(setisActiveEmailModalWindow) {
     return function action() {
         setisActiveEmailModalWindow(false);
+        document.querySelector("body").style.overflow = "auto";
+    }
+}
+function closeGiveRightsModalWindow(setisActiveGiveRightsModalWindow) {
+    return function action() {
+        setisActiveGiveRightsModalWindow(false);
         document.querySelector("body").style.overflow = "auto";
     }
 }

@@ -20,6 +20,10 @@ export const updateNameAddition = "/Personalization/UpdateName";
 export const updateEmailAddition = "/Personalization/UpdateEmail";
 export const activatePromoCodeAddition = "/Personalization/ActivatePromocode";
 
+
+export const giveRightsAddition = "/Administration/AddAdmin";
+
+
 export const removeCookiesAddition = "/Authentication/LogOut";
 
 export const actionsManyAddition = "/Actions/many";

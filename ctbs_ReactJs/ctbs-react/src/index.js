@@ -19,7 +19,7 @@ ReactDOM.render(
       <BrowserRouter>
         <Routes>
           <Route path="*" element={<App />} />
-          <Route path="/privacy" element = {<Privacy />}></Route>
+          <Route path="/privacy" element = {<Privacy />}/>
         </Routes>
       </BrowserRouter>
     </Provider>

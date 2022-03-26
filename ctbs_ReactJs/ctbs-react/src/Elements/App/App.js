@@ -12,6 +12,7 @@ import Personalization from './Personalization/Personalization';
 import MainAuthorized from './Main/MainAuthorized';
 import BirthYearModalWindow from './BirthYearModalWindow';
 import { useState } from 'react';
+import NotFound from '../../NotFound';
 
 function App({ props, logIn }) {
   const [isLoading, setisLoading] = useState(true);
@@ -29,6 +30,7 @@ function App({ props, logIn }) {
           <Routes>
             {props.isLoggedIn ? <Route path="/" element={<MainAuthorized/>}/> : <Route path="/" element={<Main/>}/>}
             {props.isLoggedIn && <Route path="/personalization" element={<Personalization/>}></Route>}
+            <Route path = "*" element = {<NotFound/>}/>
           </Routes>
         </div>
         <Footer />

@@ -14,7 +14,12 @@
     border-style: ridge;
     padding: 1em;
 }
-#personalizationBox{
+.administrationBox{
+    width: 60%;
+    min-width: 40em;
+    align-self: center;
+}
+.centerBox{
     width: 50%;
     min-width: 35em;
     align-self: center;
@@ -39,5 +44,10 @@
     font-weight: bold;
     white-space: nowrap;
     border-right-style:dashed;
+    color: #083259;
+}
+.personalizationText{
+    padding: 1em 0em;
+    white-space: nowrap;
     color: #083259;
 }

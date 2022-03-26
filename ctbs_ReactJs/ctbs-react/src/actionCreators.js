@@ -11,9 +11,10 @@ export const RefreshCodeThunkActionСreator = () => {
             withCredentials: true
         }).then((result) => {
             accessToken = result.data;
+            console.log(new Date(jwt(result.data).exp * 1000) - new Date());
             setTimeout(() => {
                 dispatch(RefreshCodeThunkActionСreator());
-            }, new Date(jwt(result.data).exp));
+            }, new Date(jwt(result.data).exp * 1000) - new Date());
         });
     }
 };
@@ -176,6 +177,15 @@ export const GetPromoCodeByIdThunkActionCreator = (promoCodeId) => {
 export const UpdateEmailActionCreator = (email) => {
     return async function UpdateEmailThunk() {
         await axios.post(conf.apiLink + conf.updateEmailAddition, { newEmail: email }, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+export const GiveAdminRightsActionCreator = (id) => {
+    return async function ActivatePromoCodeThunk(dispatch) {
+        await axios.post(conf.apiLink + conf.giveRightsAddition, { id: id }, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             }

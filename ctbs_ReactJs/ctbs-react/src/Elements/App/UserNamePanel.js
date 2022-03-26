@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 function UserNamePanel() {
     return (
         <div id="userMenu" className="header_element">
-            <div id="userName" className={store.getState().isAdmin ? "adminPanel" : "userPanel"}>
+            <div id="userName" className={store.getState().user.isAdmin ? "adminPanel" : "userPanel"}>
                 <p id="userNameText" className="header_text">{store.getState().user.name}</p>
             </div>
             <div id="userPopup">

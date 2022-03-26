@@ -44,8 +44,8 @@ namespace ConcertTicketBookingSystemAPI.JwtAuth
           ISSUER,
           AUDIENCE,
           claims,
-          notBefore: DateTime.Now,
-          expires: DateTime.Now.Add(TimeSpan.FromMinutes(LIFETIME)),
+          notBefore: DateTime.Now.ToUniversalTime(),
+          expires: DateTime.Now.AddMinutes(LIFETIME).ToUniversalTime(),
           signingCredentials: new SigningCredentials(GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
         public static ClaimsIdentity GetIsAdminIdentity<T>(T id, bool isAdmin)
