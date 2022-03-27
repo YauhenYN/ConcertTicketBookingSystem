@@ -22,7 +22,7 @@ export const activatePromoCodeAddition = "/Personalization/ActivatePromocode";
 
 
 export const giveRightsAddition = "/Administration/AddAdmin";
-
+export const takeRightsAddition = "/Administration/RemoveAdmin";
 
 export const removeCookiesAddition = "/Authentication/LogOut";
 
@@ -30,4 +30,4 @@ export const actionsManyAddition = "/Actions/many";
 
 
 export const getOnePromoCodeByIdAddition = "/PromoCodes/id";
-
+export const addPromoCodeAddition = "/PromoCodes";

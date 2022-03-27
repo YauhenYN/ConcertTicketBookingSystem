@@ -4,23 +4,24 @@ import React, { useEffect, useState } from 'react';
 import Loading from "../Loading";
 import store from "../../../store";
 import './Personalization.css';
-import Button from '../../../CommonElements/Button';
 import TextInput from "../../../CommonElements/TextInput";
-import DateInput from "../../../CommonElements/DateInput";
-import EmailInput from "../../../CommonElements/EmailInput";
 import SimpleModalWindow from "../../../CommonElements/SimpleModalWindow";
 import SubmitButton from "../../../CommonElements/SubmitButton";
+import NumberInput from "../../../CommonElements/NumberInput";
+import PersonalizationPart from "./PersonalizationPart";
 
 function Personalization() {
     const [actions, setActions] = useState();
     const [isLoading, setisLoading] = useState(true);
-    const [isActiveEmailModalWindow, setisActiveEmailModalWindow] = useState(false);
     const [isActiveGiveRightsModalWindow, setisActiveGiveRightsModalWindow] = useState(false);
-    const [userName, setuserName] = useState(store.getState().user.name);
-    const [userEmail, setuserEmail] = useState(store.getState().user.email);
-    const [userPromoCode, setuserPromoCode] = useState();
+    const [isActiveTakeRightsModalWindow, setisActiveTakeRightsModalWindow] = useState(false);
+    const [addPromoCodeModalWindow, setAddPromoCodeModalWindow] = useState(false);
+    const [userPromoCode, setuserPromoCode] = useState({});
     const [giveRights, setgiveRights] = useState("Id");
-    const [birthDate, setBirthDate] = useState(store.getState().user.birthDate !== null && typeof store.getState().user.birthDate !== 'undefined' ? store.getState().user.birthDate.split('T')[0] : "");
+    const [takeRights, settakeRights] = useState("Id");
+    const [uniqueCode, setUniqueCode] = useState("");
+    const [discount, setDiscount] = useState(0);
+    const [onCount, setOnCount] = useState(0);
     useEffect(() => {
         async function dispatches() {
             await store.dispatch(actionCreators.GetActionsActionCreator()).then((result) => {
@@ -29,7 +30,7 @@ function Personalization() {
             if (store.getState().user.promoCodeId !== null) {
                 await store.dispatch(actionCreators.GetPromoCodeByIdThunkActionCreator(store.getState().user.promoCodeId))
                     .then((result) => {
-                        if (result.isActiveFlag) setuserPromoCode(result.data);
+                        if (result.data.isActiveFlag) setuserPromoCode({...result.data});
                     });
             }
             else {
@@ -43,67 +44,68 @@ function Personalization() {
     return (<>
         {isLoading === true ? (<Loading />) : (<div className="element-common">
             <div className="textHeader">Персонализация</div>
-            <div className="centerBox boxColumn">
-                <div className="boxRow">
-                    <div className="boxRowIn">
-                        <div className="boxRowLeftText">Id</div>
-                        <div className="boxRowRightText">{store.getState().user.userId}</div>
-                    </div>
-                    <Button text="Копировать" onClick={copyUserId} />
-                </div>
-                <div className="boxRow">
-                    <div className="boxRowIn">
-                        <div className="boxRowLeftText">Имя</div>
-                        <TextInput value={userName} onChange={event => setuserName(event.target.value)} minLength={3} maxLength={30} />
-                    </div>
-                    <Button text="Изменить" onClick={changeName(userName)} />
-                </div>
-                <div className="boxRow">
-                    <div className="boxRowIn">
-                        <div className="boxRowLeftText">Дата рождения</div>
-                        <DateInput value={birthDate} onChange={event => setBirthDate(event.target.value)} min="1900-01-01" max={(new Date()).toISOString().split('T')[0]} />
-                    </div>
-                    <Button text="Изменить" onClick={birthYearButtonOnClickFunc(birthDate)} />
-                </div>
-                <div className="boxRow">
-                    <div className="boxRowIn">
-                        <div className="boxRowLeftText">Email</div>
-                        <EmailInput value={userEmail} onChange={event => setuserEmail(event.target.value)} />
-                    </div>
-                    <Button text="Изменить" onClick={changeEmail(userEmail, setisActiveEmailModalWindow)} />
-                    {isActiveEmailModalWindow && <SimpleModalWindow text="Письмо с подтверждением отправлено на ваш новый email" buttonText="Ok" onClick={closeEmailModalWindow(setisActiveEmailModalWindow)} />}
-                </div>
-                <form className="boxRow" onSubmit={activatePromoCode(userPromoCode)}>
-                    <div className="boxRowIn">
-                        <div className="boxRowLeftText">Промокод</div>
-                        <TextInput value={userPromoCode.uniqueCode} onChange={event => setuserPromoCode(event.target.value)} minLength={5} maxLength={20} />
-                        {userPromoCode.discount && <div className="personalizationText">Discount: {userPromoCode.discount}</div>}
-                    </div>
-                    <SubmitButton text="Активировать" />
-                </form>
-            </div>
+            <PersonalizationPart userPromoCode = {userPromoCode}/>
             {store.getState().user.isAdmin && <>
                 <div className="textHeader">Администрирование</div>
                 <div className="administrationBox boxColumn">
-                    <div className="boxRow">
+                    <form className="boxRow" onSubmit={giveAdminRights(giveRights, setisActiveGiveRightsModalWindow)}>
                         <div className="boxRowIn">
                             <div className="boxRowLeftText">Выдать права администратора</div>
                             <TextInput value={giveRights} onChange={event => setgiveRights(event.target.value)} />
                         </div>
-                        <Button text="Подтвердить" onClick={giveAdminRights(giveRights, setisActiveGiveRightsModalWindow)} />
-                    </div>
-                    {isActiveGiveRightsModalWindow && <SimpleModalWindow text="Права администратора выданы успешно" buttonText="Ok" onClick={closeGiveRightsModalWindow(setisActiveGiveRightsModalWindow)} />}
+                        <SubmitButton text="Подтвердить" />
+                        {isActiveGiveRightsModalWindow && <SimpleModalWindow text="Права администратора выданы успешно" buttonText="Ok" onClick={closeGiveRightsModalWindow(setisActiveGiveRightsModalWindow)} />}
+                    </form>
+                    <form className="boxRow" onSubmit={takeAdminRights(takeRights, setisActiveTakeRightsModalWindow)}>
+                        <div className="boxRowIn">
+                            <div className="boxRowLeftText">Снять права администратора</div>
+                            <TextInput value={takeRights} onChange={event => settakeRights(event.target.value)} />
+                        </div>
+                        <SubmitButton text="Подтвердить" />
+                        {isActiveTakeRightsModalWindow && <SimpleModalWindow text="Права администратора сняты успешно" buttonText="Ok" onClick={closeTakeRightsModalWindow(setisActiveTakeRightsModalWindow)} />}
+                    </form>
                 </div>
+                <div className="centerBox boxColumn">
+                    <div className="bigTextCenter">Создание промокода</div>
+                    <div className="textAboveBox">
+                        <div className="textAboveInput wideLeftAbove">Код</div>
+                        <div className="textAboveInput">$</div>
+                        <div className="textAboveInput">Кол.</div>
+                        <div className="textAboveInput"/>
+                    </div>
+                    <form className="boxRow" onSubmit={addPromoCode(uniqueCode, discount, onCount, setAddPromoCodeModalWindow)}>
+                        <div className="boxRowIn">
+                            <div className="wideLeft">
+                                <TextInput value={uniqueCode} onChange={event => setUniqueCode(event.target.value)} minLength={3} maxLength={20} />
+                            </div>
+                            <NumberInput value={discount} onChange={event => setDiscount(event.target.value)} min={0.1} max={100} step=".01" />
+                            <NumberInput value={onCount} onChange={event => setOnCount(event.target.value)} min={1} max={500} />
+                            {addPromoCodeModalWindow && <SimpleModalWindow text="Промокод создан" buttonText="Ok" onClick={closeAddPromoCodeModalWindow(setAddPromoCodeModalWindow)} />}
+                            <SubmitButton text="Создать" />
+                        </div>
+                    </form>
+                </div>
+
             </>}
             <div className="textHeader">Последние действия</div>
             <ActionList actionList={actions} />
-        </div>)}</>
+        </div>)
+        }</>
     );
 }
 
-function giveAdminRights(id, setisActiveGiveRightsModalWindow) {
+function addPromoCode(uniqueCode, discount, onCount, setAddPromoCodeModalWindow) {
+    return function action(event) {
+        event.preventDefault();
+        store.dispatch(actionCreators.AddPromoCodeActionCreator(uniqueCode, discount, onCount)).then(() => {
+            setAddPromoCodeModalWindow(true);
+        });
+    }
+}
 
-    return function action() {
+function giveAdminRights(id, setisActiveGiveRightsModalWindow) {
+    return function action(event) {
+        event.preventDefault();
         if (id !== "Id") {
             store.dispatch(actionCreators.GiveAdminRightsActionCreator(id)).then(() => {
                 setisActiveGiveRightsModalWindow(true);
@@ -111,10 +113,19 @@ function giveAdminRights(id, setisActiveGiveRightsModalWindow) {
         }
     }
 }
-
-function closeEmailModalWindow(setisActiveEmailModalWindow) {
+function takeAdminRights(id, setisActiveTakeRightsModalWindow) {
+    return function action(event) {
+        event.preventDefault();
+        if (id !== "Id") {
+            store.dispatch(actionCreators.TakeAdminRightsActionCreator(id)).then(() => {
+                setisActiveTakeRightsModalWindow(true);
+            });
+        }
+    }
+}
+function closeAddPromoCodeModalWindow(addPromoCodeModalWindow) {
     return function action() {
-        setisActiveEmailModalWindow(false);
+        addPromoCodeModalWindow(false);
         document.querySelector("body").style.overflow = "auto";
     }
 }
@@ -124,35 +135,10 @@ function closeGiveRightsModalWindow(setisActiveGiveRightsModalWindow) {
         document.querySelector("body").style.overflow = "auto";
     }
 }
-function copyUserId() {
-    navigator.clipboard.writeText(store.getState().user.userId);
-}
-function changeName(name) {
+function closeTakeRightsModalWindow(setisActiveTakeRightsModalWindow) {
     return function action() {
-        if (store.getState().user.name !== name) {
-            store.dispatch(actionCreators.UpdateNameActionCreator(name));
-        }
-    }
-}
-function activatePromoCode(promoCode) {
-    return function action() {
-        store.dispatch(actionCreators.ActivatePromoCodeActionCreator(promoCode));
-    }
-}
-function changeEmail(email, setisActiveEmailModalWindow) {
-    return function action() {
-        if (store.getState().user.email !== email) {
-            store.dispatch(actionCreators.UpdateEmailActionCreator(email)).then(() => {
-                setisActiveEmailModalWindow(true);
-            });
-        }
-    }
-}
-function birthYearButtonOnClickFunc(birthDate) {
-    return function birthYearButtonOnClick() {
-        if (store.getState().user.birthDate !== birthDate) {
-            store.dispatch(actionCreators.UpdateBirthDateThunkActionCreator(birthDate));
-        }
+        setisActiveTakeRightsModalWindow(false);
+        document.querySelector("body").style.overflow = "auto";
     }
 }
 

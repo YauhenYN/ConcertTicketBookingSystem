@@ -8,7 +8,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.PersonalizationDtos
 {
     public record ActivatePromocodeDto
     {
-        [StringLength(maximumLength: 30, MinimumLength = 5)]
+        [StringLength(maximumLength: 30, MinimumLength = 3)]
         [Required]
         public string Code { get; init; }
     }

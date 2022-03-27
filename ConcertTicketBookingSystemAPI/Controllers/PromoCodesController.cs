@@ -35,7 +35,10 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 await _context.PromoCodes.AddAsync(promoCode);
                 await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Added PromoCode");
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetPromoCodeByIdAsync", promoCode.PromoCodeId);
+                return CreatedAtAction("GetPromoCodeById", new 
+                { 
+                    promoCodeId = promoCode.PromoCodeId
+                });
             }
             return Conflict();
         }

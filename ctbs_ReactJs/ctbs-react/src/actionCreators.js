@@ -11,7 +11,6 @@ export const RefreshCodeThunkActionСreator = () => {
             withCredentials: true
         }).then((result) => {
             accessToken = result.data;
-            console.log(new Date(jwt(result.data).exp * 1000) - new Date());
             setTimeout(() => {
                 dispatch(RefreshCodeThunkActionСreator());
             }, new Date(jwt(result.data).exp * 1000) - new Date());
@@ -90,7 +89,7 @@ export const logOutThunkActionCreator = () => {
                 'Authorization': 'Bearer ' + accessToken
             }
         }).then(() => {
-            window.location.reload(false);
+            window.location.replace(window.location.origin);
             dispatch({
                 type: actionTypes.LogOut,
             })
@@ -167,7 +166,7 @@ export const ActivatePromoCodeActionCreator = (promoCode) => {
 }
 export const GetPromoCodeByIdThunkActionCreator = (promoCodeId) => {
     return async function fetchTokenThunk(dispatch) {
-        return axios.get(conf.apiLink + conf.getOnePromoCodeByIdAddition, { promoCodeId: promoCodeId }, {
+        return axios.get(conf.apiLink + conf.getOnePromoCodeByIdAddition + "?promoCodeId=" + promoCodeId, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             }
@@ -184,8 +183,31 @@ export const UpdateEmailActionCreator = (email) => {
     }
 }
 export const GiveAdminRightsActionCreator = (id) => {
-    return async function ActivatePromoCodeThunk(dispatch) {
-        await axios.post(conf.apiLink + conf.giveRightsAddition, { id: id }, {
+    return async function GiveAdminRightsThunk(dispatch) {
+        await axios.post(conf.apiLink + conf.giveRightsAddition + "?id=" + id, {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+export const TakeAdminRightsActionCreator = (id) => {
+    return async function TakeAdminRightsThunk(dispatch) {
+        await axios.post(conf.apiLink + conf.takeRightsAddition + "?id=" + id, {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+export const AddPromoCodeActionCreator = (uniqueCode, discount, onCount) => {
+    return async function AddPromoCodeThunk(dispatch) {
+        await axios.post(conf.apiLink + conf.addPromoCodeAddition, {
+            uniqueCode: uniqueCode,
+            discount: discount,
+            isActiveFlag: true,
+            onCount: onCount
+        }, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             }
