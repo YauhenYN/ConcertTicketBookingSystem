@@ -12,6 +12,7 @@
     background-color: inherit;
     color: #083259;
     font-family: fantasy;
+    font-size: inherit;
 }
 .button:hover{
     border-color: #d5a460;

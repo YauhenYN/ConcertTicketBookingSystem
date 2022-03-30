@@ -27,7 +27,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         private readonly EmailSenderService _emailSenderService;
         private readonly IConfiguration _configuration;
 
-        public PersonalizationController(ILogger<PersonalizationController> logger, ApplicationContext context, IConfirmationService<Guid, DbContext> confirmationService, EmailSenderService emailSenderService, IConfiguration configuration)
+        public PersonalizationController(ILogger<PersonalizationController> logger, ApplicationContext context, 
+            IConfirmationService<Guid, DbContext> confirmationService, EmailSenderService emailSenderService, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
@@ -62,7 +63,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             var user = await CurrentUserAsync();
             var secretGuid = Guid.NewGuid();
-            await _emailSenderService.SendHtmlAsync("EmailConfirmation", dto.NewEmail, "<a href=\"" + _configuration["CurrentApiUrl"] + "/EmailConfirmation/Confirm?confirmationCode=" + secretGuid +"\">Подтвердить новый Email</a>");
+            await _emailSenderService.SendHtmlAsync("EmailConfirmation", dto.NewEmail, 
+                "<a href=\"" + _configuration["CurrentApiUrl"] + "/EmailConfirmation/Confirm?confirmationCode=" + secretGuid +"\">Подтвердить новый Email</a>");
             _confirmationService.Add(secretGuid, (context) =>
             {
                 user = ((ApplicationContext)context).Users.FirstOrDefault(u => u.UserId == user.UserId);

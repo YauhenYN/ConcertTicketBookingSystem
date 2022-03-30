@@ -56,7 +56,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         [Route("code")]
 
-        public async Task<ActionResult<PromoCodeDto>> GetPromoCodeByCodeAsync(GetPromoCodeByCode dto)
+        public async Task<ActionResult<PromoCodeDto>> GetPromoCodeByCodeAsync([FromQuery]GetPromoCodeByCode dto)
         {
             var promoCode = await _context.PromoCodes.FirstOrDefaultAsync(p => dto.Code == p.Code);
             if (promoCode != null) return promoCode.ToDto();
@@ -66,7 +66,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpGet]
         [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         [Route("many")]
-        public async Task<ActionResult<PromoCodeDto[]>> GetManyPromoCodesAsync(GetManyPromoCodesDto dto)
+        public async Task<ActionResult<PromoCodeDto[]>> GetManyPromoCodesAsync([FromQuery]GetManyPromoCodesDto dto)
         {
             IQueryable<PromoCode> promoCodes = _context.PromoCodes;
             promoCodes = promoCodes.Where(p => dto.IsActiveFlag == p.IsActiveFlag).Take(dto.Count);

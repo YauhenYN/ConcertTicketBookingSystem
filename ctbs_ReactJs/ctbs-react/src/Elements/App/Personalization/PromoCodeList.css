@@ -1,0 +1,35 @@
+
+.promoCodeItem{
+    display: flex;
+    flex-direction: row;
+    margin: 0.3em 0em;
+    border-bottom-style: groove;
+    border-top-style: groove;
+    border-width: medium;
+    border-color: #d5a460;
+    padding: 0.3em 0.5em;
+    align-items: center;
+}
+.promoCodeItem input{
+    font-size: small;
+}
+.promoCodeLeft{
+    width: 200%;
+    font-size: smaller;
+    border-right-style: dashed;
+    font-family: cursive;
+}
+.simplePromoCode{
+    font-size: smaller;
+    width: 100%;
+    font-family: cursive;
+}
+.ListHeader .promoCodeLeft{
+    text-indent: 0.5em;
+}
+.simplePromoCode input{
+    margin: 0em;
+}
+.discountCode{
+    margin-left: 2em;
+}

@@ -5,6 +5,7 @@
     border-width: initial;
     border-style: ridge;
     margin: 0.5em 0em;
+    align-items: center;
 }
 .boxColumn{
     display: flex;
@@ -48,6 +49,7 @@
     color: #083259;
 }
 .personalizationText{
+
     white-space: nowrap;
     color: #083259;
 }
@@ -71,4 +73,27 @@
     color: #083259;
     font-weight: bold;
     font-family: system-ui;
+}
+.ListTable{
+    max-height: 30vh;
+    padding-bottom: 0.5em;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.outOfListTable{
+    position: relative;
+    border-color: #083259;
+    border-width: initial;
+    border-style: ridge;
+}
+.ListHeader{
+    display: flex;
+    flex-direction: row;
+    background-color:#083259;
+    padding: 0.5em 0em;
+    position: absolute;
+    width: calc(100% - 14px);
+    color: #d6a667;
+    font-weight: bold;
 }

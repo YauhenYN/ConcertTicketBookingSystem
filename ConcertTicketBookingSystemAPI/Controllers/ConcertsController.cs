@@ -122,7 +122,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpGet]
         [Route("many/light")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync(ConcertSelectParametersDto dto)
+        public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync([FromQuery]ConcertSelectParametersDto dto)
         {
             IQueryable<Models.Concert> concerts;
             if (dto.ByConcertType != null)
@@ -171,7 +171,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 await _context.PartyConcerts.AddAsync((Models.PartyConcert)concert);
             }
             await _context.SaveChangesAsync();
-            await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Added Concert with id = " + concert.ConcertId + " and type = " + dto.ConcertType);
+            await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Added Concert with id = " + 
+                concert.ConcertId + " and type = " + dto.ConcertType);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetConcertAsync", new { concertId = concert.ConcertId });
         }

@@ -1,0 +1,6 @@
+.imageLoaderBox{
+    display: flex;
+    align-items: center;
+    font-family: monospace;
+    margin: 0em 1em;
+}

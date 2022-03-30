@@ -1,31 +1,7 @@
-#actionTable{
-    max-height: 30vh;
-    padding-bottom: 0.5em;
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
-#outOfActionTable{
-    position: relative;
-    border-color: #083259;
-    border-width: initial;
-    border-style: ridge;
-}
 #actionHeaderCreationTime{
     margin-left: 0.9em;
-    font-weight: bold;
 }
-#actionHeaderDescription{
-    font-weight: bold;
-}
-#actionHeader{
-    display: flex;
-    flex-direction: row;
-    background-color:#083259;
-    padding: 0.5em 0em;
-    position: absolute;
-    width: 100%;
-    color: #d6a667;
-}
+
 .actionItem{
     display: flex;
     flex-direction: row;

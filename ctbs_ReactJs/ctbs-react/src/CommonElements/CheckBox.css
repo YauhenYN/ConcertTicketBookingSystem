@@ -1,0 +1,16 @@
+.CheckBox {
+    width: 2em;
+    height: 2em;
+    margin: 0.5em 1em;
+    cursor: pointer;
+}
+.CheckBoxLabel{
+    font-family: system-ui;
+    color: #083259;
+    font-weight: bold;
+    margin: 0.5em 1em;
+}
+.outOfCheckBox{
+    display: flex;
+    flex-direction: row;
+}

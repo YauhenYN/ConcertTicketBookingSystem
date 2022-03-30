@@ -191,6 +191,37 @@ export const GiveAdminRightsActionCreator = (id) => {
         });
     }
 }
+export const GetManyPromocodesActionCreator = (isActiveFlag, count) => {
+    return async function GetManyPromoCodesThunk(dispatch) {
+        return await axios.get(conf.apiLink + conf.getManyPromoCodesAddition, {
+            params: {
+                isActiveFlag: isActiveFlag,
+                count: count
+            },
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConcertType, byPerformer, untilPrice, fromPrice) => {
+    return async function GetManyPromoCodesThunk(dispatch) {
+        return await axios.get(conf.apiLink + conf.getManyLightConcerts, {
+            params: {
+                nextPage: nextPage,
+                neededCount: neededCount,
+                byConcertType: byConcertType,//0,1,2
+                byPerformer: byPerformer,
+                untilPrice: untilPrice,
+                fromPrice: fromPrice,
+
+            },
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
 export const TakeAdminRightsActionCreator = (id) => {
     return async function TakeAdminRightsThunk(dispatch) {
         await axios.post(conf.apiLink + conf.takeRightsAddition + "?id=" + id, {}, {
@@ -200,6 +231,26 @@ export const TakeAdminRightsActionCreator = (id) => {
         });
     }
 }
+export const ActivatePromoCodeInListActionCreator = (id) => {
+    return async function TakeAdminRightsThunk() {
+        return await axios.post(conf.apiLink + "/PromoCodes/" + id + "/Activate", {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
+export const DeactivatePromoCodeInListActionCreator = (id) => {
+    return async function TakeAdminRightsThunk() {
+        return await axios.post(conf.apiLink + "/PromoCodes/" + id + "/Deactivate", {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
 export const AddPromoCodeActionCreator = (uniqueCode, discount, onCount) => {
     return async function AddPromoCodeThunk(dispatch) {
         await axios.post(conf.apiLink + conf.addPromoCodeAddition, {
@@ -207,6 +258,39 @@ export const AddPromoCodeActionCreator = (uniqueCode, discount, onCount) => {
             discount: discount,
             isActiveFlag: true,
             onCount: onCount
+        }, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
+export const AddConcertActionCreator = (isActiveFlag, imageType, image, cost, totalCount, performer, concertDate, latitude, longitude, concertType, classicConcertInfo, openAirConcertInfo, partyConcertInfo) => {
+    return async function AddPromoCodeThunk() {
+        await axios.post(conf.apiLink + conf.addConcert, {
+            isActiveFlag: isActiveFlag,
+            imageType: imageType,
+            image: image,
+            cost: cost,
+            totalCount: totalCount,
+            performer: performer,
+            concertDate: concertDate,
+            latitude: latitude,
+            longitude: longitude,
+            concertType: concertType, //0/1/2
+            classicConcertInfo: {
+              voiceType: classicConcertInfo.voiceType,
+              concertName: classicConcertInfo.concertName,
+              compositor: classicConcertInfo.compositor
+            },
+            openAirConcertInfo: {
+              route: openAirConcertInfo.route,
+              headLiner: openAirConcertInfo.headLiner
+            },
+            partyConcertInfo: {
+              censure: partyConcertInfo.censure
+            }
         }, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken

@@ -11,15 +11,19 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public bool IsActiveFlag { get; init; }
         [Required]
+        [MaxLength(50)]
         public string ImageType { get; init; }
         [Required]
-        [Range(100, 50000)] //still don't khow how much an image must have weigh
+        [Range(100, 50000)]
         public byte[] Image { get; init; }
         [Required]
+        [Range(0.01, 1000)]
         public decimal Cost { get; init; }
         [Required]
+        [Range(1, 10000)]
         public int TotalCount { get; init; }
         [Required]
+        [StringLength(50, MinimumLength = 3)]
         public string Performer { get; init; }
         [Required]
         public DateTime ConcertDate { get; init; }

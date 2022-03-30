@@ -15,8 +15,7 @@ function PersonalizationPart(props) {
     const [userEmail, setuserEmail] = useState(store.getState().user.email);
     const [userPromoCode, setuserPromoCode] = useState(props.userPromoCode);
     const [birthDate, setBirthDate] = useState(store.getState().user.birthDate !== null && typeof store.getState().user.birthDate !== 'undefined' ? store.getState().user.birthDate.split('T')[0] : "");
-    return (<>
-        <div className="textHeader">Персонализация</div>
+    return (
         <div className="centerBox boxColumn">
             <div className="boxRow">
                 <div className="boxRowIn">
@@ -55,7 +54,7 @@ function PersonalizationPart(props) {
                 </div>
                 <SubmitButton text="Активировать" />
             </form>
-        </div></>
+        </div>
     );
 }
 
@@ -77,7 +76,8 @@ function changeName(name) {
     }
 }
 function activatePromoCode(promoCode) {
-    return function action() {
+    return function action(event) {
+        event.preventDefault();
         store.dispatch(actionCreators.ActivatePromoCodeActionCreator(promoCode));
     }
 }

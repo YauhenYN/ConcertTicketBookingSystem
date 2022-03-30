@@ -15,12 +15,16 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public int ImageId { get; init; }
         [Required]
+        [Range(0.01, 1000)]
         public decimal Cost { get; init; }
         [Required]
+        [Range(1, 10000)]
         public int TotalCount { get; init; }
         [Required]
+        [Range(0, 10000)]
         public int LeftTicketsCount { get; init; }
         [Required]
+        [StringLength(50, MinimumLength = 3)]
         public string Performer { get; init; }
         [Required]
         public DateTime ConcertDate { get; init; }
@@ -29,7 +33,8 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         public double Longitude { get; init; }
         [Required]
-        public string ConcertType { get; init; }
+        [Range(0, 2)]
+        public ConcertType ConcertType { get; init; }
         [Required]
         public DateTime CreationTime { get; init; }
         [Range(0, 5)]

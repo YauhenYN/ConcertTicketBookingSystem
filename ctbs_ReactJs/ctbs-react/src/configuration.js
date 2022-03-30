@@ -30,4 +30,9 @@ export const actionsManyAddition = "/Actions/many";
 
 
 export const getOnePromoCodeByIdAddition = "/PromoCodes/id";
+export const getManyPromoCodesAddition = "/PromoCodes/many";
 export const addPromoCodeAddition = "/PromoCodes";
+
+
+export const addConcert = "/Concerts"
+export const getManyLightConcerts = "/Concerts/many/light"

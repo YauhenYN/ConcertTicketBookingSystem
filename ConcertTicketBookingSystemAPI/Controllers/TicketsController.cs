@@ -37,7 +37,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpGet]
         [Route("many")]
-        public async Task<ActionResult<TicketSelectorDto>> GetManyTicketsAsync(TicketSelectParametersDto dto)
+        public async Task<ActionResult<TicketSelectorDto>> GetManyTicketsAsync([FromQuery]TicketSelectParametersDto dto)
         {
             var tickets = _context.Tickets.Where(t => dto.ByUserId == t.UserId);
             var ticketsCount = tickets.Count();

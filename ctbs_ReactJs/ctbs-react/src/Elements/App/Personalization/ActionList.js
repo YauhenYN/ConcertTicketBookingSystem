@@ -8,9 +8,9 @@ function ActionList(props) {
         scrollToBottom("actionTable");
     }, [])
     return (
-        <div id = "outOfActionTable">
-        <div id = "actionTable">
-            <div id = "actionHeader">
+        <div className = "outOfListTable">
+        <div className = "ListTable" id="actionTable">
+            <div className = "ListHeader">
                 <div id = "actionHeaderCreationTime" className="actionCreationTime">Дата и время</div>
                 <div id = "actionHeaderDescription" className="actionDescription">Описание</div>
             </div>
