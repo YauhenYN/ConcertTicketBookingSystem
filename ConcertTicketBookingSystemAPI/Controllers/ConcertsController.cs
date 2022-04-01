@@ -152,7 +152,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
         {
             Models.Concert concert;
-            var image = new Models.Image() { Source = dto.Image, Type = dto.ImageType };
+            var image = new Models.Image() { Source = Convert.FromBase64String(dto.Image), Type = dto.ImageType };
             _context.Images.Add(image);
             _context.SaveChanges();
             if (dto.ConcertType == ConcertType.ClassicConcert)
@@ -174,7 +174,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Added Concert with id = " + 
                 concert.ConcertId + " and type = " + dto.ConcertType);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetConcertAsync", new { concertId = concert.ConcertId });
+            return CreatedAtRoute(concert.ConcertId, new { concertId = concert.ConcertId});
         }
         [HttpPost]
         [Route("{concertId}/Activate")]

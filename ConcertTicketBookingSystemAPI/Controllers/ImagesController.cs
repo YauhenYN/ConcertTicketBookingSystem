@@ -45,7 +45,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 var image = dto.ToImage();
                 await _context.AdditionalImages.AddAsync(image);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetImageAsync", new { imageId = image.ImageId });
+                return CreatedAtRoute(image.ImageId, new { imageId = image.ImageId });
             }
             else return Conflict();
         }

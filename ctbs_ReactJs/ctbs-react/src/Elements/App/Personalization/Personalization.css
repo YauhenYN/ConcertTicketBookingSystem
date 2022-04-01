@@ -86,6 +86,9 @@
     border-color: #083259;
     border-width: initial;
     border-style: ridge;
+    align-self: center;
+    min-width: 40em;
+    width: 90%;
 }
 .ListHeader{
     display: flex;

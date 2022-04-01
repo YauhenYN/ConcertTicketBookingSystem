@@ -268,7 +268,7 @@ export const AddPromoCodeActionCreator = (uniqueCode, discount, onCount) => {
 
 export const AddConcertActionCreator = (isActiveFlag, imageType, image, cost, totalCount, performer, concertDate, latitude, longitude, concertType, classicConcertInfo, openAirConcertInfo, partyConcertInfo) => {
     return async function AddPromoCodeThunk() {
-        await axios.post(conf.apiLink + conf.addConcert, {
+        return await axios.post(conf.apiLink + conf.addConcert, {
             isActiveFlag: isActiveFlag,
             imageType: imageType,
             image: image,
@@ -279,18 +279,31 @@ export const AddConcertActionCreator = (isActiveFlag, imageType, image, cost, to
             latitude: latitude,
             longitude: longitude,
             concertType: concertType, //0/1/2
-            classicConcertInfo: {
+            classicConcertInfo: classicConcertInfo === null ? null : {
               voiceType: classicConcertInfo.voiceType,
               concertName: classicConcertInfo.concertName,
               compositor: classicConcertInfo.compositor
             },
-            openAirConcertInfo: {
+            openAirConcertInfo: openAirConcertInfo === null ? null : {
               route: openAirConcertInfo.route,
               headLiner: openAirConcertInfo.headLiner
             },
-            partyConcertInfo: {
+            partyConcertInfo: partyConcertInfo === null ? null : {
               censure: partyConcertInfo.censure
             }
+        }, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+export const AddImageActionCreator = (imageType, image, concertId) => {
+    return async function AddImageThunk() {
+        await axios.post(conf.apiLink + conf.addImageAddition, {
+            imageType: imageType,
+            image: image,
+            concertId: concertId
         }, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken

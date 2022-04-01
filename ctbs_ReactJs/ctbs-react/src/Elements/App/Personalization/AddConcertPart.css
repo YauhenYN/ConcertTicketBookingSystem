@@ -3,4 +3,37 @@
     align-items: center;
     font-family: monospace;
     margin: 0em 1em;
+    width: 100%;
+}
+.radioBox .outOfCheckBox{
+    width: 100%;
+    text-align: center;
+}
+.radioBox input{
+    width: 100%;
+}
+.imageNameText {
+    font-size: large;
+}
+.addConcertBox{
+    width: 60%;
+}
+#mapWithSmallParamsBox{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+#mapBox{
+    width: 200%;
+    margin: 0.5em 1em 0.5em 0em;
+}
+#smallParamsBox{
+    width: 70%;
+}
+.MapMarker{
+    border-top-style: dashed;
+    border-left-style: dashed;
+    color: chartreuse;
+    font-family: sans-serif;
+    width: 2em
 }

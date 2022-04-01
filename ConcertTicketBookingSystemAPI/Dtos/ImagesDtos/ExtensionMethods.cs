@@ -14,7 +14,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ImagesDtos
             Image = new Image()
             {
                 Type = dto.ImageType,
-                Source = dto.Image
+                Source = Convert.FromBase64String(dto.Image)
             }
         };
     }

@@ -14,8 +14,8 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [MaxLength(50)]
         public string ImageType { get; init; }
         [Required]
-        [Range(100, 50000)]
-        public byte[] Image { get; init; }
+        [MaxLength(150000)]
+        public string Image { get; init; }
         [Required]
         [Range(0.01, 1000)]
         public decimal Cost { get; init; }
@@ -41,8 +41,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var list = new List<ValidationResult>();
+            if (ImageType != "image/png" && ImageType != "image/jpeg") list.Add(new ValidationResult("Неверный формат изображения"));
             if (ClassicConcertInfo == null && OpenAirConcertInfo == null && PartyConcertInfo == null) list.Add(new ValidationResult("Должен быть определён весь тип"));
-            return list; 
+            return list;
         }
     }
 }

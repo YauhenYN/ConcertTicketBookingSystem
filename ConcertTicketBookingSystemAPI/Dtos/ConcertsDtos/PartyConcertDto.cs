@@ -9,7 +9,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
     public record PartyConcertDto
     {
         [Required]
-        [Range(6, 21)]
+        [Range(3, 21)]
         public int Censure { get; init; }
     }
 }

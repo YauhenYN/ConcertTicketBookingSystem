@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "google-map-react": "^2.1.10",
     "jwt-decode": "^3.1.2",
     "openssl": "^2.0.0",
     "react-redux": "^7.2.6",

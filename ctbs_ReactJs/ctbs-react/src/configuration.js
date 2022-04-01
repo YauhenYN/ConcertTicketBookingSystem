@@ -28,6 +28,7 @@ export const removeCookiesAddition = "/Authentication/LogOut";
 
 export const actionsManyAddition = "/Actions/many";
 
+export const addImageAddition = "/Images";
 
 export const getOnePromoCodeByIdAddition = "/PromoCodes/id";
 export const getManyPromoCodesAddition = "/PromoCodes/many";
