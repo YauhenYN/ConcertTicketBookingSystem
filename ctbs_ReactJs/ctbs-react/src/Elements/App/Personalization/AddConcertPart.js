@@ -203,7 +203,7 @@ function addPartyConcert(isActiveFlag, imageType, image, cost, totalCount, perfo
         event.preventDefault();
         if (image != null) {
             store.dispatch(actionCreators.AddConcertActionCreator(isActiveFlag, imageType, image, cost, totalCount,
-                performer, parseInt(concertType), latitude, longitude, concertDate, null, null, {
+                performer, concertDate, latitude, longitude, parseInt(concertType), null, null, {
                 censure: censure
             })).then((result) => {
                 leftImages.forEach(image => {
