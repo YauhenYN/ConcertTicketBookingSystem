@@ -6,7 +6,7 @@ import * as actionCreators from "../../../actionCreators";
 function PromoCodeItem(props) {
     const [promoCode, setPromoCode] = useState(props.promoCode);
     return (
-        <div className="promoCodeItem">
+        <div className="ListItem">
             <div className="promoCodeLeft">
                 {promoCode.uniqueCode}
             </div>

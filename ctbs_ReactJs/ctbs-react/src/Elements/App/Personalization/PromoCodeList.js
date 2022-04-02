@@ -11,9 +11,9 @@ function PromoCodeList(props) {
                 <div className="simplePromoCode discountCode">Скидка</div>
                 <div className="simplePromoCode">Статус</div>
                 <div className="simplePromoCode">Осталось</div>
-                <div className="simplePromoCode"></div>
+                <div className="simplePromoCode aboveButton"></div>
             </div>
-            <div className="actionItem"/><div className="actionItem"/>
+            <div className="ListItem"/><div className="ListItem"/>
             {props.promoCodeList.map(promoCode => {
                 return <PromoCodeItem key={promoCode.uniqueCode} promoCode = {promoCode} />
             })}

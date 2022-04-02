@@ -8,7 +8,7 @@ import SubmitButton from "../../../CommonElements/SubmitButton";
 import NumberInput from "../../../CommonElements/NumberInput";
 import CheckBoxInput from "../../../CommonElements/CheckBoxInput";
 import FileInput from "../../../CommonElements/FileInput";
-import DateInput from "../../../CommonElements/DateInput";
+import DateTimeInput from "../../../CommonElements/DateTimeInput";
 import './AddConcertPart.css';
 import RadioInput from "../../../CommonElements/RadioInput";
 import GoogleMapReact from 'google-map-react';
@@ -86,10 +86,10 @@ function AddConcertPart() {
                             <NumberInput value={totalCount} onChange={event => setTotalCount(event.target.value)} min={1} max={10000} />
                         </div>
                     </div>
-                    <div className="boxRow">
+                    <div className="boxRow datetimeBox">
                         <div className="boxRowIn">
-                            <div className="boxRowLeftText">Дата концерта</div>
-                            <DateInput value={concertDate} onChange={event => setConcertDate(event.target.value)} min={new Date().toISOString()} />
+                            <div className="boxRowLeftText">Дата и время</div>
+                            <DateTimeInput value={concertDate} onChange={event => setConcertDate(event.target.value)} min={new Date().toISOString()} />
                         </div>
                     </div>
 

@@ -94,9 +94,24 @@
     display: flex;
     flex-direction: row;
     background-color:#083259;
-    padding: 0.5em 0em;
+    padding: 0.5em;
     position: absolute;
-    width: calc(100% - 14px);
+    width: calc(100% - 14px - 1em);
     color: #d6a667;
     font-weight: bold;
+    font-size: smaller;
+    font-family: cursive;
+}
+.ListItem{
+    display: flex;
+    flex-direction: row;
+    margin: 0.3em 0em;
+    border-bottom-style: groove;
+    border-top-style: groove;
+    border-width: medium;
+    border-color: #d5a460;
+    padding: 0.3em 0.5em;
+    align-items: center;
+    font-size: smaller;
+    font-family: cursive;
 }

@@ -204,7 +204,7 @@ export const GetManyPromocodesActionCreator = (isActiveFlag, count) => {
         });
     }
 }
-export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConcertType, byPerformer, untilPrice, fromPrice) => {
+export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConcertType, byPerformer, untilPrice, fromPrice, byUserId) => {
     return async function GetManyPromoCodesThunk(dispatch) {
         return await axios.get(conf.apiLink + conf.getManyLightConcerts, {
             params: {
@@ -214,7 +214,7 @@ export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConce
                 byPerformer: byPerformer,
                 untilPrice: untilPrice,
                 fromPrice: fromPrice,
-
+                byUserId: byUserId
             },
             headers: {
                 'Authorization': 'Bearer ' + accessToken
@@ -241,9 +241,29 @@ export const ActivatePromoCodeInListActionCreator = (id) => {
     }
 }
 
+export const ActivateConcertInListActionCreator = (id) => {
+    return async function TakeAdminRightsThunk() {
+        return await axios.post(conf.apiLink + "/Concerts/" + id + "/Activate", {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
 export const DeactivatePromoCodeInListActionCreator = (id) => {
     return async function TakeAdminRightsThunk() {
         return await axios.post(conf.apiLink + "/PromoCodes/" + id + "/Deactivate", {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
+export const DeactivateConcertInListActionCreator = (id) => {
+    return async function TakeAdminRightsThunk() {
+        return await axios.post(conf.apiLink + "/Concerts/" + id + "/Deactivate", {}, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             }

@@ -1,0 +1,25 @@
+.activateButtonActionList input{
+    margin: 0em;
+}
+.activateButtonActionList{
+    width: 100%;
+}
+.isActiveActionList{
+    width: 40%;
+    text-align: center;
+}
+.concertTypeActionList{
+    width: 90%;
+}
+.costActionList{
+    width: 50%;
+}
+.leftCountActionList{
+    width: 40%;
+}
+.performerActionList{
+    width: 100%;
+}
+.concertDateActionList{
+    width: 80%;
+}

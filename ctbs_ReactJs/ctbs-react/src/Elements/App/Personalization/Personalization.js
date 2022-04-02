@@ -18,6 +18,7 @@ function Personalization() {
     const [isLoading, setisLoading] = useState(true);
     const [userPromoCode, setuserPromoCode] = useState({});
     const [firstConcerts, setFirstConcerts] = useState([]);
+    const [pagesCount, setPagesCount] = useState();
     useEffect(() => {
         async function dispatches() {
             await store.dispatch(actionCreators.GetActionsActionCreator()).then((result) => {
@@ -30,8 +31,9 @@ function Personalization() {
                 await store.dispatch(actionCreators.GetManyPromocodesActionCreator(false, 1000)).then((result) => {
                     setInactivePromoCodes([...result.data]);
                 }).catch(() => { });
-                await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 30, null, null, null, null)).then((result) => {
-                    setFirstConcerts([...result.data]);
+                await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 30, null, null, 10000, 0.01, store.getState().user.userId)).then((result) => {
+                    setFirstConcerts([...result.data.concerts]);
+                    setPagesCount(result.data.pagesCount);
                 }).catch(() => { });
             };
             if (store.getState().user.promoCodeId !== null) {
@@ -60,8 +62,8 @@ function Personalization() {
                     <div className="textHeader">Список всех промокодов</div>
                     <PromoCodeList promoCodeList={[...activePromoCodes, ...inactivePromoCodes]} /></>}
                 {firstConcerts.length > 0 && <>
-                    <div className="textHeader">Список концертов</div>
-                    <ConcertsList firstConcerts={firstConcerts} />
+                    <div className="textHeader">Список моих концертов</div>
+                    <ConcertsList firstConcerts={firstConcerts} pagesCount = {pagesCount}/>
                 </>}
                 <AddConcertPart/>
             </>}

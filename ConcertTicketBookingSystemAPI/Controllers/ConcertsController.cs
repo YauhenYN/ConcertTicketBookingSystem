@@ -132,16 +132,17 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 else concerts = _context.PartyConcerts;
             }
             else concerts = _context.Concerts;
+            if (dto.ByUserId != null) concerts = concerts.Where(c => c.UserId == dto.ByUserId);
             if(dto.ByPerformer != null) concerts = concerts.Where(c => c.Performer == dto.ByPerformer);
-            concerts = concerts.Where(c => c.Cost < dto.UntilPrice && c.Cost > dto.FromPrice);
+            concerts = concerts.Where(c => c.Cost < dto.UntilPrice && c.Cost >= dto.FromPrice);
             var concertsCount = concerts.Count();
             if (concertsCount > 0)
             {
                 ConsertSelectorDto selector = new ConsertSelectorDto()
                 {
-                    PagesCount = concertsCount / dto.NeededCount,
+                    PagesCount = (concertsCount / dto.NeededCount) + 1,
                     CurrentPage = dto.NextPage,
-                    Concerts = await concerts.Skip((dto.NextPage - 1) * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync()
+                    Concerts = await concerts.Skip(dto.NextPage * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync()
                 };
                 return selector;
             }

@@ -37,3 +37,6 @@
     font-family: sans-serif;
     width: 2em
 }
+.datetimeBox input{
+    width: 10em;
+}
