@@ -3,7 +3,10 @@ import * as actionTypes from "./actionTypes"
 export default function reducer(state, action) {
     if(action.type === actionTypes.EmptyState){
         return {
-            ...state
+            ...state, 
+            search: {
+                performer: "Поиск (Исполнитель)"
+            }
         }
     }
     if (action.type === actionTypes.LogIn) { 
@@ -69,6 +72,15 @@ export default function reducer(state, action) {
                 ...state.user,
                 name: action.name
             },
+        }
+    }
+    else if(action.type === actionTypes.UpdateSearchPerformer){
+        return{
+            ...state,
+            search: {
+                ...state.search,
+                performer: action.performer
+            }
         }
     }
 };

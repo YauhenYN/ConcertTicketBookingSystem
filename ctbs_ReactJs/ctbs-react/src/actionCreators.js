@@ -129,6 +129,14 @@ export const CancelUpdateBirthDateActionCreator = () => {
         type: actionTypes.UpdateBirthDate
     }
 }
+
+export const UpdateSearchPerformerActionCreator = (performer) => {
+    return {
+        type: actionTypes.UpdateSearchPerformer,
+        performer: performer
+    }
+}
+
 export const GetActionsActionCreator = () => {
     return async function GetActionsThunk() {
         const get = await axios.get(conf.apiLink + conf.actionsManyAddition, {
@@ -204,12 +212,13 @@ export const GetManyPromocodesActionCreator = (isActiveFlag, count) => {
         });
     }
 }
-export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConcertType, byPerformer, untilPrice, fromPrice, byUserId) => {
+export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConcertType, byPerformer, untilPrice, fromPrice, byUserId, byActivity) => {
     return async function GetManyPromoCodesThunk(dispatch) {
         return await axios.get(conf.apiLink + conf.getManyLightConcerts, {
             params: {
                 nextPage: nextPage,
                 neededCount: neededCount,
+                byActivity: byActivity,
                 byConcertType: byConcertType,//0,1,2
                 byPerformer: byPerformer,
                 untilPrice: untilPrice,

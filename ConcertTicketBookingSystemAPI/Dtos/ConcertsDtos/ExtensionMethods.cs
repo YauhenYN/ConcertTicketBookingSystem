@@ -69,7 +69,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
             ImageIds = concert.AdditionalImages == null ? new int[0] : concert.AdditionalImages.Select(i => i.ImageId).ToArray(),
             ImageId = concert.ImageId
         };
-        public static async Task<LightConcertDto[]> ToDtosAsync(this IQueryable<Concert> concerts) => (await concerts.ToArrayAsync()).Select(c => 
+        public static async Task<LightConcertDto[]> ToDtosAsync(this IQueryable<Concert> concerts) => (await concerts.ToArrayAsync()).Select(c =>
         new LightConcertDto()
         {
             ConcertId = c.ConcertId,
@@ -79,7 +79,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
             IsActiveFlag = c.IsActiveFlag,
             LeftCount = c.LeftCount,
             Performer = c.Performer,
-            ImageId = c.ImageId
+            ImageId = c.ImageId,
+            Longitude = c.Longitude,
+            Latitude = c.Latitude
         }).ToArray();
         public static ClassicConcert ToClassicConcert(this AddConcertDto dto, Guid userId, int ImageId) => new ClassicConcert()
         {

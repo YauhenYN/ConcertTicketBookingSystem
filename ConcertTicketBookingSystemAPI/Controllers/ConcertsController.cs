@@ -132,8 +132,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 else concerts = _context.PartyConcerts;
             }
             else concerts = _context.Concerts;
+            if (dto.ByActivity != null) concerts = concerts.Where(c => c.IsActiveFlag == dto.ByActivity);
             if (dto.ByUserId != null) concerts = concerts.Where(c => c.UserId == dto.ByUserId);
-            if(dto.ByPerformer != null) concerts = concerts.Where(c => c.Performer == dto.ByPerformer);
+            if(dto.ByPerformer != null) concerts = concerts.Where(c => c.Performer.ToLower().Contains(dto.ByPerformer.ToLower()));
             concerts = concerts.Where(c => c.Cost < dto.UntilPrice && c.Cost >= dto.FromPrice);
             var concertsCount = concerts.Count();
             if (concertsCount > 0)

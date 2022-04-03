@@ -208,3 +208,13 @@ body {
     font-family: sans-serif;
     margin: 1em;
 }
+#searchButtonLink{
+    text-decoration: none;
+}
+.boxRowLeftText{
+    padding-right: 1em;
+    font-weight: bold;
+    white-space: nowrap;
+    border-right-style:dashed;
+    color: #083259;
+}

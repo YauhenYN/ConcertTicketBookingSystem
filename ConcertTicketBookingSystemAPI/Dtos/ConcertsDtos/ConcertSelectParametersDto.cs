@@ -12,7 +12,8 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         public int NextPage { get; init; }
         [Required]
         public int NeededCount { get; init; }
-        public Guid ByUserId { get; init; }
+        public bool? ByActivity { get; init; }
+        public Guid? ByUserId { get; init; }
         [Range(0, 2)]
         public ConcertType? ByConcertType { get; init; }
         [StringLength(50, MinimumLength = 3)]

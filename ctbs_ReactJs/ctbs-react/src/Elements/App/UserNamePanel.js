@@ -14,9 +14,11 @@ function UserNamePanel() {
                         Персонализ.
                     </div>
                 </Link>
-                <div className="popup_button">
-                    Поиск
-                </div>
+                <Link to="/search" state={{}}>
+                    <div className="popup_button">
+                        Поиск
+                    </div>
+                </Link>
                 <div className="popup_button" onClick={logOut}>
                     Выйти
                 </div>

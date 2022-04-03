@@ -41,13 +41,6 @@
 .boxRowRightText{
     padding-left: 1em;
 }
-.boxRowLeftText{
-    padding-right: 1em;
-    font-weight: bold;
-    white-space: nowrap;
-    border-right-style:dashed;
-    color: #083259;
-}
 .personalizationText{
 
     white-space: nowrap;

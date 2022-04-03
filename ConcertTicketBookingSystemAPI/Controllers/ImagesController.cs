@@ -26,14 +26,14 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpGet]
         [Route("{imageId}")]
-        public async Task<ActionResult<FileResult>> GetImageAsync(int imageId)
+        public async Task<FileContentResult> GetImageAsync(int imageId)
         {
             var image = await _context.Images.FirstOrDefaultAsync(i => i.ImageId == imageId);
             if (image != null)
             {
                 return new FileContentResult(image.Source, image.Type);
             }
-            else return NotFound();
+            else return new FileContentResult(new byte[0], "image/png");
         }
         [HttpPost]
         [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]

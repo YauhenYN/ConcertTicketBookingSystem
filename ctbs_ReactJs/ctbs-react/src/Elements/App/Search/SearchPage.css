@@ -1,0 +1,51 @@
+.concertTypeHeader{
+    display: flex;
+    flex-direction: row;
+}
+.concertTypeHeader .CheckBoxLabel{
+    display: flex;
+    flex-direction: column;
+}
+.concertTypeHeader .CheckBoxLabel{
+    align-items: center;
+}
+.outOfCheckBox{
+    width: 100%;
+    justify-content: center;
+}
+.SearchHeader{
+    display: flex;
+    flex-direction: row;
+    flex-flow: wrap;
+    align-self: center;
+}
+.inputBox{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.numberBox input{
+    width: 5em;
+}
+#mapSearch{
+    width: 70%;
+    min-width: 38em;
+    height: 30em;
+    margin: 2em auto;
+}
+.notFoundCenter{
+    height: 50vh;
+    margin-top: 50vh;
+    align-self: center;
+    font-family: fantasy;
+    font-size:xx-large;
+    color: #92392f;
+}
+#searchButton a{
+    text-decoration: none;
+}
+#searchButton input{
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -1,0 +1,26 @@
+.concertImage{
+    height: inherit;
+    max-width: 10em;
+}
+.searchPageItem{
+    height: 7em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.imageBox{
+    width: 100%;
+    height: inherit;
+}
+.concertCost{
+    width: 100%;
+}
+.concertLeftCount{
+    width: 100%;
+}
+.concertPerformer{
+    width: 100%;
+}
+.concertConcertDate{
+    width: 100%;
+}

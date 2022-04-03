@@ -28,5 +28,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [Required]
         [Range(0, 2)]
         public ConcertType ConcertType { get; init; }
+        [Required]
+        public double Latitude { get; init; }
+        [Required]
+        public double Longitude { get; init; }
     }
 }
