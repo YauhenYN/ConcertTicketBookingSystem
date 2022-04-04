@@ -107,4 +107,6 @@
     align-items: center;
     font-size: smaller;
     font-family: cursive;
+    text-decoration: none;
+    color: inherit;
 }

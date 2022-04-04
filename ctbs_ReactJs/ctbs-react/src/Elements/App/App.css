@@ -28,11 +28,11 @@ body {
     top: 0px;
     display: flex;
     flex-direction: row;
-    z-index: 1;
     min-width: 41em;
     width: 90%;
     padding: 0% 5%;
     max-height: 6vh;
+    z-index: 3;
 }
 
 #header_image {

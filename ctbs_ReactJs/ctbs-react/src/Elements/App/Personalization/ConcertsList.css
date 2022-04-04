@@ -23,3 +23,7 @@
 .concertDateActionList{
     width: 80%;
 }
+.concertLink{
+    color: inherit;
+    text-decoration: none;
+}
