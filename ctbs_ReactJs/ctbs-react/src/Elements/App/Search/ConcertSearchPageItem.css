@@ -3,24 +3,40 @@
     max-width: 10em;
 }
 .searchPageItem{
-    height: 7em;
+    height: 6em;
     display: flex;
     flex-direction: row;
     align-items: center;
+    border-style: solid;
+    color: #083259;
+    font-family: sans-serif;
+    margin-bottom: 2em;
+    cursor: pointer;
+    text-decoration: none;
+}
+.searchPageItem:hover{
+    background-color: #3d75a833;
+}
+.searchPageItem:active{
+    background-color: #d6a66778;
 }
 .imageBox{
-    width: 100%;
+    width: 50%;
     height: inherit;
 }
 .concertCost{
-    width: 100%;
+    width: 40%;
 }
 .concertLeftCount{
-    width: 100%;
+    width: 30%;
 }
 .concertPerformer{
-    width: 100%;
+    width: 120%;
+    overflow-wrap: anywhere;
 }
 .concertConcertDate{
     width: 100%;
+}
+.concertConcertType{
+    width: 70%;
 }
