@@ -128,7 +128,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
             UserId = userId,
             Censure = dto.PartyConcertInfo.Censure
         };
-        public static Ticket ToTicket(this BuyTicketDto dto, Guid userId, int concertId, Guid promoCodeId) => new Ticket()
+        public static Ticket ToTicket(this BuyTicketDto dto, Guid userId, int concertId, Guid? promoCodeId) => new Ticket()
         {
             ConcertId = concertId,
             Count = dto.Count,

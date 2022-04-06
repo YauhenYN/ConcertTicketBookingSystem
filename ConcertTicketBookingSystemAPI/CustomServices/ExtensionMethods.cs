@@ -13,8 +13,13 @@ namespace ConcertTicketBookingSystemAPI.CustomServices
     {
         public static void AddGuidConfirmationService(this IServiceCollection collection, int expirationSpan, int timerPeriod)
         {
-            collection.AddSingleton<IConfirmationService<Guid, DbContext>, GuidConfirmationService<DbContext>>(provider => 
-            new GuidConfirmationService<DbContext>(expirationSpan, timerPeriod));
+            collection.AddSingleton<IConfirmationService<Guid, DbContext>, ConfirmationService<Guid, DbContext>>(provider => 
+            new ConfirmationService<Guid, DbContext>(expirationSpan, timerPeriod));
+        }
+        public static void AddStringConfirmationService(this IServiceCollection collection, int expirationSpan, int timerPeriod)
+        {
+            collection.AddSingleton<IConfirmationService<string, DbContext>, ConfirmationService<string, DbContext>>(provider =>
+            new ConfirmationService<string, DbContext>(expirationSpan, timerPeriod));
         }
         public static void AddEmailSenderService(this IServiceCollection collection, string host, int port, string name, string email, string password)
         {

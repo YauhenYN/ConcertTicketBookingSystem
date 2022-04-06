@@ -90,6 +90,7 @@ namespace ConcertTicketBookingSystemAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConcertTicketBookingSystemAPI", Version = "v1" });
             });
             services.AddGuidConfirmationService(Configuration.GetValue<int>("EmailConfirmationTimeSpan"), 10000);
+            services.AddStringConfirmationService(Configuration.GetValue<int>("EmailConfirmationTimeSpan"), 10000);
             var senderSection = Configuration.GetSection("EmailSenderSettings");
             services.AddEmailSenderService(
                 senderSection["host"],
