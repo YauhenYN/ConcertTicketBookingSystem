@@ -1,0 +1,92 @@
+.imageLeftSideConcert{
+    width: 60%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    border-style: groove;
+    border-color: #083259;
+    height: 40em;
+    min-width: 40.5em;
+    margin-top: 2em;
+}
+.leftImagesBox{
+    display: flex;
+    flex-direction: row;
+    height: 5em;
+}
+.smallImageBox{
+    width: 100%;
+    border-top-style: groove;
+    border-color: #083259;
+    text-align: center;
+    cursor: pointer;
+}
+.smallImageBox:hover{
+    background-color: #3d75a833;
+}
+.smallImageBox:active{
+    background-color: #d6a66778;
+}
+.smallConcertImage{
+    height: inherit;
+    max-height: 100%;
+    align-self: center;
+    max-width: 100%;
+}
+.rightSideConcertMenu{
+    
+}
+.imagesBox{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2em;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.topImageConcert{
+    height: 100%;
+    justify-content: center;
+    display: flex;
+}
+.topImageConcert :first-child{
+    height: fit-content;
+}
+.mapConcertPage{
+    height: 30em;
+    width: 60%;
+    min-width: 40.5em;
+    align-self: center;
+    margin: 2em 0em;
+}
+.concertIsActive{
+
+}
+.regularConcertText{
+    font-family: system-ui;
+    color: #083259;
+    margin: 2em 1em;
+    display: flex;
+    flex-direction: row;
+}
+.MainPartConcertText{
+    font-weight: bold;
+    white-space: break-spaces;
+}
+.buyTicketApi{
+    text-decoration: none;
+}
+.buyTicketApi input{
+    width: 10em;
+    margin: auto;
+}
+.outOfCountInput{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#discountConcertText{
+    margin-bottom: 0.5em;
+}
+.outOfCountInput .regularConcertText{
+    margin: 0;
+}

@@ -181,6 +181,15 @@ export const GetPromoCodeByIdThunkActionCreator = (promoCodeId) => {
         });
     }
 };
+export const GetFullConcertActionCreator = (concertId) => {
+    return async function fetchTokenThunk() {
+        return axios.get(conf.apiLink + "/Concerts/"+ concertId, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+};
 export const UpdateEmailActionCreator = (email) => {
     return async function UpdateEmailThunk() {
         await axios.post(conf.apiLink + conf.updateEmailAddition, { newEmail: email }, {
@@ -231,6 +240,7 @@ export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConce
         });
     }
 }
+
 export const TakeAdminRightsActionCreator = (id) => {
     return async function TakeAdminRightsThunk(dispatch) {
         await axios.post(conf.apiLink + conf.takeRightsAddition + "?id=" + id, {}, {
@@ -337,6 +347,19 @@ export const AddImageActionCreator = (imageType, image, concertId) => {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             }
+        });
+    }
+}
+export const BuyTicketActionCreator = (count, concertId) => {
+    return async function AddImageThunk() {
+        await axios.post(conf.apiLink + "/Concerts/" + concertId + "/Buy/PayPal", {
+            count: count,
+        }, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+            }
+        }).then(result => {
+            window.location = result.data
         });
     }
 }

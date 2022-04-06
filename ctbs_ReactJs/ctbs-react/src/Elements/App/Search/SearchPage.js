@@ -34,6 +34,9 @@ function SearchPage() {
                 setPagesNumber(result.data.pagesCount);
                 pageNumber === 0 && setPageNumber(pageNumber + 1);
                 setIsLoading(false);
+            }).catch(() => {
+                setConcerts([]);
+                setIsLoading(false);
             });
         }
         dispatches();

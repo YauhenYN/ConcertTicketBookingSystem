@@ -56,15 +56,15 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("{concertId}/Buy/PayPal")]
-        public async Task<ActionResult> BuyTicket_PayPalAsync(int concertId, BuyTicketDto dto)
+        public async Task<ActionResult<string>> BuyTicket_PayPalAsync(int concertId, BuyTicketDto dto)
         {
-            if (_context.Concerts.Any(c => c.ConcertId == concertId))
+            var concert = await _context.Concerts.FirstOrDefaultAsync(c => c.ConcertId == concertId);
+            if (concert != null && concert.IsActiveFlag == true)
             {
-                var concert = await _context.Concerts.FirstOrDefaultAsync(c => c.ConcertId == concertId);
                 var user = await _context.Users.Include(u => u.PromoCode).FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
                 var ticket = dto.ToTicket(Guid.Parse(HttpContext.User.Identity.Name), concertId, user.PromoCodeId.Value);
                 decimal cost = concert.Cost;
-                if (user.PromoCode != null) cost = cost - user.PromoCode.Discount;
+                if (user.PromoCode != null) cost = cost > user.PromoCode.Discount ? cost - user.PromoCode.Discount : 0;
                 HttpResponse response = await _payment.CreateOrderAsync("USD", cost, "Count: " + ticket.Count + "\n");
                 Order result = response.Result<Order>();
                 string approveUrl = null;
@@ -95,28 +95,34 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                             $"<h1>На концерт:</h1>" +
                             $"<a href = \"{_configuration["RedirectUrl"]}/Concerts/{concert.ConcertId}\">Концерт</a>");
                     });
-                    return Redirect(approveUrl);
+                    return approveUrl;
                 }
                 else return Conflict();
             }
             else return NotFound();
         }
 
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet]
         [Route("Buy/PayPal")]
-        public async Task<ActionResult> BuyTicket_PayPalAsync()
+        public async Task<ActionResult> BuyTicket_PayPalAsync([FromQuery]string token)
         {
-            var orderId = Request.Query["token"];
             //this is where actual transaction is carried out
-            HttpResponse response = await _payment.CaptureOrderAsync(orderId);
-            Order result = response.Result<Order>();
-            if (result.Status.Trim().ToUpper() == "COMPLETED")
+            HttpResponse response;
+            try
             {
-                _confirmationService.Confirm(Guid.Parse(HttpContext.User.Identity.Name), _context);
-                return Redirect(_configuration.GetSection("PayPal").GetValue<string>("successURL"));
+                response = await _payment.CaptureOrderAsync(token);
+                Order result = response.Result<Order>();
+                if (result.Status.Trim().ToUpper() == "COMPLETED")
+                {
+                    _confirmationService.Confirm(Guid.Parse(HttpContext.User.Identity.Name), _context);
+                    return Redirect(_configuration.GetSection("PayPal").GetValue<string>("successURL"));
+                }
+                else return Conflict();
             }
-            else return Conflict();
+            catch
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]

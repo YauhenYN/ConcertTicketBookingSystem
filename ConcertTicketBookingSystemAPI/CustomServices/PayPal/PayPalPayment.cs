@@ -33,7 +33,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.PayPal
                             AmountWithBreakdown = new AmountWithBreakdown()
                             {
                                 CurrencyCode = currencyCode,
-                                Value = amount.ToString()
+                                Value = Math.Round(amount, 2).ToString()
                             }
                         }
                     },

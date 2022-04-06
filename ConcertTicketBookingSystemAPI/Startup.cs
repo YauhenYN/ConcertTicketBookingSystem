@@ -131,7 +131,7 @@ namespace ConcertTicketBookingSystemAPI
             app.UseRouting();
             app.UseCors(options =>
             {
-                options.WithOrigins(new[] { Configuration["RedirectUrl"] });
+                options.WithOrigins(Configuration["RedirectUrl"], Configuration.GetSection("PayPal")["thenRedirectedTo"]);
                 options.AllowAnyHeader();
                 options.AllowAnyMethod();
                 options.AllowCredentials();

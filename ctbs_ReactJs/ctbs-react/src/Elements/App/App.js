@@ -14,6 +14,7 @@ import BirthYearModalWindow from './BirthYearModalWindow';
 import { useState } from 'react';
 import NotFound from '../../NotFound';
 import SearchPage from './Search/SearchPage';
+import ConcertPage from '../ConcertPage/ConcertPage';
 
 function App({ props, logIn }) {
   const [isLoading, setisLoading] = useState(true);
@@ -32,6 +33,7 @@ function App({ props, logIn }) {
             {props.isLoggedIn ? <Route path="/" element={<MainAuthorized/>}/> : <Route path="/" element={<Main/>}/>}
             {props.isLoggedIn && <Route path="/personalization" element={<Personalization/>}></Route>}
             <Route path="/search" element={<SearchPage/>}/>
+            <Route path="/concerts/:concertId" element={<ConcertPage/>}/>
             <Route path = "*" element = {<NotFound/>}/>
           </Routes>
         </div>
