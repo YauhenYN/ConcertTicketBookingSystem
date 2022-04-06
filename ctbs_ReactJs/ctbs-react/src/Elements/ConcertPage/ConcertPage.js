@@ -74,7 +74,7 @@ function ConcertPage() {
                 {concert.concertType === 2 && <>
                     <div className="regularConcertText"><div className="MainPartConcertText">Допустимый возраст: </div>{concert.partyConcertInfo.censure}</div>
                 </>}
-                {concert.isActiveFlag && <>
+                {concert.isActiveFlag && concert.leftTicketsCount > 0 && <>
                     <div className="outOfCountInput">
                         {promoCode && <div id = "discountConcertText" className="regularConcertText"><div className="MainPartConcertText">Скидка: </div>{promoCode.discount}$</div>}
                         <div className="regularConcertText"><div className="MainPartConcertText">Количество</div></div>

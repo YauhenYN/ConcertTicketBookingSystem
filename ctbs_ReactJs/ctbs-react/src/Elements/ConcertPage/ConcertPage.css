@@ -5,9 +5,9 @@
     flex-direction: column;
     border-style: groove;
     border-color: #083259;
-    height: 40em;
     min-width: 40.5em;
     margin-top: 2em;
+    min-height: 40em;
 }
 .leftImagesBox{
     display: flex;

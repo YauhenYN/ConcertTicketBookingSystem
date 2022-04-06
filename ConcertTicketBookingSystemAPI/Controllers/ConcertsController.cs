@@ -60,7 +60,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult<string>> BuyTicket_PayPalAsync(int concertId, BuyTicketDto dto)
         {
             var concert = await _context.Concerts.FirstOrDefaultAsync(c => c.ConcertId == concertId);
-            if (concert != null && concert.IsActiveFlag == true)
+            if (concert != null && concert.IsActiveFlag == true && concert.LeftCount > 0)
             {
                 var user = await _context.Users.Include(u => u.PromoCode).FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
                 var ticket = dto.ToTicket(Guid.Parse(HttpContext.User.Identity.Name), concertId, user.PromoCodeId);
