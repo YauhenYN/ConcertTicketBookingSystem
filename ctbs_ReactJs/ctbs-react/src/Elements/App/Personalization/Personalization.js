@@ -10,6 +10,7 @@ import CreatePromoCodePart from "./CreatePromoCodePart";
 import PromoCodeList from "./PromoCodeList";
 import ConcertsList from "./ConcertsList";
 import AddConcertPart from "./AddConcertPart";
+import TicketsList from "./TicketsList";
 
 function Personalization() {
     const [actions, setActions] = useState();
@@ -19,11 +20,17 @@ function Personalization() {
     const [userPromoCode, setuserPromoCode] = useState({});
     const [firstConcerts, setFirstConcerts] = useState([]);
     const [pagesCount, setPagesCount] = useState();
+    const [firstTickets, setFirstTickets] = useState([]);
+    const [ticketPagesCount, setTicketPagesCount] = useState();
     useEffect(() => {
         async function dispatches() {
             await store.dispatch(actionCreators.GetActionsActionCreator()).then((result) => {
                 setActions(result.data);
             });
+            await store.dispatch(actionCreators.GetManyTicketsActionCreator(0, store.getState().user.userId, null, 15)).then(result => {
+                setFirstTickets([...result.data.tickets]);
+                setTicketPagesCount(result.data.pageCount);
+            })
             if (store.getState().user.isAdmin) {
                 await store.dispatch(actionCreators.GetManyPromocodesActionCreator(true, 1000)).then((result) => {
                     setActivePromoCodes([...result.data]);
@@ -48,12 +55,16 @@ function Personalization() {
         };
         dispatches().then(() => {
             setisLoading(false);
+        }).catch(() => {
+            setisLoading(false);
         });
     }, []);
     return (<>
         {isLoading === true ? (<Loading />) : (<div className="element-common">
             <div className="textHeader">Персонализация</div>
             <PersonalizationPart userPromoCode={userPromoCode} />
+            <div className="textHeader">Купленные билеты</div>
+            <TicketsList firstTickets={firstTickets} pagesCount={ticketPagesCount} />
             {store.getState().user.isAdmin && <>
                 <div className="textHeader">Администрирование</div>
                 <AdministrationPart />
@@ -63,9 +74,9 @@ function Personalization() {
                     <PromoCodeList promoCodeList={[...activePromoCodes, ...inactivePromoCodes]} /></>}
                 {firstConcerts.length > 0 && <>
                     <div className="textHeader">Список моих концертов</div>
-                    <ConcertsList firstConcerts={firstConcerts} pagesCount = {pagesCount}/>
+                    <ConcertsList firstConcerts={firstConcerts} pagesCount={pagesCount} />
                 </>}
-                <AddConcertPart/>
+                <AddConcertPart />
             </>}
             <div className="textHeader">Последние действия</div>
             <ActionList actionList={actions} />

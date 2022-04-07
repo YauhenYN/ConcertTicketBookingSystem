@@ -15,7 +15,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.TicketsDtos
             OnCount = ticket.Count,
             PromoCode = ticket.PromoCodeId,
             TicketId = ticket.TicketId,
-            UserId = ticket.UserId
+            UserId = ticket.UserId,
+            ConcertId = ticket.ConcertId,
+            ConcertPerformer = ticket.Concert.Performer
         };
         public static async Task<TicketDto[]> ToDtosAsync(this IQueryable<Ticket> tickets) => await tickets.Select(t => t.ToDto()).ToArrayAsync();
         //public static Ticket ToTicket(this AddTicketDto dto, Guid userId) => new Ticket() { Count = dto.OnCount, IsMarkedFlag = false, PromoCodeId = dto.PromoCode, TicketId = Guid.NewGuid(), UserId = userId };

@@ -10,8 +10,8 @@ namespace ConcertTicketBookingSystemAPI.Dtos.TicketsDtos
     {
         [Required]
         public int PageNumber { get; init; }
-        [Required]
-        public Guid ByUserId { get; init; }
+        public Guid? ByUserId { get; init; }
+        public int? ByConcertId { get; init; }
         [Required]
         public int NeededCount { get; set; }
     }

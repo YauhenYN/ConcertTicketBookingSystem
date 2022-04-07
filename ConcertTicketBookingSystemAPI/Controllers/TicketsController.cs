@@ -39,15 +39,17 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("many")]
         public async Task<ActionResult<TicketSelectorDto>> GetManyTicketsAsync([FromQuery]TicketSelectParametersDto dto)
         {
-            var tickets = _context.Tickets.Where(t => dto.ByUserId == t.UserId);
+            IQueryable<Ticket> tickets = _context.Tickets.Include(t => t.Concert);
+            if (dto.ByUserId != null) tickets = tickets.Where(t => dto.ByUserId == t.UserId);
+            if (dto.ByConcertId != null) tickets = tickets.Where(t => t.ConcertId == dto.ByConcertId);
             var ticketsCount = tickets.Count();
             if (ticketsCount > 0)
             {
                 TicketSelectorDto selectorDto = new TicketSelectorDto()
                 {
-                    PageCount = ticketsCount / dto.NeededCount,
+                    PageCount = (ticketsCount / dto.NeededCount) + 1,
                     CurrentPage = dto.PageNumber,
-                    Tickets = await tickets.Skip((dto.PageNumber - 1) * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync()
+                    Tickets = await tickets.Skip(dto.PageNumber * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync()
                 };
                 return selectorDto;
             }

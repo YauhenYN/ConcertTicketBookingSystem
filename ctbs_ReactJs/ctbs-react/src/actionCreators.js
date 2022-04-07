@@ -241,6 +241,32 @@ export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConce
     }
 }
 
+export const GetManyTicketsActionCreator = (nextPage, byUserId, ByConcertId, neededCount) => {
+    return async function GetManyPromoCodesThunk() {
+        return await axios.get(conf.apiLink + conf.getTickets + "/many", {
+            params: {
+                pageNumber: nextPage,
+                byUserId: byUserId,
+                ByConcertId: ByConcertId,
+                neededCount: neededCount
+            },
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
+export const GetTicketByTicketIdActionCreator = (ticketId) => {
+    return async function GetManyPromoCodesThunk() {
+        return await axios.get(conf.apiLink + conf.getTickets + "/" + ticketId, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
 export const TakeAdminRightsActionCreator = (id) => {
     return async function TakeAdminRightsThunk(dispatch) {
         await axios.post(conf.apiLink + conf.takeRightsAddition + "?id=" + id, {}, {
@@ -271,7 +297,7 @@ export const ActivateConcertInListActionCreator = (id) => {
 }
 
 export const DeactivatePromoCodeInListActionCreator = (id) => {
-    return async function TakeAdminRightsThunk() {
+    return async function DeactivatePromoCodeInListThunk() {
         return await axios.post(conf.apiLink + "/PromoCodes/" + id + "/Deactivate", {}, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
@@ -279,6 +305,27 @@ export const DeactivatePromoCodeInListActionCreator = (id) => {
         });
     }
 }
+
+export const MarkTicketActionCreator = (id) => {
+    return async function MarkTicketThunk() {
+        return await axios.post(conf.apiLink + "/Tickets/" + id + "/Mark", {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
+export const UnmarkTicketActionCreator = (id) => {
+    return async function UnmarkTicketThunk() {
+        return await axios.post(conf.apiLink + "/Tickets/" + id + "/Unmark", {}, {
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
 
 export const DeactivateConcertInListActionCreator = (id) => {
     return async function TakeAdminRightsThunk() {

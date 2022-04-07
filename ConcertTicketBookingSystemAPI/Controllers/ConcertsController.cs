@@ -83,6 +83,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                         user = ((Models.ApplicationContext)context).Users.Include(u => u.PromoCode).FirstOrDefault(u => u.UserId == user.UserId);
                         var promoCode = ((Models.ApplicationContext)context).PromoCodes.FirstOrDefault(p => p.PromoCodeId == user.PromoCodeId);
                         concert = ((Models.ApplicationContext)context).Concerts.FirstOrDefault(c => c.ConcertId == concert.ConcertId);
+                        ((Models.ApplicationContext)context).AddAction(user.UserId, "Bought ticket");
                         if (user.PromoCode != null)
                         {
                             ticket.PromoCodeId = user.PromoCodeId;

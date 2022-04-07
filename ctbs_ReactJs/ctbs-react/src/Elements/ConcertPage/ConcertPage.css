@@ -90,3 +90,23 @@
 .outOfCountInput .regularConcertText{
     margin: 0;
 }
+
+
+
+
+.whoBoughtTicket{
+    width: 400%;
+}
+.countTicket{
+    width: 100%;
+}
+.isMarkedTicket{
+    width: 100%;
+}
+.checkTicketButton{
+    width: 150%;
+    margin-right: 0.5em;
+}
+#TicketListConcertPage{
+    width: 70%;
+}

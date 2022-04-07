@@ -18,5 +18,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.TicketsDtos
         [Required]
         public bool IsMarked { get; init; }
         public Guid? PromoCode { get; init; }
+        [Required]
+        public int ConcertId { get; init; }
+        [Required]
+        public string ConcertPerformer { get; init; }
     }
 }

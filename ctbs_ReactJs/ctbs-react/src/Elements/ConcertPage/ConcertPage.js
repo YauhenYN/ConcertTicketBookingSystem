@@ -9,6 +9,7 @@ import './ConcertPage.css';
 import GoogleMapReact from 'google-map-react';
 import Button from '../../CommonElements/Button';
 import NumberInput from '../../CommonElements/NumberInput';
+import TicketAdministration from "./TicketAdministration";
 
 const AnyReactComponent = ({ text }) => <div className="MapMarker">{text}</div>;
 
@@ -28,11 +29,13 @@ function ConcertPage() {
                 ...result.data.imageIds.map((id, index) =>
                     <img key={index + 1} src={apiLink + "/Images/" + id} alt={result.data.performer} className="smallConcertImage" />)]);
             });
-            if(store.getState().user.promoCodeId) await store.dispatch(actionCreators.GetPromoCodeByIdThunkActionCreator(store.getState().user.promoCodeId)).then((result) => {
+            if (store.getState().user.promoCodeId) await store.dispatch(actionCreators.GetPromoCodeByIdThunkActionCreator(store.getState().user.promoCodeId)).then((result) => {
                 setPromoCode(result.data);
             });
         }
         dispatches().then(() => {
+            setIsLoading(false);
+        }).catch(() => {
             setIsLoading(false);
         })
     }, [concertId])
@@ -76,7 +79,7 @@ function ConcertPage() {
                 </>}
                 {concert.isActiveFlag && concert.leftTicketsCount > 0 && <>
                     <div className="outOfCountInput">
-                        {promoCode && <div id = "discountConcertText" className="regularConcertText"><div className="MainPartConcertText">Скидка: </div>{promoCode.discount}$</div>}
+                        {promoCode && <div id="discountConcertText" className="regularConcertText"><div className="MainPartConcertText">Скидка: </div>{promoCode.discount}$</div>}
                         <div className="regularConcertText"><div className="MainPartConcertText">Количество</div></div>
                         <NumberInput value={count} onChange={event => setCount(event.target.value)} min={1} max={5} />
                     </div>
@@ -98,6 +101,10 @@ function ConcertPage() {
                 }
             </GoogleMapReact>
         </div>
+        {store.getState().user.isAdmin && <>
+            <TicketAdministration concertId = {concert.concertId}/>
+        </>
+        }
     </div> :
         <Loading />}</>
 }
