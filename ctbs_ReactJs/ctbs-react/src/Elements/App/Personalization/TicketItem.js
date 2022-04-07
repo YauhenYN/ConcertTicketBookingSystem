@@ -9,6 +9,9 @@ function TicketItem(props) {
                 {props.ticket.concertPerformer}
             </div>
         </Link>
+        <div className="concertPersonalizationTicket">
+            {props.ticket.ticketId}
+        </div>
         <div className="countPersonalizationTicket">
             {props.ticket.onCount}
         </div>

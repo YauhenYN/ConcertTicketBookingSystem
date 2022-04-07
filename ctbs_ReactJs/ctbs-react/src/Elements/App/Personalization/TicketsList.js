@@ -16,6 +16,7 @@ function TicketsList(props) {
                 <div className="ListTable">
                     <div className="ListHeader">
                         <div className="concertPersonalizationTicket">Исполнитель</div>
+                        <div className="concertPersonalizationTicket">Id билета</div>
                         <div className="countPersonalizationTicket">Количество</div>
                         <div className="isMarkedPersonalizationTicket">Отмечен</div>
                     </div>
