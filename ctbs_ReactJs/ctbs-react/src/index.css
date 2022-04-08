@@ -4,3 +4,8 @@
     font-size: large;
     color: #083259;
 }
+.nextLineLink{
+    text-align: center;
+    color: #083259;
+    display: flex;
+}
