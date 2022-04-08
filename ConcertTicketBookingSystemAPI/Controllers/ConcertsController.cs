@@ -64,7 +64,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             {
                 var user = await _context.Users.Include(u => u.PromoCode).FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
                 var ticket = dto.ToTicket(Guid.Parse(HttpContext.User.Identity.Name), concertId, user.PromoCodeId);
-                decimal cost = concert.Cost;
+                decimal cost = concert.Cost * dto.Count;
                 if (user.PromoCode != null) cost = cost > user.PromoCode.Discount ? cost - user.PromoCode.Discount : 0;
                 PayPalHttp.HttpResponse response = await _payment.CreateOrderAsync("USD", cost, "Count: " + ticket.Count + "\n");
                 Order result = response.Result<Order>();
@@ -91,16 +91,16 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                             user.PromoCodeId = null;
                             user.PromoCode = null;
                         }
-                        concert.LeftCount--;
+                        concert.LeftCount = concert.LeftCount - ticket.Count;
                         ((Models.ApplicationContext)context).Tickets.Add(ticket);
                         ((Models.ApplicationContext)context).SaveChanges();
-                        _senderService.SendHtmlAsync("Ticket", user.Email,
-                            $"<p>Id Билета - {ticket.TicketId}</p>" +
-                            $"<p>На количество - {ticket.Count}</p>" +
-                            $"<p>Кому - {user.Name}</p>" +
-                            $"<p>Оплачено - {cost}</p>" +
-                            $"<h1>На концерт:</h1>" +
-                            $"<a href = \"{_configuration["RedirectUrl"]}/Concerts/{concert.ConcertId}\">Концерт</a>");
+                        _senderService.SendHtml("Ticket", user.Email,
+                        $"<p>Id Билета - {ticket.TicketId}</p>" +
+                        $"<p>На количество - {ticket.Count}</p>" +
+                        $"<p>Кому - {user.Name}</p>" +
+                        $"<p>Оплачено - {cost}</p>" +
+                        $"<h1>На концерт:</h1>" +
+                        $"<a href = \"{_configuration["RedirectUrl"]}/Concerts/{concert.ConcertId}\">Концерт</a>");
                     });
                     return approveUrl;
                 }
