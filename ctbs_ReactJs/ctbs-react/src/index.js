@@ -11,28 +11,23 @@ import Privacy from './Elements/Privacy/Privacy';
 import * as actionCreators from "./actionCreators";
 import PaymentSuccess from './PaymentSuccessPage';
 import PaymentCancel from './PaymentCancel';
-import HttpsRedirect from 'react-https-redirect';
 
 
 store.dispatch(actionCreators.EmptyStateActionCreator());
 
 ReactDOM.render(
-  <HttpsRedirect>
+  <React.StrictMode>
     <Provider store={store}>
-      <React.StrictMode>
-
-        <BrowserRouter>
-          <Routes>
-            <Route path="*" element={<App />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/Payment/Success" element={<PaymentSuccess />} />
-            <Route path="/Payment/Cancel" element={<PaymentCancel />} />
-          </Routes>
-        </BrowserRouter>
-
-      </React.StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route path="*" element={<App />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/Payment/Success" element={<PaymentSuccess />} />
+          <Route path="/Payment/Cancel" element={<PaymentCancel />} />
+        </Routes>
+      </BrowserRouter>
     </Provider>
-  </HttpsRedirect>,
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
