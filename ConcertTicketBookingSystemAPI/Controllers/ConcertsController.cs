@@ -141,7 +141,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpGet]
         [Route("many/light")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<ConsertSelectorDto>> GetManyLightConcertsAsync([FromQuery] ConcertSelectParametersDto dto)
         {
             IQueryable<Models.Concert> concerts;
