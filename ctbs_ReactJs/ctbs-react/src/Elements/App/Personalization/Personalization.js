@@ -27,11 +27,11 @@ function Personalization() {
         async function dispatches() {
             await store.dispatch(actionCreators.GetActionsActionCreator()).then((result) => {
                 setActions(result.data);
-            });
+            }).catch(() => { });
             await store.dispatch(actionCreators.GetManyTicketsActionCreator(0, store.getState().user.userId, null, 15)).then(result => {
                 setFirstTickets([...result.data.tickets]);
                 setTicketPagesCount(result.data.pageCount);
-            })
+            }).catch(() => { });
             if (store.getState().user.isAdmin) {
                 await store.dispatch(actionCreators.GetManyPromocodesActionCreator(true, 1000)).then((result) => {
                     setActivePromoCodes([...result.data]);
@@ -48,7 +48,7 @@ function Personalization() {
                 await store.dispatch(actionCreators.GetPromoCodeByIdThunkActionCreator(store.getState().user.promoCodeId))
                     .then((result) => {
                         if (result.data.isActiveFlag) setuserPromoCode({ ...result.data });
-                    });
+                    }).catch(() => { });
             }
             else {
                 setuserPromoCode({});
