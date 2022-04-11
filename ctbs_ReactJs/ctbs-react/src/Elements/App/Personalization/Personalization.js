@@ -64,7 +64,6 @@ function Personalization() {
         {isLoading === true ? (<Loading />) : (<div className="element-common">
             <div className="textHeader">Персонализация</div>
             <PersonalizationPart userPromoCode={userPromoCode} />
-            <div className="textHeader">Купленные билеты</div>
             <TicketsList firstTickets={firstTickets} pagesCount={ticketPagesCount} />
             {store.getState().user.isAdmin && <>
                 <div className="textHeader">Администрирование</div>

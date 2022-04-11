@@ -7,7 +7,10 @@ let accessToken;
 
 export const RefreshCodeThunkActionСreator = () => {
     return async function fetchTokenThunk(dispatch) {
-        return axios.post(conf.apiLink + conf.refreshAddition, {}, {
+        return axios.post(conf.apiLink + conf.refreshAddition, {
+            crossDomain: true,
+            xhrFields: { withCredentials: true }
+        }, {
             withCredentials: true
         }).then((result) => {
             accessToken = result.data;
@@ -183,7 +186,7 @@ export const GetPromoCodeByIdThunkActionCreator = (promoCodeId) => {
 };
 export const GetFullConcertActionCreator = (concertId) => {
     return async function fetchTokenThunk() {
-        return axios.get(conf.apiLink + "/Concerts/"+ concertId, {
+        return axios.get(conf.apiLink + "/Concerts/" + concertId, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken
             }
@@ -366,16 +369,16 @@ export const AddConcertActionCreator = (isActiveFlag, imageType, image, cost, to
             longitude: longitude,
             concertType: concertType, //0/1/2
             classicConcertInfo: classicConcertInfo === null ? null : {
-              voiceType: classicConcertInfo.voiceType,
-              concertName: classicConcertInfo.concertName,
-              compositor: classicConcertInfo.compositor
+                voiceType: classicConcertInfo.voiceType,
+                concertName: classicConcertInfo.concertName,
+                compositor: classicConcertInfo.compositor
             },
             openAirConcertInfo: openAirConcertInfo === null ? null : {
-              route: openAirConcertInfo.route,
-              headLiner: openAirConcertInfo.headLiner
+                route: openAirConcertInfo.route,
+                headLiner: openAirConcertInfo.headLiner
             },
             partyConcertInfo: partyConcertInfo === null ? null : {
-              censure: partyConcertInfo.censure
+                censure: partyConcertInfo.censure
             }
         }, {
             headers: {

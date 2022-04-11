@@ -12,6 +12,7 @@ function TicketsList(props) {
     const [pagesCount, setPagesCount] = useState(props.ticketPagesCount);
     return <>
         {tickets.length > 0 && <>
+            <div className="textHeader">Купленные билеты</div>
             <div id = "ticketsPersonalizationList" className="outOfListTable">
                 <div className="ListTable">
                     <div className="ListHeader">

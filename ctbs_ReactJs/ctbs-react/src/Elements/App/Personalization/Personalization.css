@@ -1,18 +1,14 @@
 .boxRow{
     display: flex;
     flex-direction: row;
-    border-color: #083259;
-    border-width: initial;
-    border-style: ridge;
+    border: ridge #083259;
     margin: 0.5em 0em;
     align-items: center;
 }
 .boxColumn{
     display: flex;
     flex-direction: column;
-    border-color: #083259;
-    border-width: initial;
-    border-style: ridge;
+    border: ridge #083259;
     padding: 1em;
     margin: 1em;
 }
@@ -76,9 +72,7 @@
 
 .outOfListTable{
     position: relative;
-    border-color: #083259;
-    border-width: initial;
-    border-style: ridge;
+    border: ridge #083259;
     align-self: center;
     min-width: 40em;
     width: 90%;

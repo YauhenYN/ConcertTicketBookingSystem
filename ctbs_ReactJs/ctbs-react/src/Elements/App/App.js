@@ -19,30 +19,30 @@ import ConcertPage from '../ConcertPage/ConcertPage';
 function App({ props, logIn }) {
   const [isLoading, setisLoading] = useState(true);
   useEffect(() => {
-    logIn().then(() =>{
+    logIn().then(() => {
       setisLoading(false);
     });
   }, [logIn]);
-   return (
+  return (
     isLoading === true ? (<Loading />) : (<>
-    <div id='invisibleTop'/>
-    <Header />
+      <div id='invisibleTop' />
+      <Header />
       <div id="bodyElement">
         <div id="inBody">
           <Routes>
-            {props.isLoggedIn ? <Route path="/" element={<MainAuthorized/>}/> : <Route path="/" element={<Main/>}/>}
-            {props.isLoggedIn && <Route path="/personalization" element={<Personalization/>}></Route>}
-            <Route path="/search" element={<SearchPage/>}/>
-            <Route path="/concerts/:concertId" element={<ConcertPage/>}/>
-            <Route path = "*" element = {<NotFound/>}/>
+            {props.isLoggedIn ? <Route path="/" element={<MainAuthorized />} /> : <Route path="/" element={<Main />} />}
+            {props.isLoggedIn && <Route path="/personalization" element={<Personalization />}></Route>}
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/concerts/:concertId" element={<ConcertPage />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
         <Footer />
       </div>
       {props.isLoggedIn && !props.user.cookieConfirmationFlag && <CookieModalWindow />}
-      {props.isLoggedIn && props.user.cookieConfirmationFlag && props.user.birthDate === null && props.birthDateModalDisabled !== true 
-      && <BirthYearModalWindow />}
-      </>)
+      {props.isLoggedIn && props.user.cookieConfirmationFlag && props.user.birthDate === null && props.birthDateModalDisabled !== true
+        && <BirthYearModalWindow />}
+    </>)
   );
 }
 
