@@ -100,7 +100,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                         $"<p>Кому - {user.Name}</p>" +
                         $"<p>Оплачено - {cost}</p>" +
                         $"<h1>На концерт:</h1>" +
-                        $"<a href = \"{_configuration["RedirectUrl"]}/Concerts/{concert.ConcertId}\">Концерт</a>");
+                        $"<a href = \"{_configuration["RedirectUrl"]}/#/Concerts/{concert.ConcertId}\">Концерт</a>");
                     });
                     return approveUrl;
                 }
