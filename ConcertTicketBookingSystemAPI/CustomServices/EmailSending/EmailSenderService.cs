@@ -30,9 +30,10 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
             _client.Authenticate(email, password);
             return this;
         }
-        private MimeMessage SendHtmlBody(string topic, string toEmail, string htmlMessage)
+        private MimeMessage HtmlBody(string topic, string toEmail, string htmlMessage)
         {
-            if (!_client.IsConnected) ConnectAndAuthenticate(_email, _password);
+            if (!_client.IsConnected) _client.Connect(_host, _port, true);
+            if (!_client.IsAuthenticated) _client.Authenticate(_email, _password);
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress(_name, _email));
             emailMessage.To.Add(new MailboxAddress("", toEmail));
@@ -46,12 +47,12 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
 
         public async Task<string> SendHtmlAsync(string topic, string toEmail, string htmlMessage)
         {
-            var emailMessage = SendHtmlBody(topic, toEmail, htmlMessage);
+            var emailMessage = HtmlBody(topic, toEmail, htmlMessage);
             return await _client.SendAsync(emailMessage);
         }
         public string SendHtml(string topic, string toEmail, string htmlMessage)
         {
-            var emailMessage = SendHtmlBody(topic, toEmail, htmlMessage);
+            var emailMessage = HtmlBody(topic, toEmail, htmlMessage);
             return _client.Send(emailMessage);
         }
         public void Dispose()

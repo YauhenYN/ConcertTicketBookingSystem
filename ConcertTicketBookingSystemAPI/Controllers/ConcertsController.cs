@@ -78,7 +78,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 }
                 if (!string.IsNullOrEmpty(approveUrl))
                 {
-                    _confirmationService.Add(result.Id, (context) =>
+                    _confirmationService.Add(result.Id, async (context) =>
                     {
                         user = ((Models.ApplicationContext)context).Users.Include(u => u.PromoCode).FirstOrDefault(u => u.UserId == user.UserId);
                         var promoCode = ((Models.ApplicationContext)context).PromoCodes.FirstOrDefault(p => p.PromoCodeId == user.PromoCodeId);
@@ -94,7 +94,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                         concert.LeftCount = concert.LeftCount - ticket.Count;
                         ((Models.ApplicationContext)context).Tickets.Add(ticket);
                         ((Models.ApplicationContext)context).SaveChanges();
-                        _senderService.SendHtml("Ticket", user.Email,
+                        await _senderService.SendHtmlAsync("Ticket", user.Email,
                         $"<p>Id Билета - {ticket.TicketId}</p>" +
                         $"<p>На количество - {ticket.Count}</p>" +
                         $"<p>Кому - {user.Name}</p>" +
