@@ -95,7 +95,7 @@ function SearchPage() {
             {concerts.map(concert => {
                 return <ConcertSearchPageItem key={concert.concertId} concert={concert} />
             })}
-            {pageNumber + 1 < pagesCount && <NextPageButton onClick={AddNextPage(pageNumber, setPageNumber, concerts, setConcerts, byConcertType, store.getState().search.performer === "Поиск (Исполнитель)" ? null : store.getState().search.performer, untilPrice, fromPrice, true)} />}
+            {pageNumber < pagesCount && <NextPageButton onClick={AddNextPage(pageNumber, setPageNumber, concerts, setConcerts, byConcertType, store.getState().search.performer === "Поиск (Исполнитель)" ? null : store.getState().search.performer, untilPrice, fromPrice, true)} />}
         </div> :
             <div className='notFoundCenter'>Not Found</div> :
             <Loading/>}
