@@ -41,7 +41,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             _confirmationService = confirmationService;
         }
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("{concertId}")]
         public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId)
         {

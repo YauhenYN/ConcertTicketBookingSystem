@@ -29,7 +29,7 @@ function ConcertPage() {
                 ...result.data.imageIds.map((id, index) =>
                     <img key={index + 1} src={apiLink + "/Images/" + id} alt={result.data.performer} className="smallConcertImage" />)]);
             });
-            if (store.getState().user.promoCodeId) await store.dispatch(actionCreators.GetPromoCodeByIdThunkActionCreator(store.getState().user.promoCodeId)).then((result) => {
+            if (store.getState().user && store.getState().user.promoCodeId) await store.dispatch(actionCreators.GetPromoCodeByIdThunkActionCreator(store.getState().user.promoCodeId)).then((result) => {
                 setPromoCode(result.data);
             });
         }
@@ -77,7 +77,7 @@ function ConcertPage() {
                 {concert.concertType === 2 && <>
                     <div className="regularConcertText"><div className="MainPartConcertText">Допустимый возраст: </div>{concert.partyConcertInfo.censure}</div>
                 </>}
-                {concert.isActiveFlag && concert.leftTicketsCount > 0 && <>
+                {concert.isActiveFlag && concert.leftTicketsCount > 0 && store.getState().user && <>
                     <div className="outOfCountInput">
                         {promoCode && <div id="discountConcertText" className="regularConcertText"><div className="MainPartConcertText">Скидка: </div>{promoCode.discount}$</div>}
                         <div className="regularConcertText"><div className="MainPartConcertText">Количество</div></div>

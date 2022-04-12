@@ -127,7 +127,7 @@ namespace ConcertTicketBookingSystemAPI
             app.UseHttpsRedirection();
             app.UseCookiePolicy(new CookiePolicyOptions()
             {
-                Secure = CookieSecurePolicy.Always
+                Secure = CookieSecurePolicy.Always,
             });
             app.UseRouting();
             app.UseCors(options =>

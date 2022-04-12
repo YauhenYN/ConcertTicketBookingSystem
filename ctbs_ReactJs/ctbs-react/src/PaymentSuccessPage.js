@@ -4,7 +4,7 @@ import TextOnlyModalWindow from "./CommonElements/TextOnlyModalWindow";
 const nextLineLink = (text) => <Link to={"/"} className="nextLineLink" onClick={closeModalWindow}>{text}</Link>;
 
 function PaymentSuccess() {
-    return <TextOnlyModalWindow text={<>Билет отправлен на вашу почту{nextLineLink("Перейти на страницу приветствия")}</>} />
+    return <TextOnlyModalWindow text={<>Билет отправлен на вашу почту, также он добавлен в список билетов на вашей странице персонализации{nextLineLink("Перейти на страницу приветствия")}</>} />
 }
 export default PaymentSuccess;
 

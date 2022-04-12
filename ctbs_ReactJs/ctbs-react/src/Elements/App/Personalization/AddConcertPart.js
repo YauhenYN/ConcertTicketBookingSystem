@@ -233,7 +233,6 @@ function loadImage(images, setImages) {
             const reader = new FileReader()
             return new Promise(resolve => {
                 reader.onload = ev => {
-
                     resolve({
                         imageType: file.type,
                         image: ev.target.result.split(",")[1],
@@ -252,7 +251,7 @@ function loadImage(images, setImages) {
             }
         });
         Promise.all(promises).then((inImages) => {
-            if (images.length === 1) setImages([...inImages.slice(0, 6)]);
+            if (images.length === 0) setImages([...inImages.slice(0, 6)]);
             else {
                 const max = 6 - images.length;
                 setImages([...images, ...inImages.slice(0, max)]);
