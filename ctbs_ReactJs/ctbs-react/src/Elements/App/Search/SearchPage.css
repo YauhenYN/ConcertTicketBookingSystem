@@ -20,13 +20,11 @@
     align-self: center;
     margin: 0.5em 1em;
 }
-.SearchHeader :last-child{
-    margin: auto;
-}
 .inputBox{
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin: auto;
 }
 .numberBox input{
     width: 5em;
