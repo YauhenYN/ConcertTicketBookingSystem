@@ -101,7 +101,7 @@ function ConcertPage() {
                 }
             </GoogleMapReact>
         </div>
-        {store.getState().user.isAdmin && <>
+        {store.getState().user && store.getState().user.isAdmin && <>
             <TicketAdministration concertId = {concert.concertId}/>
         </>
         }
