@@ -14,7 +14,6 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
     public class TicketsController : ControllerBase
     {
         private readonly ILogger<ConcertsController> _logger;
@@ -27,6 +26,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpGet]
         [Route("{ticketId}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<TicketDto>> GetTicketAsync(Guid ticketId)
         {
             var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
@@ -37,6 +37,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpGet]
         [Route("many")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<TicketSelectorDto>> GetManyTicketsAsync([FromQuery]TicketSelectParametersDto dto)
         {
             IQueryable<Ticket> tickets = _context.Tickets.Include(t => t.Concert);
@@ -58,6 +59,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("{ticketId}/Mark")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> MarkTicketAsync(Guid ticketId)
         {
             var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
@@ -73,6 +75,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
 
         [HttpPost]
         [Route("{ticketId}/Unmark")]
+        [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> UnmarkTicketAsync(Guid ticketId)
         {
             var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);

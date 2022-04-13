@@ -31,9 +31,11 @@
 }
 .concertCost{
     width: 40%;
+    min-width: 3em;
 }
 .concertLeftCount{
     width: 30%;
+    min-width: 3em;
 }
 .concertPerformer{
     width: 120%;

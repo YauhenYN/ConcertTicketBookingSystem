@@ -51,7 +51,7 @@ function ConcertItem(props) {
         </Link>
         <Link to={to(concert.concertId)} className="concertDateActionList concertLink">
             <div >
-                {concert.concertDate}
+                {new Date(concert.concertDate).toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " ")}
             </div>
         </Link>
         <div className="activateButtonActionList">

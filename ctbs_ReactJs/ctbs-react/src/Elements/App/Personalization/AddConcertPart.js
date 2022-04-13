@@ -20,7 +20,7 @@ function AddConcertPart() {
     //All
     const [isActiveFlag, setIsActiveFlag] = useState(true);
     // images.imageType images.image, images.imageName
-    const [images, setImages] = useState([{}]);
+    const [images, setImages] = useState([]);
     const [cost, setCost] = useState(0.01);
     const [totalCount, setTotalCount] = useState(1);
     const [performer, setPerformer] = useState("");
@@ -38,11 +38,11 @@ function AddConcertPart() {
     //PartyConcert
     const [censure, setCensure] = useState(0);
     const addConcertByConcertType = [
-        () => addClassicConcert(isActiveFlag, images[0].imageType, images[0].image, cost, totalCount, performer, concertDate, latitude,
+        () => addClassicConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, concertDate, latitude,
             longitude, concertType, setAddConcertModalWindow, voiceType, concertName, compositor, images.slice(1)),
-        () => addOpenAirConcert(isActiveFlag, images[0].imageType, images[0].image, cost, totalCount, performer, concertDate, latitude,
+        () => addOpenAirConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, concertDate, latitude,
             longitude, concertType, setAddConcertModalWindow, route, headLiner, images.slice(1)),
-        () => addPartyConcert(isActiveFlag, images[0].imageType, images[0].image, cost, totalCount, performer, concertDate, latitude,
+        () => addPartyConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, concertDate, latitude,
             longitude, concertType, setAddConcertModalWindow, censure, images.slice(1))];
     return (
         <form className="centerBox boxColumn addConcertBox" onSubmit={addConcertByConcertType[concertType]()}>
@@ -89,7 +89,7 @@ function AddConcertPart() {
                     <div className="boxRow datetimeBox">
                         <div className="boxRowIn">
                             <div className="boxRowLeftText">Дата и время</div>
-                            <DateTimeInput value={concertDate} onChange={event => setConcertDate(event.target.value)} min={new Date().toISOString()} />
+                            <DateTimeInput value={concertDate} onChange={event => setConcertDate(event.target.value)} min={new Date().toISOString()} max = {addDays(new Date(), 100).toISOString()}/>
                         </div>
                     </div>
 
@@ -145,9 +145,9 @@ function AddConcertPart() {
             </div>
             <div className="boxRow preLoaderLoad">
                 <div className="imageLoaderBox">
-                    {images[0].imageName && <div className="imageNameText">{images[0].imageName.slice(0, 5)}... (Главная)</div>}
+                    {images[0] && images[0].imageName && <div className="imageNameText">{images[0].imageName.slice(0, 5)}... (Главная)</div>}
                     {images.slice(1).map(image => <div key={image.imageName} className="imageNameText">{image.imageName.slice(0, 5)}...</div>)}
-                    {images.length < 6 && <FileInput text="Загрузить картинки" multiple="multiple" accept="image/png, image/jpeg" onChange={loadImage(images, setImages)} />}
+                    {images.length < 5 && <FileInput text="Загрузить картинки" multiple="multiple" accept="image/png, image/jpeg" onChange={loadImage(images, setImages)} />}
                 </div>
             </div>
             <SubmitButton text="Создать" />
@@ -155,7 +155,11 @@ function AddConcertPart() {
         </form>
     );
 }
-
+function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
 function addClassicConcert(isActiveFlag, imageType, image, cost, totalCount, performer, concertDate, latitude,
     longitude, concertType, setAddConcertModalWindow, voiceType, concertName, compositor, leftImages) {
     return function action(event) {
@@ -251,11 +255,8 @@ function loadImage(images, setImages) {
             }
         });
         Promise.all(promises).then((inImages) => {
-            if (images.length === 0) setImages([...inImages.slice(0, 6)]);
-            else {
-                const max = 6 - images.length;
+                const max = 5 - images.length;
                 setImages([...images, ...inImages.slice(0, max)]);
-            }
         });
     }
 }

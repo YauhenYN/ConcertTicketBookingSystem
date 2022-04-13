@@ -5,7 +5,7 @@ export default function reducer(state, action) {
         return {
             ...state, 
             search: {
-                performer: "Поиск (Исполнитель)"
+                performer: ""
             }
         }
     }

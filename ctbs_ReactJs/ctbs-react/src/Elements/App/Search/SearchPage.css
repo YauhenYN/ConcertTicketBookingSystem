@@ -15,8 +15,7 @@
 }
 .SearchHeader{
     display: flex;
-    flex-direction: row;
-    flex-flow: wrap;
+    flex-direction: column;
     align-self: center;
     margin: 0.5em 1em;
 }
@@ -24,7 +23,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: auto;
+    right: 0%;
+    margin-left: auto;
 }
 .numberBox input{
     width: 5em;
@@ -58,10 +58,25 @@
     border: none;
     font-weight: bold;
     margin-bottom: 1em;
+    cursor: auto;
 }
 .concertElement{
     padding: 1em;
+    overflow-wrap: anywhere;
 }
 .outOfCheckBox .CheckBox{
     margin-top: auto;
+}
+.lineBox{
+    display: flex;
+    flex-direction: row;
+    margin: 0.5em 0em;
+}
+.toRightSideBox{
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+.leftLineBox{
+    margin-right: 2em;
 }

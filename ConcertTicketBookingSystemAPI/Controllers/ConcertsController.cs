@@ -145,11 +145,28 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             IQueryable<Models.Concert> concerts;
             if (dto.ByConcertType != null)
             {
-                if (dto.ByConcertType == ConcertType.ClassicConcert) concerts = _context.ClassicConcerts;
-                else if (dto.ByConcertType == ConcertType.OpenAirConcert) concerts = _context.OpenAirConcerts;
+                if (dto.ByConcertType == ConcertType.ClassicConcert)
+                {
+                    concerts = _context.ClassicConcerts;
+                    if (dto.ByCompositor != null) concerts = concerts.Where(c => 
+                    ((Models.ClassicConcert)c).Compositor.ToLower().Contains(dto.ByCompositor.ToLower()));
+                    if (dto.ByConcertName != null) concerts = concerts.Where(c =>
+                     ((Models.ClassicConcert)c).ConcertName.ToLower().Contains(dto.ByConcertName.ToLower()));
+                    if (dto.ByVoiceType != null) concerts = concerts.Where(c =>
+                     ((Models.ClassicConcert)c).VoiceType.ToLower().Contains(dto.ByVoiceType.ToLower()));
+                }
+                else if (dto.ByConcertType == ConcertType.OpenAirConcert)
+                {
+                    concerts = _context.OpenAirConcerts;
+                    if (dto.ByHeadLiner != null) concerts = concerts.Where(c =>
+                     ((Models.OpenAirConcert)c).HeadLiner.ToLower().Contains(dto.ByHeadLiner.ToLower()));
+                }
                 else concerts = _context.PartyConcerts;
             }
             else concerts = _context.Concerts;
+            foreach (var c in concerts.Where(c => c.ConcertDate < DateTime.Now)) c.IsActiveFlag = false;
+            await _context.SaveChangesAsync();
+            concerts = concerts.Where(c => c.ConcertDate >= dto.DateFrom && c.ConcertDate <= dto.DateUntil);
             if (dto.ByActivity != null) concerts = concerts.Where(c => c.IsActiveFlag == dto.ByActivity);
             if (dto.ByUserId != null) concerts = concerts.Where(c => c.UserId == dto.ByUserId);
             if (dto.ByPerformer != null) concerts = concerts.Where(c => c.Performer.ToLower().Contains(dto.ByPerformer.ToLower()));
