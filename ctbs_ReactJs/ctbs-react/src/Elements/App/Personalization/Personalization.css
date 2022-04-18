@@ -4,6 +4,7 @@
     border: ridge #083259;
     margin: 0.5em 0em;
     align-items: center;
+    box-shadow: 0px 0px 1px 0.2px #042039;
 }
 .boxColumn{
     display: flex;
@@ -16,11 +17,14 @@
     width: 60%;
     min-width: 38em;
     align-self: center;
+    box-shadow: 0px 1px 5px 0.2px #042039;
 }
 .centerBox{
     width: 50%;
     min-width: 35em;
     align-self: center;
+    box-shadow: 0px 1px 5px 0.2px #042039;
+    color: #083259;
 }
 .boxRowIn{
     display: flex;
@@ -68,6 +72,7 @@
     padding-bottom: 0.5em;
     overflow-x: hidden;
     overflow-y: scroll;
+    box-shadow: 0px 1px 5px 0.2px #042039;
 }
 
 .outOfListTable{
@@ -87,20 +92,22 @@
     color: #d6a667;
     font-weight: bold;
     font-size: smaller;
-    font-family: cursive;
+    font-family: sans-serif;
 }
 .ListItem{
     display: flex;
     flex-direction: row;
-    margin: 0.3em 0em;
-    border-bottom-style: groove;
-    border-top-style: groove;
-    border-width: medium;
-    border-color: #d5a460;
-    padding: 0.3em 0.5em;
+    margin: 0.7em 0em;
+    padding: 0.5em;
     align-items: center;
     font-size: smaller;
-    font-family: cursive;
+    font-family: sans-serif;
     text-decoration: none;
-    color: inherit;
+    background-color: #0832591c;
+    box-shadow: 0px 0px 2px 1px #042039;
+    color: #083259;
+    font-weight: bold;
+}
+.ListItemFirst{
+    height: 2em;
 }

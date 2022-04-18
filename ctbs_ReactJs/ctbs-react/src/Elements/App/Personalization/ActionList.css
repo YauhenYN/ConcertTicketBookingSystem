@@ -1,23 +1,23 @@
 .actionItem{
     display: flex;
     flex-direction: row;
-    margin: 0.3em 0em;
-    border-bottom-style: groove;
-    border-top-style: groove;
-    border-width: medium;
-    border-color: #d5a460;
-    padding: 0.3em;
+    margin: 0.7em 0em;
+    padding: 0.5em 0.3em;
+    background-color: #0832591c;
+    box-shadow: 0px 0px 2px 1px #042039;
+    font-size: smaller;
+    color: #083259;
 }
 .actionCreationTime{
     width: 12em;
     margin-left: 0.5em;
-    font-family: cursive;
-    font-size: small;
+    font-family: inherit;
     border-right-style: dashed;
+    font-weight: bold;
 }
 .actionDescription{
     margin-left: 1em;
     margin-right: 0.5em;
-    font-family: cursive;
-    font-size: small;
+    font-family: inherit;
+    font-weight: bold;
 }

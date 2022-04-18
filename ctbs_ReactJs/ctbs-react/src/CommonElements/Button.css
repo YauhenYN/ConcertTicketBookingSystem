@@ -12,6 +12,7 @@
     color: #083259;
     font-family: fantasy;
     font-size: inherit;
+    box-shadow: 0px 0px 2px 1px #042039;
 }
 .button:hover{
     border-color: #d5a460;

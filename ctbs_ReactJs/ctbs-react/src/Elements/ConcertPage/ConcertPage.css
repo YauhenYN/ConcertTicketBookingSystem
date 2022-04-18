@@ -8,6 +8,7 @@
     min-width: 40.5em;
     margin-top: 2em;
     min-height: 40em;
+    box-shadow: 0px 1px 5px 0.2px #042039;
 }
 .leftImagesBox{
     display: flex;
@@ -57,9 +58,7 @@
     min-width: 40.5em;
     align-self: center;
     margin: 2em 0em;
-}
-.concertIsActive{
-
+    box-shadow: 0px 1px 5px 0.2px #042039;
 }
 .regularConcertText{
     font-family: system-ui;

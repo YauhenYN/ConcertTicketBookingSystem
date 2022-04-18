@@ -32,6 +32,7 @@
     width: 200%;
     margin: 0.5em 1em 0.5em 0em;
     border: solid #92392f;
+    box-shadow: 0px 1px 5px 0.2px #042039;
 }
 #smallParamsBox{
     width: 70%;

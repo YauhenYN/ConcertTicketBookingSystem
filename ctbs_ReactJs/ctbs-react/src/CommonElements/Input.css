@@ -4,6 +4,7 @@
     border: solid #92392f;
     border-width: medium;
     outline: none;
+    box-shadow: 0px 0px 2px 1px #042039;
 }
 .Input:focus{
     border-color: #d5a460;

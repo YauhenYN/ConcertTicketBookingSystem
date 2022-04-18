@@ -1,0 +1,17 @@
+.authorizationLine{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.authorizationLink{
+    display: flex;
+    width: 100%;
+}
+.centerHeaderText{
+    font-family: system-ui;
+    color: #083259;
+    margin: 0.5em auto;
+}
+.NewestConcertBox{
+    
+}

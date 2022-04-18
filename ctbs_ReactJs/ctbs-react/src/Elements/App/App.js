@@ -25,8 +25,10 @@ function App({ props, logIn }) {
   }, [logIn]);
   return (
     isLoading === true ? (<Loading />) : (<>
-      <div id='invisibleTop' />
-      <Header />
+      <div id='invisibleTop' >
+        <Header />
+      </div>
+      <div className='emptyTop'></div>
       <div id="bodyElement">
         <div id="inBody">
           <Routes>
@@ -39,7 +41,7 @@ function App({ props, logIn }) {
         </div>
         <Footer />
       </div>
-      {!localStorage.getItem("cookieModalWindowDisabled") && !props.cookieConfirmationFlag  && <CookieModalWindow />}
+      {!localStorage.getItem("cookieModalWindowDisabled") && !props.cookieConfirmationFlag && <CookieModalWindow />}
       {props.isLoggedIn && props.cookieConfirmationFlag && props.user.birthDate === null && !props.birthDateModalDisabled
         && <BirthYearModalWindow />}
     </>)

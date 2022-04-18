@@ -22,7 +22,7 @@ function ConcertsList(props) {
                     <div className="concertDateActionList">Дата</div>
                     <div className="activateButtonActionList"></div>
                 </div>
-                <div className="ListItem" /><div className="ListItem" />
+                <div className="ListItemFirst" />
                 {concerts.map(concert => {
                     return <ConcertItem key={concert.concertId} concert={concert} />
                 })}

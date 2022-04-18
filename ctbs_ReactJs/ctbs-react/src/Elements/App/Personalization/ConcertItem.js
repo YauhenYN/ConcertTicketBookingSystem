@@ -57,7 +57,7 @@ function ConcertItem(props) {
         </Link>
         <div className="activateButtonActionList">
             {toLocaleDate(new Date(concert.concertDate)) > new Date() ? <>{concert.isActiveFlag ? <Button text="Деактивировать" onClick={deActivateConcert(concert, setConcert)} /> : <Button text="Активировать" onClick={activateConcert(concert, setConcert)} />}</> : 
-            <>Устарел</>} 
+            <div className="expendedConcert">Устарел</div>} 
         </div>
     </div>
     );
