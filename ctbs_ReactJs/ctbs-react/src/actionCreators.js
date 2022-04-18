@@ -74,6 +74,7 @@ export const confirmCookiesThunkActionCreator = () => {
                     'Authorization': 'Bearer ' + accessToken
                 }
             });
+            document.querySelector("body").style.overflow = "auto";
             dispatch({
                 type: actionTypes.ConfirmCookies
             })

@@ -45,6 +45,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult<ConcertDto>> GetConcertAsync(int concertId)
         {
             var concert = await _context.Concerts.Include(c => c.AdditionalImages).FirstOrDefaultAsync(c => concertId == c.ConcertId);
+            if (concert.ConcertDate < DateTime.UtcNow) concert.IsActiveFlag = false;
+            await _context.SaveChangesAsync();
             if (concert != null)
             {
                 if (concert is Models.ClassicConcert) return ((Models.ClassicConcert)concert).ToDto();
@@ -77,7 +79,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 }
                 if (!string.IsNullOrEmpty(approveUrl))
                 {
-                    _confirmationService.Add(result.Id, async (context) =>
+                    _confirmationService.Add(result.Id, (context) =>
                     {
                         user = ((Models.ApplicationContext)context).Users.Include(u => u.PromoCode).FirstOrDefault(u => u.UserId == user.UserId);
                         var promoCode = ((Models.ApplicationContext)context).PromoCodes.FirstOrDefault(p => p.PromoCodeId == user.PromoCodeId);
@@ -93,13 +95,13 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                         concert.LeftCount = concert.LeftCount - ticket.Count;
                         ((Models.ApplicationContext)context).Tickets.Add(ticket);
                         ((Models.ApplicationContext)context).SaveChanges();
-                        await _senderService.SendHtmlAsync("Ticket", user.Email,
+                        _senderService.SendHtml("Ticket", user.Email,
                         $"<p>Id Билета - {ticket.TicketId}</p>" +
                         $"<p>На количество - {ticket.Count}</p>" +
                         $"<p>Кому - {user.Name}</p>" +
                         $"<p>Оплачено - {cost}</p>" +
                         $"<h1>На концерт:</h1>" +
-                        $"<a href = \"{_configuration["RedirectUrl"]}/#/Concerts/{concert.ConcertId}\">Концерт</a>");
+                        $"<a href = \"{_configuration["RedirectUrl"]}/#/Concerts/{concert.ConcertId}\">Концерт</a>", 5);
                     });
                     return approveUrl;
                 }
@@ -164,13 +166,16 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 else concerts = _context.PartyConcerts;
             }
             else concerts = _context.Concerts;
-            foreach (var c in concerts.Where(c => c.ConcertDate < DateTime.Now)) c.IsActiveFlag = false;
+            var nowUTCDate = DateTime.Now.ToUniversalTime();
+            foreach (var c in concerts.Where(c => c.ConcertDate < nowUTCDate && c.IsActiveFlag)) c.IsActiveFlag = false;
             await _context.SaveChangesAsync();
-            concerts = concerts.Where(c => c.ConcertDate >= dto.DateFrom && c.ConcertDate <= dto.DateUntil);
+            if (dto.DateFrom != null) concerts = concerts.Where(c => c.ConcertDate >= dto.DateFrom);
+            if (dto.DateUntil != null) concerts = concerts.Where(c => c.ConcertDate <= dto.DateUntil);
             if (dto.ByActivity != null) concerts = concerts.Where(c => c.IsActiveFlag == dto.ByActivity);
             if (dto.ByUserId != null) concerts = concerts.Where(c => c.UserId == dto.ByUserId);
             if (dto.ByPerformer != null) concerts = concerts.Where(c => c.Performer.ToLower().Contains(dto.ByPerformer.ToLower()));
-            concerts = concerts.Where(c => c.Cost < dto.UntilPrice && c.Cost >= dto.FromPrice);
+            if (dto.UntilPrice != null) concerts = concerts.Where(c => c.Cost <= dto.UntilPrice);
+            if (dto.FromPrice != null) concerts = concerts.Where(c => c.Cost >= dto.FromPrice);
             var concertsCount = concerts.Count();
             if (concertsCount > 0)
             {
@@ -219,7 +224,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         public async Task<ActionResult> ActivateConcertAsync(int concertId)
         {
             var concert = await _context.Concerts.FirstOrDefaultAsync(c => concertId == c.ConcertId);
-            if (concert != null && concert.IsActiveFlag == false)
+            if (concert != null && concert.IsActiveFlag == false && concert.ConcertDate > DateTime.UtcNow)
             {
                 concert.IsActiveFlag = true;
                 await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Activated concert with id = " + concert.ConcertId);

@@ -13,6 +13,7 @@ import { useLocation } from 'react-router-dom';
 import GoogleMapReact from 'google-map-react';
 import ConcertSearchPageItem from './ConcertSearchPageItem';
 import Loading from '../../App/Loading';
+import groupByToMap from 'array.prototype.groupbytomap';
 
 const AnyReactComponent = ({ text }) => <div className="MapMarker">{text}</div>;
 
@@ -37,7 +38,7 @@ function SearchPage() {
         async function dispatches() {
             await FirstPage(setIsLoading, setPagesNumber, pageNumber, setPageNumber, setConcerts,
                 byConcertType, store.getState().search.performer,
-                untilPrice, fromPrice, true, byConcertName, byVoiceType, byHeadLiner, dateFrom, dateUntil, byCompositor)();
+                untilPrice, fromPrice, true, byConcertName, byVoiceType, byHeadLiner, new Date(dateFrom), dateUntil, byCompositor)();
         }
         dispatches();
     }, [state])
@@ -50,7 +51,7 @@ function SearchPage() {
         </div>
         <form className='SearchHeader' onSubmit={FirstPage(setIsLoading, setPagesNumber, pageNumber, setPageNumber, setConcerts,
             byConcertType, store.getState().search.performer,
-            untilPrice, fromPrice, true, byConcertName, byVoiceType, byHeadLiner, dateFrom, dateUntil, byCompositor)}>
+            untilPrice, fromPrice, true, byConcertName, byVoiceType, byHeadLiner, new Date(dateFrom), new Date(dateUntil), byCompositor)}>
             <div className='toRightSideBox'>
                 <div className='inputBox'>
                     <div className="boxRowLeftText">Исполнитель</div>
@@ -107,9 +108,7 @@ function SearchPage() {
                     }}
                     defaultZoom={1}>
                     {
-                        concerts.map(concert => {
-                            return <AnyReactComponent lat={concert.latitude} lng={concert.longitude} text={concert.performer} key={concert.concertId} />
-                        })
+                        toMapComponents(concerts)
                     }
                 </GoogleMapReact>
             </div>
@@ -130,7 +129,7 @@ function SearchPage() {
             })}
             {pageNumber < pagesCount && <NextPageButton onClick={AddNextPage(pageNumber, setPageNumber,
                 concerts, setConcerts, byConcertType, store.getState().search.performer, untilPrice,
-                fromPrice, true, byConcertName, byVoiceType, byHeadLiner, dateFrom, dateUntil, byCompositor)} />}
+                fromPrice, true, byConcertName, byVoiceType, byHeadLiner, new Date(dateFrom), new Date(dateUntil), byCompositor)} />}
         </div> :
             <div className='notFoundCenter'>Not Found</div> :
             <Loading />}
@@ -191,6 +190,21 @@ function AddNextPage(pageNumber, setPageNumber, concerts, setConcerts,
             setPageNumber(pageNumber);
         });
     }
+}
+
+function GroupConcerts(concerts) {
+    return groupByToMap(concerts, el => el.latitude + el.longitude);
+}
+function toMapComponents(concerts){
+    let components = [];
+    let index = 0;
+    GroupConcerts(concerts).forEach((group) => {
+        let text = "";
+        Array.prototype.forEach.call(group, concert => { return text = text + " " + concert.performer });
+        components[index] = <AnyReactComponent lat={group[0].latitude} lng={group[0].longitude} text={text} key={group[0].concertId} />
+        index++;
+    })
+    return components;
 }
 
 export default SearchPage;

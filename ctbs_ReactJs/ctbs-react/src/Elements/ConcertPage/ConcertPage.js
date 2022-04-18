@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import store from "../../store";
 import * as actionCreators from "../../actionCreators";
 import Loading from "../App/Loading";
-import { apiLink } from "../../configuration";
+import { apiLink, toCommonDateFormat, toLocaleDate } from "../../configuration";
 import './ConcertPage.css';
 import GoogleMapReact from 'google-map-react';
 import Button from '../../CommonElements/Button';
@@ -60,14 +60,14 @@ function ConcertPage() {
                 {concert.concertType === 1 && <>
                     <div className="regularConcertText"><div className="MainPartConcertText">Хэдлайнер: </div>{concert.openAirConcertInfo.headLiner}</div>
                 </>}
-                <div className="regularConcertText"><div className="MainPartConcertText">Дата проведения: </div>{concert.concertDate}</div>
+                <div className="regularConcertText"><div className="MainPartConcertText">Дата проведения: </div>{toCommonDateFormat(toLocaleDate(toLocaleDate(new Date(concert.concertDate))).toISOString())}</div>
                 {concert.isActiveFlag && <>
                     <div className="regularConcertText"><div className="MainPartConcertText">Стоимость: </div>{concert.cost}$</div>
                     <div className="regularConcertText"><div className="MainPartConcertText">Количество мест: </div>{concert.totalCount}</div>
                     <div className="regularConcertText"><div className="MainPartConcertText">Осталось билетов: </div>{concert.leftTicketsCount}</div>
                 </>
                 }
-                <div className="regularConcertText"><div className="MainPartConcertText">Дата создания: </div>{concert.creationTime}</div>
+                <div className="regularConcertText"><div className="MainPartConcertText">Дата создания: </div>{toCommonDateFormat(toLocaleDate(toLocaleDate(new Date(concert.creationTime))).toISOString())}</div>
                 {concert.concertType === 0 && <>
                     <div className="regularConcertText"><div className="MainPartConcertText">Тип голоса: </div>{concert.classicConcertInfo.voiceType}</div>
                 </>}

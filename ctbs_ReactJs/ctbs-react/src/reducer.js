@@ -30,18 +30,15 @@ export default function reducer(state, action) {
                 promoCodeId: action.promoCodeId,
                 name: action.name,
                 email: action.email,
-                cookieConfirmationFlag: action.cookieConfirmationFlag
             },
+            cookieConfirmationFlag: action.cookieConfirmationFlag,
             error: ''
         }
     }
     else if(action.type === actionTypes.ConfirmCookies){
         return {
             ...state,
-            user: {
-                ...state.user,
-                cookieConfirmationFlag: true
-            },
+            cookieConfirmationFlag: true
         }
     }
     else if(action.type === actionTypes.GetUserInfoFailure){

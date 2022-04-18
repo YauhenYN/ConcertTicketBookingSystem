@@ -4,9 +4,14 @@
     font-family: monospace;
     margin: 0em 1em;
     width: 100%;
+    position: relative;
+}
+.imageLoaderBox label{
+    border: solid;
+    color: #92392f;
 }
 .radioBox .outOfCheckBox{
-    width: 100%;
+    width: 100%; 
     text-align: center;
 }
 .radioBox input{
@@ -26,6 +31,7 @@
 #mapBox{
     width: 200%;
     margin: 0.5em 1em 0.5em 0em;
+    border: solid #92392f;
 }
 #smallParamsBox{
     width: 70%;

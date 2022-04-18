@@ -43,6 +43,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
             var list = new List<ValidationResult>();
             if (ImageType != "image/png" && ImageType != "image/jpeg") list.Add(new ValidationResult("Неверный формат изображения"));
             if (ClassicConcertInfo == null && OpenAirConcertInfo == null && PartyConcertInfo == null) list.Add(new ValidationResult("Должен быть определён весь тип"));
+            if (ConcertDate < DateTime.UtcNow || ConcertDate > DateTime.UtcNow.AddDays(100)) list.Add(new ValidationResult("Истекшая либо старше 100 дней дата"));
             return list;
         }
     }

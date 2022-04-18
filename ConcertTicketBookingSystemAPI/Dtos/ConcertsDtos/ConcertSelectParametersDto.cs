@@ -19,9 +19,9 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [StringLength(50, MinimumLength = 3)]
         public string ByPerformer { get; init; }
         [Range(0.01, 10000)]
-        public decimal UntilPrice { get; init; }
+        public decimal? UntilPrice { get; init; }
         [Range(0.01, 10000)]
-        public decimal FromPrice { get; init; }
+        public decimal? FromPrice { get; init; }
         [StringLength(20, MinimumLength = 3)]
         public string ByConcertName { get; init; }
         [StringLength(10, MinimumLength = 1)]

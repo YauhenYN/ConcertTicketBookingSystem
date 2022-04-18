@@ -63,8 +63,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         {
             var user = await CurrentUserAsync();
             var secretGuid = Guid.NewGuid();
-            await _emailSenderService.SendHtmlAsync("EmailConfirmation", dto.NewEmail, 
-                "<a href=\"" + _configuration["CurrentApiUrl"] + "/EmailConfirmation/Confirm?confirmationCode=" + secretGuid +"\">Подтвердить новый Email</a>");
+            _emailSenderService.SendHtml("EmailConfirmation", dto.NewEmail, 
+                "<a href=\"" + _configuration["CurrentApiUrl"] + "/EmailConfirmation/Confirm?confirmationCode=" + secretGuid +"\">Подтвердить новый Email</a>", 5);
             _confirmationService.Add(secretGuid, (context) =>
             {
                 user = ((ApplicationContext)context).Users.FirstOrDefault(u => u.UserId == user.UserId);

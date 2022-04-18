@@ -1,4 +1,8 @@
 .FileInput{
-    visibility: hidden;
+    height: 1px;
+    width: 1px;
+    visibility: visible;
     position: absolute;
+    mix-blend-mode: color;
+    margin: 50%;
 }

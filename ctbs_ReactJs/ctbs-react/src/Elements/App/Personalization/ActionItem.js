@@ -1,8 +1,10 @@
+import { toCommonDateFormat, toLocaleDate } from "../../../configuration";
+
 function ActionItem(props) {
     return (
         <div className="actionItem">
             <div className="actionCreationTime">
-                {new Date(props.creationTime).toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " ")}
+                {toCommonDateFormat(toLocaleDate(new Date(props.creationTime)).toISOString())}
             </div>
             <div className="actionDescription">
                 {props.description}

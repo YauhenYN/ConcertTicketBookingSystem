@@ -39,8 +39,8 @@ function App({ props, logIn }) {
         </div>
         <Footer />
       </div>
-      {props.isLoggedIn && !props.user.cookieConfirmationFlag && <CookieModalWindow />}
-      {props.isLoggedIn && props.user.cookieConfirmationFlag && props.user.birthDate === null && props.birthDateModalDisabled !== true
+      {!localStorage.getItem("cookieModalWindowDisabled") && !props.cookieConfirmationFlag  && <CookieModalWindow />}
+      {props.isLoggedIn && props.cookieConfirmationFlag && props.user.birthDate === null && !props.birthDateModalDisabled
         && <BirthYearModalWindow />}
     </>)
   );
@@ -51,6 +51,7 @@ const mapStateToProps = state => {
     props: {
       isLoggedIn: state.isLoggedIn,
       user: state.user,
+      cookieConfirmationFlag: state.cookieConfirmationFlag,
       birthDateModalDisabled: state.birthDateModalDisabled
     }
   }

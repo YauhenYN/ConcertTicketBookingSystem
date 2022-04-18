@@ -2,6 +2,7 @@ import store from "../../store";
 import * as actionCreators from "../../actionCreators";
 import './ModalWindow.css';
 import Button from "../../CommonElements/Button";
+import * as actionTypes from "../../actionTypes";
 
 function CookieModalWindow() {
     document.querySelector("body").style.overflow = "hidden";
@@ -16,7 +17,13 @@ function CookieModalWindow() {
 }
 
 function cookieButtonOnClick() {
-    store.dispatch(actionCreators.confirmCookiesThunkActionCreator());
+    if (store.getState().user) {
+        store.dispatch(actionCreators.confirmCookiesThunkActionCreator());
+    }
+    else {
+        localStorage.setItem("cookieModalWindowDisabled", true);
+        store.dispatch({ type: actionTypes.ConfirmCookies });
+    }
 }
 
 export default CookieModalWindow;

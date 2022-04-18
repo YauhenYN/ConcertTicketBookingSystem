@@ -39,9 +39,9 @@ function Personalization() {
                 await store.dispatch(actionCreators.GetManyPromocodesActionCreator(false, 1000)).then((result) => {
                     setInactivePromoCodes([...result.data]);
                 }).catch(() => { });
-                await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 30, null, null, 10000, 0.01, store.getState().user.userId)).then((result) => {
+                await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 30, null, null, null, null, store.getState().user.userId, null, null, null, null, null, null, null)).then((result) => {
                     setFirstConcerts([...result.data.concerts]);
-                    setPagesCount(result.data.pagesCount);
+                    setPagesCount(result.data.pagesCount); 
                 }).catch(() => { });
             };
             if (store.getState().user.promoCodeId !== null) {
@@ -80,7 +80,7 @@ function Personalization() {
                 <AddConcertPart />
             </>}
             <div className="textHeader">Последние действия</div>
-            <ActionList actionList={actions} />
+            {actions.length > 0 && <ActionList actionList={actions} />}
         </div>)
         }</>
     );

@@ -1,7 +1,7 @@
 import { useLayoutEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { apiLink } from "../../../configuration";
+import { apiLink, toCommonDateFormat, toLocaleDate } from "../../../configuration";
 import './ConcertSearchPageItem.css';
 
 const widthEEm = () => {
@@ -34,7 +34,7 @@ function ConcertSearchPageItem(props) {
             <div className="concertPerformer concertElement">
                 {props.concert.performer.length * 3 > widthEm ? props.concert.performer.slice(0, widthEm / 4) + "..." : props.concert.performer}
             </div>
-            <div className="concertConcertDate concertElement">{new Date(props.concert.concertDate).toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " ")}</div>
+            <div className="concertConcertDate concertElement">{toCommonDateFormat(toLocaleDate(toLocaleDate(new Date(props.concert.concertDate))).toISOString())}</div>
         </Link>
     );
 }

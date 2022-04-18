@@ -33,7 +33,7 @@ function ConcertsList(props) {
 }
 function AddNextPage(pageNumber, setPageNumber, concerts, setConcerts) {
     return function action() {
-        store.dispatch(actionCreators.GetManyLightConcertsActionCreator(pageNumber + 1, 30, null, null, 10000, 0.01, store.getState().user.userId)).then((result) => {
+        store.dispatch(actionCreators.GetManyLightConcertsActionCreator(pageNumber + 1, 30, null, null, null, null, store.getState().user.userId, null, null, null, null, null, null, null)).then((result) => {
             setConcerts([...concerts, ...result.data.concerts]);
             setPageNumber(pageNumber + 1);
         }).catch(() => { });

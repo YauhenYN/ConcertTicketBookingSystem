@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "array.prototype.groupby": "^1.1.0",
+    "array.prototype.groupbytomap": "^1.1.0"
+  }
+}

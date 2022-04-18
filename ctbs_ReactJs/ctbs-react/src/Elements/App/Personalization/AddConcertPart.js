@@ -1,5 +1,5 @@
 import * as actionCreators from "../../../actionCreators";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import store from "../../../store";
 import './Personalization.css';
 import TextInput from "../../../CommonElements/TextInput";
@@ -8,15 +8,27 @@ import SubmitButton from "../../../CommonElements/SubmitButton";
 import NumberInput from "../../../CommonElements/NumberInput";
 import CheckBoxInput from "../../../CommonElements/CheckBoxInput";
 import FileInput from "../../../CommonElements/FileInput";
-import DateTimeInput from "../../../CommonElements/DateTimeInput";
 import './AddConcertPart.css';
 import RadioInput from "../../../CommonElements/RadioInput";
 import GoogleMapReact from 'google-map-react';
+import DateInput from "../../../CommonElements/DateInput";
+import TimeInput from "../../../CommonElements/TimeInput";
+import { toLocaleDate } from "../../../configuration";
 
+const toZeroSecondsMilliseconds = (date) => {
+    date.setSeconds(0, 0);
+    date.setMilliseconds(0)
+    return date;
+}
+
+const addMinute = (date) => {
+    date.setMinutes(date.getMinutes() + 1);
+    return date;
+}
 const AnyReactComponent = ({ text }) => <div className="MapMarker">{text}</div>;
-
 function AddConcertPart() {
     const [addConcertModalWindow, setAddConcertModalWindow] = useState(false);
+    const [markedMapModalWindow, setMarkedMapModalWindow] = useState(false);
     //All
     const [isActiveFlag, setIsActiveFlag] = useState(true);
     // images.imageType images.image, images.imageName
@@ -24,7 +36,7 @@ function AddConcertPart() {
     const [cost, setCost] = useState(0.01);
     const [totalCount, setTotalCount] = useState(1);
     const [performer, setPerformer] = useState("");
-    const [concertDate, setConcertDate] = useState("");
+    const [concertDate, setConcertDate] = useState(toZeroSecondsMilliseconds(toLocaleDate(new Date())).toISOString().replace('Z', ""));
     const [latitude, setLatiture] = useState();
     const [longitude, setLongitude] = useState();
     const [concertType, setConcetType] = useState("0");
@@ -37,15 +49,32 @@ function AddConcertPart() {
     const [headLiner, setHeadLiner] = useState("");
     //PartyConcert
     const [censure, setCensure] = useState(0);
+    const [isClickedSubmitButton, setIsClickedSubmitButton] = useState(0);
+    const [minTime, setMinTime] = useState(new Date(concertDate) < new Date() ? toLocaleDate(addMinute(new Date())).toISOString().split('T')[1].substring(0, 5) : "");
+    useEffect(() => {
+        setMinTime(new Date(concertDate) < new Date() ? toZeroSecondsMilliseconds(toLocaleDate(addMinute(new Date()))).toISOString().split('T')[1].substring(0, 5) : "");
+    }, [concertDate, isClickedSubmitButton]);
+    useEffect(() => {
+        if (latitude && longitude) {
+            const element = document.getElementById("mapBox");
+            element.style = "border: solid darkolivegreen";
+        }
+    }, [longitude, latitude]);
+    useEffect(() => {
+        if (images.length > 0) {
+            const element = document.getElementsByClassName("imageLoaderBox")[0].getElementsByClassName("button")[0];
+            if (element) element.style = "border: solid; color: darkolivegreen;";
+        }
+    }, [images])
     const addConcertByConcertType = [
-        () => addClassicConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, concertDate, latitude,
-            longitude, concertType, setAddConcertModalWindow, voiceType, concertName, compositor, images.slice(1)),
-        () => addOpenAirConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, concertDate, latitude,
-            longitude, concertType, setAddConcertModalWindow, route, headLiner, images.slice(1)),
-        () => addPartyConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, concertDate, latitude,
-            longitude, concertType, setAddConcertModalWindow, censure, images.slice(1))];
+        () => addClassicConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, new Date(concertDate).toISOString(), latitude,
+            longitude, concertType, setAddConcertModalWindow, voiceType, concertName, compositor, images.slice(1), setMarkedMapModalWindow),
+        () => addOpenAirConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, new Date(concertDate).toISOString(), latitude,
+            longitude, concertType, setAddConcertModalWindow, route, headLiner, images.slice(1), setMarkedMapModalWindow),
+        () => addPartyConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, new Date(concertDate).toISOString(), latitude,
+            longitude, concertType, setAddConcertModalWindow, censure, images.slice(1), setMarkedMapModalWindow)];
     return (
-        <form className="centerBox boxColumn addConcertBox" onSubmit={addConcertByConcertType[concertType]()}>
+        <form className="centerBox boxColumn addConcertBox" onSubmit={addConcertByConcertType[concertType]()} encType="multipart/form-data">
             <div className="bigTextCenter">Добавление концерта</div>
             <div className="boxRow radioBox">
                 <RadioInput text="Классический концерт" value={0} onChange={event => setConcetType(event.currentTarget.value)} checked={concertType === "0"} />
@@ -63,11 +92,11 @@ function AddConcertPart() {
                         defaultZoom={1}
                         onClick={
                             (ev) => {
-                                setLatiture(ev.lat);
-                                setLongitude(ev.lng);
+                                ev.lat !== 0 && setLatiture(ev.lat);
+                                ev.lng !== 0 && setLongitude(ev.lng);
                             }
                         }>
-                        <AnyReactComponent lat={latitude} lng={longitude} text="Место концерта" />
+                        {latitude && longitude && <AnyReactComponent lat={latitude} lng={longitude} text="Место концерта" />}
                     </GoogleMapReact>
                 </div>
                 <div id="smallParamsBox">
@@ -88,11 +117,17 @@ function AddConcertPart() {
                     </div>
                     <div className="boxRow datetimeBox">
                         <div className="boxRowIn">
-                            <div className="boxRowLeftText">Дата и время</div>
-                            <DateTimeInput value={concertDate} onChange={event => setConcertDate(event.target.value)} min={new Date().toISOString()} max = {addDays(new Date(), 100).toISOString()}/>
+                            <div className="boxRowLeftText">Дата</div>
+                            <DateInput value={toLocaleDate(new Date(concertDate)).toISOString().split('T')[0]} onChange={event => setConcertDate(event.target.value + 'T' + concertDate.split('T')[1])} min={new Date().toISOString().split('T')[0]} max={addDays(new Date(), 100).toISOString().split('T')[0]} />
                         </div>
                     </div>
-
+                    <div className="boxRow datetimeBox">
+                        <div className="boxRowIn">
+                            <div className="boxRowLeftText">Время</div>
+                            <TimeInput value={toZeroSecondsMilliseconds(toLocaleDate(new Date(concertDate))).toISOString().split('T')[1].replace('Z', "")} onChange={event => setConcertDate(concertDate.split('T')[0] + 'T' + event.target.value)}
+                                min={minTime} />
+                        </div>
+                    </div>
                     {concertType === "0" && <div className="boxRow">
                         <div className="boxRowIn">
                             <div className="boxRowLeftText">Тип голоса</div>
@@ -150,8 +185,9 @@ function AddConcertPart() {
                     {images.length < 5 && <FileInput text="Загрузить картинки" multiple="multiple" accept="image/png, image/jpeg" onChange={loadImage(images, setImages)} />}
                 </div>
             </div>
-            <SubmitButton text="Создать" />
+            <SubmitButton text="Создать" onClick={() => { setIsClickedSubmitButton(isClickedSubmitButton + 1) }} />
             {addConcertModalWindow && <SimpleModalWindow text="Концерт создан" buttonText="Ok" onClick={closeAddConcertModalWindow(setAddConcertModalWindow)} />}
+            {markedMapModalWindow && <SimpleModalWindow text="Что-бы создать концерт, кликните на место проведения концерта (на карте)" buttonText="Понял, исправлю" onClick={closeMarkedMapModalWindow(setMarkedMapModalWindow)} />}
         </form>
     );
 }
@@ -159,62 +195,69 @@ function addDays(date, days) {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
-  }
+}
 function addClassicConcert(isActiveFlag, imageType, image, cost, totalCount, performer, concertDate, latitude,
-    longitude, concertType, setAddConcertModalWindow, voiceType, concertName, compositor, leftImages) {
+    longitude, concertType, setAddConcertModalWindow, voiceType, concertName, compositor, leftImages, setMarkedMapModalWindow) {
     return function action(event) {
         event.preventDefault();
-        if (image != null) {
-            store.dispatch(actionCreators.AddConcertActionCreator(isActiveFlag, imageType, image, cost, totalCount,
-                performer, concertDate, latitude, longitude, parseInt(concertType), {
-                voiceType: voiceType,
-                concertName: concertName,
-                compositor: compositor
-            }, null, null)).then((result) => {
-                leftImages.forEach(image => {
-                    store.dispatch(addImage(result.data.concertId, image.imageType, image.image));
-                })
-                setAddConcertModalWindow(true);
-            });
+        if (!longitude || !latitude) setMarkedMapModalWindow(true);
+        else {
+            if (image != null) {
+                store.dispatch(actionCreators.AddConcertActionCreator(isActiveFlag, imageType, image, cost, totalCount,
+                    performer, concertDate, latitude, longitude, parseInt(concertType), {
+                    voiceType: voiceType,
+                    concertName: concertName,
+                    compositor: compositor
+                }, null, null)).then((result) => {
+                    leftImages.forEach(image => {
+                        store.dispatch(addImage(result.data.concertId, image.imageType, image.image));
+                    })
+                    setAddConcertModalWindow(true);
+                });
+            }
         }
     }
 }
 
-
-
 function addOpenAirConcert(isActiveFlag, imageType, image, cost, totalCount, performer, concertDate, latitude,
-    longitude, concertType, setAddConcertModalWindow, route, headLiner, leftImages) {
+    longitude, concertType, setAddConcertModalWindow, route, headLiner, leftImages, setMarkedMapModalWindow) {
     return function action(event) {
         event.preventDefault();
-        if (image != null) {
-            store.dispatch(actionCreators.AddConcertActionCreator(isActiveFlag, imageType, image, cost, totalCount,
-                performer, concertDate, latitude, longitude, parseInt(concertType), null, {
-                route: route,
-                headLiner: headLiner
-            }, null)).then((result) => {
-                leftImages.forEach(image => {
-                    store.dispatch(addImage(result.data.concertId, image.imageType, image.image));
-                })
-                setAddConcertModalWindow(true);
-            });
+        if (!longitude || !latitude) setMarkedMapModalWindow(true);
+        else {
+            if (image != null) {
+                store.dispatch(actionCreators.AddConcertActionCreator(isActiveFlag, imageType, image, cost, totalCount,
+                    performer, concertDate, latitude, longitude, parseInt(concertType), null, {
+                    route: route,
+                    headLiner: headLiner
+                }, null)).then((result) => {
+                    leftImages.forEach(image => {
+                        store.dispatch(addImage(result.data.concertId, image.imageType, image.image));
+                    })
+                    setAddConcertModalWindow(true);
+                });
+            }
         }
     }
 }
 
 function addPartyConcert(isActiveFlag, imageType, image, cost, totalCount, performer, concertDate, latitude,
-    longitude, concertType, setAddConcertModalWindow, censure, leftImages) {
+    longitude, concertType, setAddConcertModalWindow, censure, leftImages, setMarkedMapModalWindow) {
     return function action(event) {
         event.preventDefault();
-        if (image != null) {
-            store.dispatch(actionCreators.AddConcertActionCreator(isActiveFlag, imageType, image, cost, totalCount,
-                performer, concertDate, latitude, longitude, parseInt(concertType), null, null, {
-                censure: censure
-            })).then((result) => {
-                leftImages.forEach(image => {
-                    store.dispatch(addImage(result.data.concertId, image.imageType, image.image));
-                })
-                setAddConcertModalWindow(true);
-            });
+        if (!longitude || !latitude) setMarkedMapModalWindow(true);
+        else {
+            if (image != null) {
+                store.dispatch(actionCreators.AddConcertActionCreator(isActiveFlag, imageType, image, cost, totalCount,
+                    performer, concertDate, latitude, longitude, parseInt(concertType), null, null, {
+                    censure: censure
+                })).then((result) => {
+                    leftImages.forEach(image => {
+                        store.dispatch(addImage(result.data.concertId, image.imageType, image.image));
+                    })
+                    setAddConcertModalWindow(true);
+                });
+            }
         }
     }
 }
@@ -228,6 +271,12 @@ function addImage(concertId, imageType, image) {
 function closeAddConcertModalWindow(addConcertModalWindow) {
     return function action() {
         addConcertModalWindow(false);
+        document.querySelector("body").style.overflow = "auto";
+    }
+}
+function closeMarkedMapModalWindow(setMarkedMapModalWindow) {
+    return function action() {
+        setMarkedMapModalWindow(false);
         document.querySelector("body").style.overflow = "auto";
     }
 }
@@ -250,13 +299,13 @@ function loadImage(images, setImages) {
         e.preventDefault();
         const promises = [];
         Array.prototype.forEach.call(e.target.files, async file => {
-            if (!images.some(image => file.name === image.imageName)) {
+            if (!images.some(image => file.name === image.imageName) && file.size < 200000) {
                 promises.push(getImage(file));
             }
         });
         Promise.all(promises).then((inImages) => {
-                const max = 5 - images.length;
-                setImages([...images, ...inImages.slice(0, max)]);
+            const max = 5 - images.length;
+            setImages([...images, ...inImages.slice(0, max)]);
         });
     }
 }

@@ -4,6 +4,7 @@ import store from "../../../store";
 import * as actionCreators from "../../../actionCreators";
 import { useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
+import { toCommonDateFormat, toLocaleDate } from "../../../configuration";
 
 const widthEEm = () => {
     return window.innerWidth / parseFloat(
@@ -51,11 +52,12 @@ function ConcertItem(props) {
         </Link>
         <Link to={to(concert.concertId)} className="concertDateActionList concertLink">
             <div >
-                {new Date(concert.concertDate).toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " ")}
+                {toCommonDateFormat(toLocaleDate(toLocaleDate(new Date(concert.concertDate))).toISOString())}
             </div>
         </Link>
         <div className="activateButtonActionList">
-            {concert.isActiveFlag ? <Button text="Деактивировать" onClick={deActivateConcert(concert, setConcert)} /> : <Button text="Активировать" onClick={activateConcert(concert, setConcert)} />}
+            {toLocaleDate(new Date(concert.concertDate)) > new Date() ? <>{concert.isActiveFlag ? <Button text="Деактивировать" onClick={deActivateConcert(concert, setConcert)} /> : <Button text="Активировать" onClick={activateConcert(concert, setConcert)} />}</> : 
+            <>Устарел</>} 
         </div>
     </div>
     );

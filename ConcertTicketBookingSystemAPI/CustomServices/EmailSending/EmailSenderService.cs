@@ -15,6 +15,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
         private string _name;
         private readonly string _host;
         private int _port;
+
         public EmailSenderService(string host, int port, string name)
         {
             _name = name;
@@ -30,10 +31,8 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
             _client.Authenticate(email, password);
             return this;
         }
-        private MimeMessage HtmlBody(string topic, string toEmail, string htmlMessage)
+        private MimeMessage GetMimeMessage(string topic, string toEmail, string htmlMessage)
         {
-            if (!_client.IsConnected) _client.Connect(_host, _port, true);
-            if (!_client.IsAuthenticated) _client.Authenticate(_email, _password);
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress(_name, _email));
             emailMessage.To.Add(new MailboxAddress("", toEmail));
@@ -44,16 +43,32 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
             };
             return emailMessage;
         }
-
+        private void ConnectAndAuthenticate()
+        {
+            if (!_client.IsConnected) _client.Connect(_host, _port, true);
+            if (!_client.IsAuthenticated) _client.Authenticate(_email, _password);
+        }
         public async Task<string> SendHtmlAsync(string topic, string toEmail, string htmlMessage)
         {
-            var emailMessage = HtmlBody(topic, toEmail, htmlMessage);
+            var emailMessage = GetMimeMessage(topic, toEmail, htmlMessage);
+            ConnectAndAuthenticate();
             return await _client.SendAsync(emailMessage);
         }
-        public string SendHtml(string topic, string toEmail, string htmlMessage)
+        public string SendHtml(string topic, string toEmail, string htmlMessage, int maxSendAttemptsCount)
         {
-            var emailMessage = HtmlBody(topic, toEmail, htmlMessage);
-            return _client.Send(emailMessage);
+            string lastResult = "";
+            var emailMessage = GetMimeMessage(topic, toEmail, htmlMessage);
+            for (int attempt = 0; attempt < maxSendAttemptsCount; attempt++)
+            {
+                try
+                {
+                    ConnectAndAuthenticate();
+                    lastResult = _client.Send(emailMessage);
+                    break;
+                }
+                catch { if(attempt > maxSendAttemptsCount - 2) throw; }
+            }
+            return lastResult;
         }
         public void Dispose()
         {
