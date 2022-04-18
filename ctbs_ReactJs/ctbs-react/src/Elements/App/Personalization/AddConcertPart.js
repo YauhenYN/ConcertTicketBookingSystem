@@ -67,11 +67,11 @@ function AddConcertPart() {
         }
     }, [images])
     const addConcertByConcertType = [
-        () => addClassicConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, new Date(concertDate).toISOString(), latitude,
+        () => addClassicConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, !isNaN(new Date(concertDate)) && new Date(concertDate).toISOString(), latitude,
             longitude, concertType, setAddConcertModalWindow, voiceType, concertName, compositor, images.slice(1), setMarkedMapModalWindow),
-        () => addOpenAirConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, new Date(concertDate).toISOString(), latitude,
+        () => addOpenAirConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, !isNaN(new Date(concertDate)) && new Date(concertDate).toISOString(), latitude,
             longitude, concertType, setAddConcertModalWindow, route, headLiner, images.slice(1), setMarkedMapModalWindow),
-        () => addPartyConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, new Date(concertDate).toISOString(), latitude,
+        () => addPartyConcert(isActiveFlag, images[0] && images[0].imageType, images[0] && images[0].image, cost, totalCount, performer, !isNaN(new Date(concertDate)) && new Date(concertDate).toISOString(), latitude,
             longitude, concertType, setAddConcertModalWindow, censure, images.slice(1), setMarkedMapModalWindow)];
     return (
         <form className="centerBox boxColumn addConcertBox" onSubmit={addConcertByConcertType[concertType]()} encType="multipart/form-data">
@@ -118,13 +118,13 @@ function AddConcertPart() {
                     <div className="boxRow datetimeBox">
                         <div className="boxRowIn">
                             <div className="boxRowLeftText">Дата</div>
-                            <DateInput value={toLocaleDate(new Date(concertDate)).toISOString().split('T')[0]} onChange={event => setConcertDate(event.target.value + 'T' + concertDate.split('T')[1])} min={new Date().toISOString().split('T')[0]} max={addDays(new Date(), 100).toISOString().split('T')[0]} />
+                            <DateInput value={!isNaN(new Date(concertDate)) ? toLocaleDate(new Date(concertDate)).toISOString().split('T')[0] : ""} onChange={event => setConcertDate(event.target.value + 'T' + concertDate.split('T')[1])} min={new Date().toISOString().split('T')[0]} max={addDays(new Date(), 100).toISOString().split('T')[0]} />
                         </div>
                     </div>
                     <div className="boxRow datetimeBox">
                         <div className="boxRowIn">
                             <div className="boxRowLeftText">Время</div>
-                            <TimeInput value={toZeroSecondsMilliseconds(toLocaleDate(new Date(concertDate))).toISOString().split('T')[1].replace('Z', "")} onChange={event => setConcertDate(concertDate.split('T')[0] + 'T' + event.target.value)}
+                            <TimeInput value={!isNaN(new Date(concertDate)) ? toZeroSecondsMilliseconds(toLocaleDate(new Date(concertDate))).toISOString().split('T')[1].replace('Z', "") : ""} onChange={event => setConcertDate(concertDate.split('T')[0] + 'T' + event.target.value)}
                                 min={minTime} />
                         </div>
                     </div>
