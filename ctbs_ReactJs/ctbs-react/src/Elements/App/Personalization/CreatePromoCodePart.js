@@ -9,6 +9,7 @@ import NumberInput from "../../../CommonElements/NumberInput";
 
 function CreatePromoCodePart() {
     const [addPromoCodeModalWindow, setAddPromoCodeModalWindow] = useState(false);
+    const [noSuchPromoCodeModalWindow, setNoSuchPromoCodeModalWindow] = useState(false);
     const [uniqueCode, setUniqueCode] = useState("");
     const [discount, setDiscount] = useState(0);
     const [onCount, setOnCount] = useState(0);
@@ -21,14 +22,15 @@ function CreatePromoCodePart() {
                 <div className="textAboveInput">Кол.</div>
                 <div className="textAboveInput" />
             </div>
-            <form className="boxRow" onSubmit={addPromoCode(uniqueCode, discount, onCount, setAddPromoCodeModalWindow)}>
+            <form className="boxRow" onSubmit={addPromoCode(uniqueCode, discount, onCount, setAddPromoCodeModalWindow, setNoSuchPromoCodeModalWindow)}>
                 <div className="boxRowIn">
                     <div className="wideLeft">
                         <TextInput value={uniqueCode} onChange={event => setUniqueCode(event.target.value)} minLength={3} maxLength={20} />
                     </div>
-                    <NumberInput value={discount} onChange={event => setDiscount(event.target.value)} min={0.1} max={100} step=".01" />
-                    <NumberInput value={onCount} onChange={event => setOnCount(event.target.value)} min={1} max={500} />
-                    {addPromoCodeModalWindow && <SimpleModalWindow text="Промокод создан" buttonText="Ok" onClick={closeAddPromoCodeModalWindow(setAddPromoCodeModalWindow)} />}
+                    <NumberInput value={discount} onChange={event => setDiscount(event.target.value)} min={0.1} max={500 / onCount} step=".01" />
+                    <NumberInput value={onCount} onChange={event => setOnCount(event.target.value)} min={1} max={500 / discount} />
+                    {addPromoCodeModalWindow && <SimpleModalWindow text="Промокод создан" buttonText="Ok" onClick={closeModalWindow(setAddPromoCodeModalWindow)} />}
+                    {noSuchPromoCodeModalWindow && <SimpleModalWindow text="Промокод с данным названием уже существует" buttonText="Ok" onClick={closeModalWindow(setNoSuchPromoCodeModalWindow)} />}
                     <SubmitButton text="Создать" />
                 </div>
             </form>
@@ -36,18 +38,20 @@ function CreatePromoCodePart() {
     );
 }
 
-function addPromoCode(uniqueCode, discount, onCount, setAddPromoCodeModalWindow) {
+function addPromoCode(uniqueCode, discount, onCount, setAddPromoCodeModalWindow, setNoSuchPromoCodeModalWindow) {
     return function action(event) {
         event.preventDefault();
         store.dispatch(actionCreators.AddPromoCodeActionCreator(uniqueCode, discount, onCount)).then(() => {
             setAddPromoCodeModalWindow(true);
+        }).catch(() => {
+            setNoSuchPromoCodeModalWindow(true);
         });
     }
 }
 
-function closeAddPromoCodeModalWindow(addPromoCodeModalWindow) {
+function closeModalWindow(setModalWindow) {
     return function action() {
-        addPromoCodeModalWindow(false);
+        setModalWindow(false);
         document.querySelector("body").style.overflow = "auto";
     }
 }
