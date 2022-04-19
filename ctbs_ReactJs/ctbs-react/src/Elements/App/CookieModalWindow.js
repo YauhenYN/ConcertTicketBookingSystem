@@ -18,11 +18,14 @@ function CookieModalWindow() {
 
 function cookieButtonOnClick() {
     if (store.getState().user) {
-        store.dispatch(actionCreators.confirmCookiesThunkActionCreator());
+        store.dispatch(actionCreators.confirmCookiesThunkActionCreator()).then(() => {
+            document.querySelector("body").style.overflow = "auto";
+        });
     }
     else {
         localStorage.setItem("cookieModalWindowDisabled", true);
-        store.dispatch({ type: actionTypes.ConfirmCookies });
+        store.dispatch({ type: actionTypes.ConfirmCookies }); 
+        document.querySelector("body").style.overflow = "auto";
     }
 }
 
