@@ -176,6 +176,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             if (dto.ByPerformer != null) concerts = concerts.Where(c => c.Performer.ToLower().Contains(dto.ByPerformer.ToLower()));
             if (dto.UntilPrice != null) concerts = concerts.Where(c => c.Cost <= dto.UntilPrice);
             if (dto.FromPrice != null) concerts = concerts.Where(c => c.Cost >= dto.FromPrice);
+            if (dto.Sort == SortType.NewFirst) concerts = concerts.OrderByDescending(c => c.ConcertId);
+            else if (dto.Sort == SortType.ActualFirst) concerts.OrderByDescending(c => c.ConcertDate);
+            else concerts = concerts = concerts.OrderBy(c => c.ConcertDate);
             var concertsCount = concerts.Count();
             if (concertsCount > 0)
             {

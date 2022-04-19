@@ -226,7 +226,7 @@ export const GetManyPromocodesActionCreator = (isActiveFlag, count) => {
     }
 }
 export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConcertType, byPerformer, 
-    untilPrice, fromPrice, byUserId, byActivity, byConcertName, byVoiceType, byHeadLiner, dateFrom, dateUntil, byCompositor) => {
+    untilPrice, fromPrice, byUserId, byActivity, byConcertName, byVoiceType, byHeadLiner, dateFrom, dateUntil, byCompositor, Sort) => {
     return async function GetManyPromoCodesThunk(dispatch) {
         return await axios.get(conf.apiLink + conf.getManyLightConcerts, {
             params: {
@@ -243,7 +243,8 @@ export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConce
                 byHeadLiner: byHeadLiner,
                 dateFrom: dateFrom,
                 dateUntil: dateUntil,
-                byCompositor: byCompositor
+                byCompositor: byCompositor,
+                Sort: Sort
             },
             headers: {
                 'Authorization': 'Bearer ' + accessToken

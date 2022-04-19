@@ -32,5 +32,6 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         public DateTime? DateUntil { get; init; }
         [StringLength(30, MinimumLength = 3)]
         public string ByCompositor { get; init; }
+        public SortType Sort { get; init; }
     }
 }

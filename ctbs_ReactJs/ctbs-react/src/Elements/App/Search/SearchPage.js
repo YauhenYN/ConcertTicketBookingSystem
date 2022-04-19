@@ -181,7 +181,8 @@ function AddNextPage(pageNumber, setPageNumber, concerts, setConcerts,
             byHeadLiner === "" ? null : byHeadLiner,
             dateFrom,
             dateUntil,
-            byCompositor === "" ? null : byCompositor
+            byCompositor === "" ? null : byCompositor,
+            2
         )).then((result) => {
             setConcerts([...concerts, ...result.data.concerts])
             setPageNumber(pageNumber + 1);
