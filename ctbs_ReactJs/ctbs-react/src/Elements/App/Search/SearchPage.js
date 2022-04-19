@@ -200,9 +200,9 @@ function toMapComponents(concerts){
     let components = [];
     let index = 0;
     GroupConcerts(concerts).forEach((group) => {
-        let text = "";
-        Array.prototype.forEach.call(group, concert => { return text = text + " " + concert.performer });
-        components[index] = <AnyReactComponent lat={group[0].latitude} lng={group[0].longitude} text={text} key={group[0].concertId} />
+        let elements = [];
+        Array.prototype.forEach.call(group, (concert, i) => { elements[i] = <div>{concert.performer}</div>});
+        components[index] = <AnyReactComponent lat={group[0].latitude} lng={group[0].longitude} text={elements} key={group[0].concertId} />
         index++;
     })
     return components;
