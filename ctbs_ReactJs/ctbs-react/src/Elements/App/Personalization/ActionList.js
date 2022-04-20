@@ -16,7 +16,7 @@ function ActionList(props) {
             </div>
             <div className="actionItem"/>
             {props.actionList.map(element => {
-                return <ActionItem key={element.creationTime} creationTime={new Date(Date.parse(element.creationTime)).toLocaleString()} description={element.description} />
+                return <ActionItem key={element.creationTime} creationTime={element.creationTime} description={element.description} />
             })}
         </div>
         </div>

@@ -1,6 +1,7 @@
 import { toCommonDateFormat, toLocaleDate } from "../../../configuration";
 
 function ActionItem(props) {
+
     return (
         <div className="actionItem">
             <div className="actionCreationTime">

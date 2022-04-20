@@ -21,7 +21,7 @@ function TicketsList(props) {
                         <div className="countPersonalizationTicket">Количество</div>
                         <div className="isMarkedPersonalizationTicket">Отмечен</div>
                     </div>
-                    <div className="ListItem" /><div className="ListItem" />
+                    <div className="ListItem" />
                     {tickets.map(ticket => {
                         return <TicketItem key={ticket.ticketId} ticket={ticket} />
                     })}

@@ -24,7 +24,7 @@ function TicketAdministration(props) {
                         <div className="isMarkedTicket">Отмечен</div>
                         <div className="checkTicketButton"></div>
                     </div>
-                    <div className="ListItem" /><div className="ListItem" />
+                    <div className="ListItem" />
                     {tickets.map(ticket => {
                         return <TicketItem key={ticket.ticketId} ticket={ticket} />
                     })}
