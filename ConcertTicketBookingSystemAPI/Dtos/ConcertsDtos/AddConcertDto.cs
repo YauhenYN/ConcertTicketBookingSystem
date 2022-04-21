@@ -14,7 +14,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         [MaxLength(50)]
         public string ImageType { get; init; }
         [Required]
-        [MaxLength(150000)]
+        [MaxLength(200000)]
         public string Image { get; init; }
         [Required]
         [Range(0.01, 1000)]
