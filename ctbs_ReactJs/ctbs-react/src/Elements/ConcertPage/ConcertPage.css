@@ -103,9 +103,13 @@
     width: 100%;
 }
 .checkTicketButton{
-    width: 150%;
+    width: 200%;
     margin-right: 0.5em;
 }
 #TicketListConcertPage{
     width: 70%;
+}
+.whoBoughtTicket .Input{
+    margin: 0% 0% 0% 0.5em;
+    padding: 0.4em;
 }

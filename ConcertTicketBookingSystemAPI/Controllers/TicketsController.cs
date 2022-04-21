@@ -43,6 +43,10 @@ namespace ConcertTicketBookingSystemAPI.Controllers
             IQueryable<Ticket> tickets = _context.Tickets.Include(t => t.Concert);
             if (dto.ByUserId != null) tickets = tickets.Where(t => dto.ByUserId == t.UserId);
             if (dto.ByConcertId != null) tickets = tickets.Where(t => t.ConcertId == dto.ByConcertId);
+            if (dto.ByTicketId != null && _context.Users.FirstOrDefault(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name)).IsAdmin)
+            {
+                tickets = tickets.Where(t => t.TicketId.ToString().ToLower().Contains(dto.ByTicketId.ToLower()));
+            }
             var ticketsCount = tickets.Count();
             if (ticketsCount > 0)
             {

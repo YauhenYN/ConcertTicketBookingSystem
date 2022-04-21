@@ -14,6 +14,7 @@ import GoogleMapReact from 'google-map-react';
 import ConcertSearchPageItem from './ConcertSearchPageItem';
 import Loading from '../../App/Loading';
 import groupByToMap from 'array.prototype.groupbytomap';
+import SelectInput from '../../../CommonElements/SelectInput';
 
 const AnyReactComponent = ({ text }) => <div className="MapMarker">{text}</div>;
 
@@ -68,7 +69,7 @@ function SearchPage() {
                     </div>
                     <div className='inputBox'>
                         <div className="boxRowLeftText">Тип голоса</div>
-                        <TextInput value={byVoiceType} required={false} onChange={event => setByVoiceType(event.target.value)} maxLength={10} />
+                        <SelectInput value={byVoiceType} onChange={event => setByVoiceType(event.target.value)} values = {["Cопрано", "Меццо-сопрано", "Контральто", "Тенор", "Бас"]} />
                     </div></>}
                 {byConcertType === "1" && <div className='inputBox'>
                     <div className="boxRowLeftText">Хэдлайнер</div>
@@ -201,7 +202,7 @@ function toMapComponents(concerts){
     let index = 0;
     GroupConcerts(concerts).forEach((group) => {
         let elements = [];
-        Array.prototype.forEach.call(group, (concert, i) => { elements[i] = <div>{concert.performer}</div>});
+        Array.prototype.forEach.call(group, (concert, i) => { elements[i] = <div key = {concert.concertId}>{concert.performer}</div>});
         components[index] = <AnyReactComponent lat={group[0].latitude} lng={group[0].longitude} text={elements} key={group[0].concertId} />
         index++;
     })

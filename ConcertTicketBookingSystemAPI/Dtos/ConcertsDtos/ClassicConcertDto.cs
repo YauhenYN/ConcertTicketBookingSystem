@@ -10,7 +10,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
     public record ClassicConcertDto
     {
         [Required]
-        [StringLength(10, MinimumLength = 1)]
+        [StringLength(15, MinimumLength = 1)]
         public string VoiceType { get; init; }
         [Required]
         [StringLength(20, MinimumLength = 3)]

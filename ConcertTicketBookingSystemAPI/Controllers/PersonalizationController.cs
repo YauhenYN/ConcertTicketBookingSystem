@@ -89,9 +89,9 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Route("[action]")]
         public async Task<ActionResult> ActivatePromocodeAsync(ActivatePromocodeDto dto)
         {
-            var user = await CurrentUserAsync();
+            var user = await _context.Users.Include(u => u.PromoCode).FirstOrDefaultAsync(u => u.UserId == Guid.Parse(HttpContext.User.Identity.Name));
             var promoCode = await _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == dto.Code);
-            if(promoCode != null && (user.PromoCode == null || promoCode.Discount > user.PromoCode.Discount))
+            if(promoCode != null && (user.PromoCode == null || promoCode.Discount > user.PromoCode.Discount) && promoCode.LeftCount > 0)
             {
                 promoCode.LeftCount--;
                 user.PromoCodeId = promoCode.PromoCodeId;

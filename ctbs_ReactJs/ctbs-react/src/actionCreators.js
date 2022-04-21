@@ -253,14 +253,15 @@ export const GetManyLightConcertsActionCreator = (nextPage, neededCount, byConce
     }
 }
 
-export const GetManyTicketsActionCreator = (nextPage, byUserId, ByConcertId, neededCount) => {
+export const GetManyTicketsActionCreator = (nextPage, byUserId, ByConcertId, neededCount, byTicketId) => {
     return async function GetManyPromoCodesThunk() {
         return await axios.get(conf.apiLink + conf.getTickets + "/many", {
             params: {
                 pageNumber: nextPage,
                 byUserId: byUserId,
-                ByConcertId: ByConcertId,
-                neededCount: neededCount
+                byConcertId: ByConcertId,
+                neededCount: neededCount,
+                byTicketId: byTicketId
             },
             headers: {
                 'Authorization': 'Bearer ' + accessToken

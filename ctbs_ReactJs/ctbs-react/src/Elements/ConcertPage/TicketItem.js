@@ -10,7 +10,7 @@ function TicketItem(props) {
 
     return <div className="ListItem">
         <div className="whoBoughtTicket">
-            {ticket.userId}
+            {ticket.ticketId}
         </div>
         <div className="countTicket">
             {ticket.onCount}

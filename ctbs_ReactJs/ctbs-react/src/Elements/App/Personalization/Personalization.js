@@ -11,7 +11,7 @@ import PromoCodeList from "./PromoCodeList";
 import ConcertsList from "./ConcertsList";
 import AddConcertPart from "./AddConcertPart";
 import TicketsList from "./TicketsList";
-import TicketAdministrationPart from "./TicketAdministrationPart";
+//import TicketAdministrationPart from "./TicketAdministrationPart";
 
 function Personalization() {
     const [actions, setActions] = useState();
@@ -69,7 +69,8 @@ function Personalization() {
                 <div className="textHeader">Администрирование</div>
                 <AdministrationPart />
                 <CreatePromoCodePart />
-                <TicketAdministrationPart />
+                {//<TicketAdministrationPart />
+                }
                 {(activePromoCodes.length > 0 || inactivePromoCodes.length > 0) && <>
                     <div className="textHeader">Список всех промокодов</div>
                     <PromoCodeList promoCodeList={[...activePromoCodes, ...inactivePromoCodes]} /></>}

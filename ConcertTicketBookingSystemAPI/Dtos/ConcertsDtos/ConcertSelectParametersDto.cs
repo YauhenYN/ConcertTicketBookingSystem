@@ -24,7 +24,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.ConcertsDtos
         public decimal? FromPrice { get; init; }
         [StringLength(20, MinimumLength = 3)]
         public string ByConcertName { get; init; }
-        [StringLength(10, MinimumLength = 1)]
+        [StringLength(15, MinimumLength = 1)]
         public string ByVoiceType { get; init; }
         [StringLength(30, MinimumLength = 3)]
         public string ByHeadLiner { get; init; }
