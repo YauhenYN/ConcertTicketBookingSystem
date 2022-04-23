@@ -26,7 +26,7 @@ function SearchPage() {
     const [pagesCount, setPagesNumber] = useState();
     const [byConcertType, setByConcertType] = useState("");
     const [byConcertName, setByConcertName] = useState("");
-    const [byVoiceType, setByVoiceType] = useState("");
+    const [byVoiceType, setByVoiceType] = useState("Все");
     const [byHeadLiner, setByHeadLiner] = useState("");
     const [byCompositor, setByCompositor] = useState("");
     const [fromPrice, setFromPrice] = useState(0.01);
@@ -69,7 +69,7 @@ function SearchPage() {
                     </div>
                     <div className='inputBox'>
                         <div className="boxRowLeftText">Тип голоса</div>
-                        <SelectInput value={byVoiceType} onChange={event => setByVoiceType(event.target.value)} values = {["Cопрано", "Меццо-сопрано", "Контральто", "Тенор", "Бас"]} />
+                        <SelectInput value={byVoiceType} onChange={event => setByVoiceType(event.target.value)} values = {["Все", "Cопрано", "Меццо-сопрано", "Контральто", "Тенор", "Бас"]} />
                     </div></>}
                 {byConcertType === "1" && <div className='inputBox'>
                     <div className="boxRowLeftText">Хэдлайнер</div>
@@ -154,7 +154,7 @@ function FirstPage(setIsLoading, setPagesNumber, pageNumber, setPageNumber, setC
             null,
             byActivity,
             byConcertName === "" ? null : byConcertName,
-            byVoiceType === "" ? null : byVoiceType,
+            byVoiceType === "Все" ? null : byVoiceType,
             byHeadLiner === "" ? null : byHeadLiner,
             dateFrom,
             dateUntil,
@@ -178,7 +178,7 @@ function AddNextPage(pageNumber, setPageNumber, concerts, setConcerts,
         store.dispatch(actionCreators.GetManyLightConcertsActionCreator(pageNumber, 30, byConcertType,
             byPerformer === "" ? null : byPerformer, untilPrice, fromPrice, null, byActivity,
             byConcertName === "" ? null : byConcertName,
-            byVoiceType === "" ? null : byVoiceType,
+            byVoiceType === "Все" ? null : byVoiceType,
             byHeadLiner === "" ? null : byHeadLiner,
             dateFrom,
             dateUntil,
