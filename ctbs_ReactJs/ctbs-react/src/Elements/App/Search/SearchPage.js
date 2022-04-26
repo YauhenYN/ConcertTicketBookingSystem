@@ -125,8 +125,8 @@ function SearchPage() {
                 </div>
                 <div className="concertConcertDate concertElement">Дата концерта</div>
             </div>
-            {concerts.map(concert => {
-                return <ConcertSearchPageItem key={concert.concertId} concert={concert} />
+            {concerts.filter(concert => concert.leftCount > 0).map(concert => {
+                return <ConcertSearchPageItem key={concert.concertId} concert={concert} />;
             })}
             {pageNumber < pagesCount && <NextPageButton onClick={AddNextPage(pageNumber, setPageNumber,
                 concerts, setConcerts, byConcertType, store.getState().search.performer, untilPrice,

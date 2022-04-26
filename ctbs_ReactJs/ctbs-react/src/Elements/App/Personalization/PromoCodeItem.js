@@ -20,7 +20,9 @@ function PromoCodeItem(props) {
                 {promoCode.leftCount}
             </div>
             <div className="simplePromoCode">
-            {promoCode.isActiveFlag ? <Button text = "Деактивировать" onClick = {deActivatePromoCode(promoCode, setPromoCode)}/> : <Button text = "Активировать" onClick = {activatePromoCode(promoCode, setPromoCode)}/>}
+            {promoCode.leftCount > 0 ? <>
+            {promoCode.isActiveFlag ? <Button text = "Деактивировать" onClick = {deActivatePromoCode(promoCode, setPromoCode)}/> : 
+            <Button text = "Активировать" onClick = {activatePromoCode(promoCode, setPromoCode)}/>}</> : <div className="expendedConcert">Закончился</div>}
             </div>
         </div>
     );

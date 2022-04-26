@@ -26,6 +26,10 @@ const addMinute = (date) => {
     date.setMinutes(date.getMinutes() + 1);
     return date;
 }
+const addOneDate = (date) => {
+    date.setDate(date.getDate() + 1);
+    return date;
+}
 const AnyReactComponent = ({ text }) => <div className="MapMarker">{text}</div>;
 function AddConcertPart() {
     const [ModalWindow, setModalWindow] = useState(false);
@@ -37,12 +41,12 @@ function AddConcertPart() {
     const [cost, setCost] = useState(0.01);
     const [totalCount, setTotalCount] = useState(1);
     const [performer, setPerformer] = useState("");
-    const [concertDate, setConcertDate] = useState(toZeroSecondsMilliseconds(toLocaleDate(new Date())).toISOString().replace('Z', ""));
+    const [concertDate, setConcertDate] = useState(toZeroSecondsMilliseconds(toLocaleDate(addOneDate(new Date()))).toISOString().replace('Z', ""));
     const [latitude, setLatiture] = useState();
     const [longitude, setLongitude] = useState();
     const [concertType, setConcetType] = useState("0");
     //ClassicConcert
-    const [voiceType, setVoiceType] = useState("");
+    const [voiceType, setVoiceType] = useState("Cопрано");
     const [concertName, setConcertName] = useState("");
     const [compositor, setCompositor] = useState("");
     //OpenAirConcert
@@ -119,7 +123,7 @@ function AddConcertPart() {
                     <div className="boxRow datetimeBox">
                         <div className="boxRowIn">
                             <div className="boxRowLeftText">Дата</div>
-                            <DateInput value={!isNaN(new Date(concertDate)) ? toLocaleDate(new Date(concertDate)).toISOString().split('T')[0] : ""} onChange={event => setConcertDate(event.target.value + 'T' + concertDate.split('T')[1])} min={new Date().toISOString().split('T')[0]} max={addDays(new Date(), 100).toISOString().split('T')[0]} />
+                            <DateInput value={!isNaN(new Date(concertDate)) ? toLocaleDate(new Date(concertDate)).toISOString().split('T')[0] : ""} onChange={event => setConcertDate(event.target.value + 'T' + concertDate.split('T')[1])} min={addOneDate(new Date()).toISOString().split('T')[0]} max={addDays(new Date(), 100).toISOString().split('T')[0]} />
                         </div>
                     </div>
                     <div className="boxRow datetimeBox">
@@ -220,6 +224,9 @@ function addClassicConcert(isActiveFlag, imageType, image, cost, totalCount, per
                     })
                     setModalWindowText("Концерт успешно добавлен");
                     setModalWindow(true);
+                }).catch(() => {
+                    setModalWindowText("Что-то пошло не так");
+                    setModalWindow(true);
                 });
             }
         }
@@ -245,6 +252,9 @@ function addOpenAirConcert(isActiveFlag, imageType, image, cost, totalCount, per
                     })
                     setModalWindowText("Концерт успешно добавлен");
                     setModalWindow(true);
+                }).catch(() => {
+                    setModalWindowText("Что-то пошло не так");
+                    setModalWindow(true);
                 });
             }
         }
@@ -266,6 +276,9 @@ function addPartyConcert(isActiveFlag, imageType, image, cost, totalCount, perfo
                         store.dispatch(addImage(result.data.concertId, image.imageType, image.image));
                     })
                     setModalWindowText("Концерт успешно добавлен");
+                    setModalWindow(true);
+                }).catch(() => {
+                    setModalWindowText("Что-то пошло не так");
                     setModalWindow(true);
                 });
             }

@@ -93,7 +93,7 @@ export const logOutThunkActionCreator = () => {
                 'Authorization': 'Bearer ' + accessToken
             }
         }).then(() => {
-            window.location.replace(window.location.origin);
+            window.location.reload();
             dispatch({
                 type: actionTypes.LogOut,
             })
@@ -412,14 +412,12 @@ export const AddImageActionCreator = (imageType, image, concertId) => {
 }
 export const BuyTicketActionCreator = (count, concertId) => {
     return async function AddImageThunk() {
-        await axios.post(conf.apiLink + "/Concerts/" + concertId + "/Buy/PayPal", {
+        return await axios.post(conf.apiLink + "/Concerts/" + concertId + "/Buy/PayPal", {
             count: count,
         }, {
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
             }
-        }).then(result => {
-            window.location = result.data
         });
     }
 }

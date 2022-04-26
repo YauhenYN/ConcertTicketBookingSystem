@@ -3,12 +3,13 @@
     font-size: small;
 }
 .promoCodeLeft{
-    width: 200%;
+    width: 100%;
     border-right-style: dashed;
     
 }
 .simplePromoCode{
     width: 100%;
+    display: flex;
 }
 .ListHeader .promoCodeLeft{
     text-indent: 0.5em;

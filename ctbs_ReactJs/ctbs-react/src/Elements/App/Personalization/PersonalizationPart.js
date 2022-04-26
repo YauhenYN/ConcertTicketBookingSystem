@@ -95,7 +95,14 @@ function changeName(name, setisModalWindow, setisModalWindowText) {
             store.dispatch(actionCreators.UpdateNameActionCreator(name)).then(() => {
                 setisModalWindowText("Имя успешно изменено");
                 setisModalWindow(true);
+            }).catch(() => {
+                setisModalWindowText("Что-то пошло не так");
+                setisModalWindow(true);
             });
+        }
+        else {
+            setisModalWindowText("Невозможно изменить имя на текущее");
+            setisModalWindow(true);
         }
     }
 }
@@ -130,6 +137,10 @@ function changeEmail(email, setisModalWindow, setisModalWindowText) {
                 setisModalWindow(true);
             });
         }
+        else {
+            setisModalWindowText("Невозможно изменить email на текущий");
+            setisModalWindow(true);
+        }
     }
 }
 function birthYearButtonOnClickFunc(birthDate, setisModalWindow, setisModalWindowText) {
@@ -139,7 +150,14 @@ function birthYearButtonOnClickFunc(birthDate, setisModalWindow, setisModalWindo
             store.dispatch(actionCreators.UpdateBirthDateThunkActionCreator(birthDate)).then(() => {
                 setisModalWindowText("Дата рождения успешно изменена");
                 setisModalWindow(true);
+            }).catch(() => {
+                setisModalWindowText("Что-то пошло не так");
+                setisModalWindow(true);
             });
+        }
+        else{
+            setisModalWindowText("Невозможно изменить дату рождения на текущую");
+            setisModalWindow(true);
         }
     }
 }

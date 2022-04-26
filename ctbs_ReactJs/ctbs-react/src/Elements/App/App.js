@@ -15,6 +15,7 @@ import { useState } from 'react';
 import NotFound from '../../NotFound';
 import SearchPage from './Search/SearchPage';
 import ConcertPage from '../ConcertPage/ConcertPage';
+import OAuthRedirect from '../../OAuthRedirect';
 
 function App({ props, logIn }) {
   const [isLoading, setisLoading] = useState(true);
@@ -36,6 +37,7 @@ function App({ props, logIn }) {
             {props.isLoggedIn && <Route path="/personalization" element={<Personalization />}></Route>}
             <Route path="/search" element={<SearchPage />} />
             <Route path="/concerts/:concertId" element={<ConcertPage />} />
+            <Route path="/OAuth" element = {<OAuthRedirect/>}/>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

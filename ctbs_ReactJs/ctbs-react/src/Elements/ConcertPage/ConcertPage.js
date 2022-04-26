@@ -4,12 +4,12 @@ import { useParams } from "react-router-dom";
 import store from "../../store";
 import * as actionCreators from "../../actionCreators";
 import Loading from "../App/Loading";
-import { apiLink, toCommonDateFormat, toLocaleDate } from "../../configuration";
+import { apiLink, SuccessPageAddition, toCommonDateFormat, toLocaleDate } from "../../configuration";
 import './ConcertPage.css';
 import GoogleMapReact from 'google-map-react';
-import Button from '../../CommonElements/Button';
 import NumberInput from '../../CommonElements/NumberInput';
 import TicketAdministration from "./TicketAdministration";
+import SubmitButton from "../../CommonElements/SubmitButton";
 
 const AnyReactComponent = ({ text }) => <div className="MapMarker">{text}</div>;
 
@@ -77,14 +77,14 @@ function ConcertPage() {
                 {concert.concertType === 2 && <>
                     <div className="regularConcertText"><div className="MainPartConcertText">Допустимый возраст: </div>{concert.partyConcertInfo.censure}</div>
                 </>}
-                {concert.isActiveFlag && concert.leftTicketsCount > 0 && store.getState().user && <>
+                {concert.isActiveFlag && concert.leftTicketsCount > 0 && store.getState().user && <form onSubmit={buyTicket(count, concert.concertId)}>
                     <div className="outOfCountInput">
                         {promoCode && <div id="discountConcertText" className="regularConcertText"><div className="MainPartConcertText">Скидка: </div>{promoCode.discount}$</div>}
                         <div className="regularConcertText"><div className="MainPartConcertText">Количество</div></div>
-                        <NumberInput value={count} onChange={event => setCount(event.target.value)} min={1} max={5} />
+                        <NumberInput value={count} onChange={event => setCount(event.target.value)} min={1} max={concert.leftTicketsCount < 5 ? concert.leftTicketsCount : 5} />
                     </div>
-                    <div className="buyTicketApi"><Button text="Купить" onClick={buyTicket(count, concert.concertId)} /></div>
-                </>
+                    <div className="buyTicketApi"><SubmitButton text="Купить"/></div>
+                </form>
                 }
             </div>
         </div>
@@ -110,8 +110,12 @@ function ConcertPage() {
 }
 
 function buyTicket(count, concertId) {
-    return function action() {
-        store.dispatch(actionCreators.BuyTicketActionCreator(count, concertId));
+    return function action(event) {
+        event.preventDefault();
+        store.dispatch(actionCreators.BuyTicketActionCreator(count, concertId)).then(result => {
+            console.log(result.data);
+            window.location = result.data ? result.data : window.location.origin + "/#" + SuccessPageAddition;
+        });
     }
 }
 

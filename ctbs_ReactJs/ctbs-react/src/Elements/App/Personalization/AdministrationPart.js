@@ -7,61 +7,62 @@ import SimpleModalWindow from "../../../CommonElements/SimpleModalWindow";
 import SubmitButton from "../../../CommonElements/SubmitButton";
 
 function AdministrationPart() {
-    const [isActiveGiveRightsModalWindow, setisActiveGiveRightsModalWindow] = useState(false);
-    const [isActiveTakeRightsModalWindow, setisActiveTakeRightsModalWindow] = useState(false);
+    const [isActiveModalWindow, setisActiveModalWindow] = useState(false);
+    const [modalWindowText, setModalWindowText] = useState("");
     const [giveRights, setgiveRights] = useState("Id");
     const [takeRights, settakeRights] = useState("Id");
     return (<>
         <div className="administrationBox boxColumn">
-            <form className="boxRow" onSubmit={giveAdminRights(giveRights, setisActiveGiveRightsModalWindow)}>
+            <form className="boxRow" onSubmit={giveAdminRights(giveRights, setisActiveModalWindow, setModalWindowText)}>
                 <div className="boxRowIn">
                     <div className="boxRowLeftText">Выдать права администратора</div>
                     <TextInput value={giveRights} onChange={event => setgiveRights(event.target.value)} />
                 </div>
                 <SubmitButton text="Подтвердить" />
-                {isActiveGiveRightsModalWindow && <SimpleModalWindow text="Права администратора выданы успешно" buttonText="Ok" onClick={closeGiveRightsModalWindow(setisActiveGiveRightsModalWindow)} />}
             </form>
-            <form className="boxRow" onSubmit={takeAdminRights(takeRights, setisActiveTakeRightsModalWindow)}>
+            <form className="boxRow" onSubmit={takeAdminRights(takeRights, setisActiveModalWindow, setModalWindowText)}>
                 <div className="boxRowIn">
                     <div className="boxRowLeftText">Снять права администратора</div>
                     <TextInput value={takeRights} onChange={event => settakeRights(event.target.value)} />
                 </div>
                 <SubmitButton text="Подтвердить" />
-                {isActiveTakeRightsModalWindow && <SimpleModalWindow text="Права администратора сняты успешно" buttonText="Ok" onClick={closeTakeRightsModalWindow(setisActiveTakeRightsModalWindow)} />}
             </form>
+            {isActiveModalWindow && <SimpleModalWindow text={modalWindowText} buttonText="Ok" onClick={closeModalWindow(setisActiveModalWindow)} />}
         </div></>
     );
 }
 
-function giveAdminRights(id, setisActiveGiveRightsModalWindow) {
+function giveAdminRights(id, setisActiveModalWindow, setModalWindowText) {
     return function action(event) {
         event.preventDefault();
         if (id !== "Id") {
             store.dispatch(actionCreators.GiveAdminRightsActionCreator(id)).then(() => {
-                setisActiveGiveRightsModalWindow(true);
+                setModalWindowText("Права администратора успешно выданы");
+                setisActiveModalWindow(true);
+            }).catch(() => {
+                setModalWindowText("Id не найден / Что-то пошло не так");
+                setisActiveModalWindow(true);
             });
         }
     }
 }
-function takeAdminRights(id, setisActiveTakeRightsModalWindow) {
+function takeAdminRights(id, setisActiveModalWindow, setModalWindowText) {
     return function action(event) {
         event.preventDefault();
         if (id !== "Id") {
             store.dispatch(actionCreators.TakeAdminRightsActionCreator(id)).then(() => {
-                setisActiveTakeRightsModalWindow(true);
+                setModalWindowText("Права администратора успешно сняты");
+                setisActiveModalWindow(true);
+            }).catch(() => {
+                setModalWindowText("Id не найден / Что-то пошло не так");
+                setisActiveModalWindow(true);
             });
         }
     }
 }
-function closeGiveRightsModalWindow(setisActiveGiveRightsModalWindow) {
+function closeModalWindow(setisActiveModalWindow) {
     return function action() {
-        setisActiveGiveRightsModalWindow(false);
-        document.querySelector("body").style.overflow = "auto";
-    }
-}
-function closeTakeRightsModalWindow(setisActiveTakeRightsModalWindow) {
-    return function action() {
-        setisActiveTakeRightsModalWindow(false);
+        setisActiveModalWindow(false);
         document.querySelector("body").style.overflow = "auto";
     }
 }

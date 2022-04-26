@@ -8,6 +8,9 @@ export const microsoftLink = apiLink + "/Authentication/OAuth/Microsoft/Redirect
 export const firstInterval = 3000;
 
 
+export const SuccessPageAddition = "/Payment/Success";
+
+
 export const cookies = new Cookies();
 export const refreshAddition = "/Authentication/Refresh";
 export const userInfoAddition = "/Personalization/UserInfo";

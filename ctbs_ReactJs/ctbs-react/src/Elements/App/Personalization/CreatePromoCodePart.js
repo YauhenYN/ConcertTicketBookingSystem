@@ -30,7 +30,7 @@ function CreatePromoCodePart() {
                     <NumberInput value={discount} onChange={event => setDiscount(event.target.value)} min={0.1} max={500 / onCount} step=".01" />
                     <NumberInput value={onCount} onChange={event => setOnCount(event.target.value)} min={1} max={500 / discount} />
                     {addPromoCodeModalWindow && <SimpleModalWindow text="Промокод создан" buttonText="Ok" onClick={closeModalWindow(setAddPromoCodeModalWindow)} />}
-                    {noSuchPromoCodeModalWindow && <SimpleModalWindow text="Промокод с данным названием уже существует" buttonText="Ok" onClick={closeModalWindow(setNoSuchPromoCodeModalWindow)} />}
+                    {noSuchPromoCodeModalWindow && <SimpleModalWindow text="Промокод с данным названием уже существует / Что-то пошло не так" buttonText="Ok" onClick={closeModalWindow(setNoSuchPromoCodeModalWindow)} />}
                     <SubmitButton text="Создать" />
                 </div>
             </form>
