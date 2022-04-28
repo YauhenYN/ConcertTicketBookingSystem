@@ -23,8 +23,9 @@ function App({ props, logIn }) {
   useEffect(() => {
     logIn().then(() => {
       setisLoading(false);
-    }).catch(() => {
-      setFailed(true);
+    }).catch((error) => {
+      typeof error.response === 'undefined' && setFailed(true);
+      setisLoading(false);
     });
   }, [logIn]);
   return failed === true ? <h1 style = {{    
