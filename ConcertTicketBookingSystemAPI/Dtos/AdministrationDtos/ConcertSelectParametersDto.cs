@@ -13,7 +13,7 @@ namespace ConcertTicketBookingSystemAPI.Dtos.AdministrationDtos
         [Required]
         public int NeededCount { get; set; }
         public bool? ByIsAdmin { get; init; }
-        [StringLength(30, MinimumLength = 3)]
+        [StringLength(30, MinimumLength = 1)]
         public string ByUserName { get; init; }
     }
 }
