@@ -125,7 +125,7 @@ function SearchPage() {
                 </div>
                 <div className="concertConcertDate concertElement">Дата концерта</div>
             </div>
-            {concerts.filter(concert => concert.leftCount > 0).map(concert => {
+            {concerts.map(concert => {
                 return <ConcertSearchPageItem key={concert.concertId} concert={concert} />;
             })}
             {pageNumber < pagesCount && <NextPageButton onClick={AddNextPage(pageNumber, setPageNumber,
@@ -160,7 +160,7 @@ function FirstPage(setIsLoading, setPagesNumber, pageNumber, setPageNumber, setC
             dateUntil,
             byCompositor === "" ? null : byCompositor
         )).then((result) => {
-            setConcerts(result.data.concerts);
+            setConcerts(ConcertsFilter(result.data.concerts));
             setPagesNumber(result.data.pagesCount);
             pageNumber === 0 && setPageNumber(pageNumber + 1);
             setIsLoading(false);
@@ -169,6 +169,10 @@ function FirstPage(setIsLoading, setPagesNumber, pageNumber, setPageNumber, setC
             setIsLoading(false);
         });
     }
+}
+
+function ConcertsFilter(concerts){
+    return concerts.filter(concert => concert.leftCount > 0);
 }
 
 function AddNextPage(pageNumber, setPageNumber, concerts, setConcerts,
@@ -185,7 +189,7 @@ function AddNextPage(pageNumber, setPageNumber, concerts, setConcerts,
             byCompositor === "" ? null : byCompositor,
             2
         )).then((result) => {
-            setConcerts([...concerts, ...result.data.concerts])
+            setConcerts([...concerts, ConcertsFilter(...result.data.concerts)])
             setPageNumber(pageNumber + 1);
         }).catch(() => {
             setConcerts([]);
