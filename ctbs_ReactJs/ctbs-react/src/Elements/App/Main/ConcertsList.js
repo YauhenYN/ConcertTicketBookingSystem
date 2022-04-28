@@ -27,14 +27,14 @@ function ConcertsList(props) {
         </div>
     })]);
     return <div className="ConcertsBox">
-        <div className="elementButtonsBox">
-            <PreviousElementButton onClick={PreviousElementButtonOnClick(index, setIndex, props.concerts.length - 1)} />
-            <NextElementButton onClick={NextElementButtonOnClick(index, setIndex)} />
-        </div>
+        {props.concerts.length > 3 &&
+            <div className="elementButtonsBox">
+                <PreviousElementButton onClick={PreviousElementButtonOnClick(index, setIndex, props.concerts.length - 1)} />
+                <NextElementButton onClick={NextElementButtonOnClick(index, setIndex)} />
+            </div>}
         <div className="MaincenterBox">
-            {imageElements[indexes[0]()]}
-            {imageElements[indexes[1]()]}
-            {imageElements[indexes[2]()]}
+            {indexes.map(index => imageElements[index()])}
+ 
         </div>
     </div >;
 }
