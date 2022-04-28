@@ -8,6 +8,7 @@ import Loading from '../Loading';
 import * as configuration from '../../../configuration';
 
 
+
 function Main() {
   const [isLoading, setIsLoading] = useState(true);
   const [concerts, setConcerts] = useState([]);
@@ -15,10 +16,10 @@ function Main() {
   useEffect(() => {
     async function dispatches(){
       await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 10, null, null, null, null, null, true, null, null, null, null, null, null, 1)).then((result) => {
-        setConcerts(result.data.concerts);
+        setConcerts(configuration.ConcertsFilter(result.data.concerts));
       });
       await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 10, null, null, null, null, null, true, null, null, null, null, null, null, 2)).then((result) => {
-        setActualConcerts(result.data.concerts);
+        setActualConcerts(configuration.ConcertsFilter(result.data.concerts));
       });
     }
     dispatches().then(() => {

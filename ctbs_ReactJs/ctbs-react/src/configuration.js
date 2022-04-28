@@ -22,6 +22,11 @@ export const toLocaleDate = (date) => {
 export const toCommonDateFormat = (date) => {
     return date.slice(0, 19).replace(/-/g, "/").replace("T", " ");
 }
+
+export function ConcertsFilter(concerts){
+    return concerts.filter(concert => concert.leftCount > 0);
+}
+
 export const cookieConfirmationAddition = "/Personalization/ConfirmCookies";
 export const updateBirthDateAddition = "/Personalization/UpdateBirthYear";
 export const updateNameAddition = "/Personalization/UpdateName";

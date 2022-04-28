@@ -15,6 +15,7 @@ import ConcertSearchPageItem from './ConcertSearchPageItem';
 import Loading from '../../App/Loading';
 import groupByToMap from 'array.prototype.groupbytomap';
 import SelectInput from '../../../CommonElements/SelectInput';
+import { ConcertsFilter } from '../../../configuration';
 
 const AnyReactComponent = ({ text }) => <div className="MapMarker">{text}</div>;
 
@@ -169,10 +170,6 @@ function FirstPage(setIsLoading, setPagesNumber, pageNumber, setPageNumber, setC
             setIsLoading(false);
         });
     }
-}
-
-function ConcertsFilter(concerts){
-    return concerts.filter(concert => concert.leftCount > 0);
 }
 
 function AddNextPage(pageNumber, setPageNumber, concerts, setConcerts,

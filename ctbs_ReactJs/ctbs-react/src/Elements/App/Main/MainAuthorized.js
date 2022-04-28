@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import * as actionCreators from "../../../actionCreators";
 import store from "../../../store";
 import Loading from '../Loading';
+import { ConcertsFilter } from '../../../configuration';
 
 
 function Main() {
@@ -13,10 +14,10 @@ function Main() {
   useEffect(() => {
     async function dispatches(){
       await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 10, null, null, null, null, null, true, null, null, null, null, null, null, 1)).then((result) => {
-        setConcerts(result.data.concerts);
+        setConcerts(ConcertsFilter(result.data.concerts));
       });
       await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 10, null, null, null, null, null, true, null, null, null, null, null, null, 2)).then((result) => {
-        setActualConcerts(result.data.concerts);
+        setActualConcerts(ConcertsFilter(result.data.concerts));
       });
     }
     dispatches().then(() => {
