@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using ConcertTicketBookingSystemAPI.Helpers;
+using ConcertTicketBookingSystemAPI.Dtos.AdministrationDtos;
 
 namespace ConcertTicketBookingSystemAPI.Controllers
 {
@@ -60,6 +61,26 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 else return Conflict();
             }
             else return NotFound();
+        }
+        [HttpGet]
+        [Route("Users/Many/Brief")]
+        public async Task<ActionResult<ConcertSelectorDto>> GetManyUsersBriefInfoAsync([FromQuery] ConcertSelectParametersDto dto)
+        {
+            IQueryable<User> users = _context.Users;
+            if (dto.ByIsAdmin != null) users = users.Where(u => dto.ByIsAdmin == u.IsAdmin);
+            if (dto.ByUserName != null) users = users.Where(u => u.Name.ToLower().Contains(dto.ByUserName.ToLower()));
+            var usersCount = users.Count();
+            if (usersCount > 0)
+            {
+                ConcertSelectorDto selectorDto = new ConcertSelectorDto()
+                {
+                    PageCount = (usersCount / dto.NeededCount) + 1,
+                    CurrentPage = dto.PageNumber,
+                    Users = await users.Skip(dto.PageNumber * dto.NeededCount).Take(dto.NeededCount).ToDtosAsync()
+                };
+                return selectorDto;
+            }
+            return NotFound();
         }
     }
 }

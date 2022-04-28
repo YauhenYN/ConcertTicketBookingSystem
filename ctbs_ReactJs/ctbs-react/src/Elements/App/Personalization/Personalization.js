@@ -11,6 +11,7 @@ import PromoCodeList from "./PromoCodeList";
 import ConcertsList from "./ConcertsList";
 import AddConcertPart from "./AddConcertPart";
 import TicketsList from "./TicketsList";
+import UsersBriefInfoList from "./UsersBriefInfoList";
 //import TicketAdministrationPart from "./TicketAdministrationPart";
 
 function Personalization() {
@@ -41,7 +42,7 @@ function Personalization() {
                 }).catch(() => { });
                 await store.dispatch(actionCreators.GetManyLightConcertsActionCreator(0, 30, null, null, null, null, store.getState().user.userId, null, null, null, null, null, null, null, 1)).then((result) => {
                     setFirstConcerts([...result.data.concerts]);
-                    setPagesCount(result.data.pagesCount); 
+                    setPagesCount(result.data.pagesCount);
                 }).catch(() => { });
             };
             if (store.getState().user.promoCodeId !== null) {
@@ -60,30 +61,32 @@ function Personalization() {
             setisLoading(false);
         });
     }, []);
-    return (<>
-        {isLoading === true ? (<Loading />) : (<div className="element-common">
-            <div className="textHeader">Персонализация</div>
-            <PersonalizationPart userPromoCode={userPromoCode} />
-            <TicketsList firstTickets={firstTickets} pagesCount={ticketPagesCount} />
-            {store.getState().user.isAdmin && <>
-                <div className="textHeader">Администрирование</div>
-                <AdministrationPart />
-                <CreatePromoCodePart />
-                {//<TicketAdministrationPart />
-                }
-                {(activePromoCodes.length > 0 || inactivePromoCodes.length > 0) && <>
-                    <div className="textHeader">Список всех промокодов</div>
-                    <PromoCodeList promoCodeList={[...activePromoCodes, ...inactivePromoCodes]} /></>}
-                {firstConcerts.length > 0 && <>
-                    <div className="textHeader">Список моих концертов</div>
-                    <ConcertsList firstConcerts={firstConcerts} pagesCount={pagesCount} />
+    return (
+        <div className="element-common">
+            {isLoading === true ? (<Loading />) : <>
+                <div className="textHeader">Персонализация</div>
+                <PersonalizationPart userPromoCode={userPromoCode} />
+                <TicketsList firstTickets={firstTickets} pagesCount={ticketPagesCount} />
+                {store.getState().user.isAdmin && <>
+                    <div className="textHeader">Администрирование</div>
+                    <AdministrationPart />
+                    <UsersBriefInfoList/>
+                    <CreatePromoCodePart />
+                    {//<TicketAdministrationPart />
+                    }
+                    {(activePromoCodes.length > 0 || inactivePromoCodes.length > 0) && <>
+                        <div className="textHeader">Список всех промокодов</div>
+                        <PromoCodeList promoCodeList={[...activePromoCodes, ...inactivePromoCodes]} /></>}
+                    {firstConcerts.length > 0 && <>
+                        <div className="textHeader">Список моих концертов</div>
+                        <ConcertsList firstConcerts={firstConcerts} pagesCount={pagesCount} />
+                    </>}
+                    <AddConcertPart />
                 </>}
-                <AddConcertPart />
+                <div className="textHeader">Последние действия</div>
+                {actions.length > 0 && <ActionList actionList={actions} />}
             </>}
-            <div className="textHeader">Последние действия</div>
-            {actions.length > 0 && <ActionList actionList={actions} />}
-        </div>)
-        }</>
+        </div>
     );
 }
 

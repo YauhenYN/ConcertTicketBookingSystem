@@ -95,6 +95,8 @@
 
 .whoBoughtTicket{
     width: 400%;
+    display: flex;
+    align-items: center;
 }
 .countTicket{
     width: 100%;

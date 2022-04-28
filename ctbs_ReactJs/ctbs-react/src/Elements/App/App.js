@@ -19,12 +19,20 @@ import OAuthRedirect from '../../OAuthRedirect';
 
 function App({ props, logIn }) {
   const [isLoading, setisLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
     logIn().then(() => {
       setisLoading(false);
+    }).catch(() => {
+      setFailed(true);
     });
   }, [logIn]);
-  return (
+  return failed === true ? <h1 style = {{    
+    textAlign: "center",
+    top: "40vh",
+    position: "relative",
+    color: "brown"
+}}>Server Load Failed</h1> : (
     isLoading === true ? (<Loading />) : (<>
       <div id='invisibleTop' >
         <Header />

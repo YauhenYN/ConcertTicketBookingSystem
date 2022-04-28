@@ -102,7 +102,7 @@ function ConcertPage() {
             </GoogleMapReact>
         </div>
         {store.getState().user && store.getState().user.isAdmin && <>
-            <TicketAdministration concertId = {concert.concertId}/>
+            <TicketAdministration concertId = {concert.concertId} isActive = {concert.isActiveFlag}/>
         </>
         }
     </div> :

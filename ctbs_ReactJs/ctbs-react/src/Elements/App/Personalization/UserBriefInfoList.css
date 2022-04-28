@@ -1,0 +1,21 @@
+.UserListId{
+    width: 100%;
+}
+.UserListName{
+    width: 60%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.UserListName .Input{
+    margin: 0;
+    padding: 0.4em 0;
+    width: 80%;
+    margin-left: 0.5em;
+}
+.UserListIsAdmin{
+    width: 30%;
+}
+.UserListEmail{
+    width: 80%;
+}

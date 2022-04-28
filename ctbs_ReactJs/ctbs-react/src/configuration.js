@@ -46,7 +46,7 @@ export const addPromoCodeAddition = "/PromoCodes";
 export const addConcert = "/Concerts"
 export const getManyLightConcerts = "/Concerts/many/light"
 
-
+export const getManyUsersBriefInfo = "Administration/Users/Many/Brief";
 
 
 export const getTickets = "/Tickets"

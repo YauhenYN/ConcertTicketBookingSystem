@@ -44,10 +44,10 @@ function Main() {
         </div>
         <div className="centerHeaderText"></div>
         <h3 className="centerHeaderText">Новинки</h3>
-        <ConcertsList concerts={concerts} />
+        {concerts.length > 3 && <ConcertsList concerts={concerts} />}
         <div className="centerHeaderText"></div>
         <h3 className="centerHeaderText">Актуальные сейчас</h3>
-        <ConcertsList concerts={actualConcerts} />
+        {actualConcerts.length > 3 && <ConcertsList concerts={actualConcerts} />}
       </>}
     </div>);
 }

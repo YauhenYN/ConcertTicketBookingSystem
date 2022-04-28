@@ -19,7 +19,7 @@ function TicketItem(props) {
             {ticket.isMarked ? "Да" : "Нет"}
         </div>
         <div className="checkTicketButton">
-        {ticket.isMarked ? <Button text="Деактивировать" onClick={UnMarkTicket(ticket, setTicket)} /> : <Button text="Отметить" onClick={MarkTicket(ticket, setTicket)} />}
+        {props.isActive ? <>{ticket.isMarked ? <Button text="Деактивировать" onClick={UnMarkTicket(ticket, setTicket)} /> : <Button text="Отметить" onClick={MarkTicket(ticket, setTicket)} />}</> : <div className="expendedConcert">Деактивирован</div>}
         </div>
     </div>
 }

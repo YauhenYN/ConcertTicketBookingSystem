@@ -66,8 +66,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> MarkTicketAsync(Guid ticketId)
         {
-            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
-            if (ticket != null && ticket.IsMarkedFlag == false)
+            var ticket = await _context.Tickets.Include(t => t.Concert).FirstOrDefaultAsync(t => t.TicketId == ticketId);
+            if (ticket != null && ticket.IsMarkedFlag == false && ticket.Concert.ConcertDate < DateTime.Now.ToUniversalTime() && ticket.Concert.IsActiveFlag)
             {
                 ticket.IsMarkedFlag = true;
                 await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Marked Ticket = " + ticketId);
@@ -82,8 +82,8 @@ namespace ConcertTicketBookingSystemAPI.Controllers
         [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> UnmarkTicketAsync(Guid ticketId)
         {
-            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
-            if (ticket != null && ticket.IsMarkedFlag == true)
+            var ticket = await _context.Tickets.Include(t => t.Concert).FirstOrDefaultAsync(t => t.TicketId == ticketId);
+            if (ticket != null && ticket.IsMarkedFlag == true && ticket.Concert.ConcertDate < DateTime.Now.ToUniversalTime() && ticket.Concert.IsActiveFlag)
             {
                 ticket.IsMarkedFlag = false;
                 await _context.AddActionAsync(Guid.Parse(HttpContext.User.Identity.Name), "Unmarked Ticket = " + ticketId);

@@ -62,6 +62,7 @@ export const logInThunkActionCreator = () => {
                 type: actionTypes.LogIn,
                 isLoggedIn: false
             });
+            throw error;
         };
     }
 };
@@ -262,6 +263,22 @@ export const GetManyTicketsActionCreator = (nextPage, byUserId, ByConcertId, nee
                 byConcertId: ByConcertId,
                 neededCount: neededCount,
                 byTicketId: byTicketId
+            },
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        });
+    }
+}
+
+export const GetManyUsersBriefInfoActionCreator = (nextPage, byIsAdmin, byUserName, neededCount) => {
+    return async function GetManyPromoCodesThunk() {
+        return await axios.get(conf.apiLink + "/" + conf.getManyUsersBriefInfo, {
+            params: {
+                pageNumber: nextPage,
+                neededCount: neededCount,
+                byIsAdmin: byIsAdmin,
+                byUserName: byUserName
             },
             headers: {
                 'Authorization': 'Bearer ' + accessToken

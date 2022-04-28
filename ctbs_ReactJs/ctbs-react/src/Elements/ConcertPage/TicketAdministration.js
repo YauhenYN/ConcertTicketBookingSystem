@@ -7,22 +7,34 @@ import TicketItem from "./TicketItem";
 import NextPageButton from "../../CommonElements/NextPageButton";
 import TextInput from "../../CommonElements/TextInput";
 
+function TicketsConcertListSearchInputEvent(concertId, ticketIdSearch, setTickets, setNextPage, setPagesCount) {
+    return function Action(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            loadTicketsByConcertId(concertId, ticketIdSearch, [], setTickets, 0, setNextPage, setPagesCount)();
+        }
+    }
+}
 
 function TicketAdministration(props) {
     const [tickets, setTickets] = useState([]);
     const [nextPage, setNextPage] = useState(0);
     const [pagesCount, setPagesCount] = useState(0);
     const [ticketIdSearch, setTicketIdSearch] = useState("");
+    const [wereTickets, setWereTickets] = useState(false);
     useEffect(() => {
-        loadTicketsByConcertId(props.concertId, ticketIdSearch, [], setTickets, 0, setNextPage, setPagesCount)();
-    }, [props.concertId, ticketIdSearch]);
+        loadTicketsByConcertId(props.concertId, null, [], setTickets, 0, setNextPage, setPagesCount)();
+    }, [props.concertId]);
+    useEffect(() => {
+        if (tickets.length > 0) setWereTickets(true);
+    }, [ticketIdSearch]);
     return <>
-        {(tickets.length > 0 || ticketIdSearch.length >= 3) && <><div className="textHeader">Администрирование</div>
+        {(tickets.length > 0 || wereTickets) && <><div className="textHeader">Администрирование</div>
             <div id="TicketListConcertPage" className="outOfListTable">
                 <div className="ListTable">
                     <div className="ListHeader">
                         <div className="whoBoughtTicket">Id билета
-                            <TextInput value={ticketIdSearch} onChange={event => setTicketIdSearch(event.target.value)} minLength={3} maxLength={36} />
+                            <div id="TicketsConcertListSearchInput" onKeyDown={TicketsConcertListSearchInputEvent(props.concertId, ticketIdSearch, setTickets, setNextPage, setPagesCount)}><TextInput value={ticketIdSearch} onChange={event => setTicketIdSearch(event.target.value)} maxLength={36} /></div>
                         </div>
                         <div className="countTicket">Кол-во</div>
                         <div className="isMarkedTicket">Отмечен</div>
@@ -31,7 +43,7 @@ function TicketAdministration(props) {
                     </div>
                     <div className="ListItem" /><div className="ListItem" />
                     {tickets.map(ticket => {
-                        return <TicketItem key={ticket.ticketId} ticket={ticket} />
+                        return <TicketItem key={ticket.ticketId} ticket={ticket} isActive={props.isActive} />
                     })}
                     {nextPage < pagesCount && <NextPageButton onClick={loadTicketsByConcertId(props.concertId, ticketIdSearch, tickets, setTickets, nextPage, setNextPage, setPagesCount)} />}
                 </div>
@@ -41,7 +53,7 @@ function TicketAdministration(props) {
 
 function loadTicketsByConcertId(concertId, byTicketId, tickets, setTickets, nextPage, setNextPage, setPagesCount) {
     return function action() {
-        return store.dispatch(actionCreators.GetManyTicketsActionCreator(nextPage, null, concertId, 15, byTicketId && byTicketId.length >= 3 ? byTicketId : null)).then(result => {
+        return store.dispatch(actionCreators.GetManyTicketsActionCreator(nextPage, null, concertId, 15, byTicketId && byTicketId.length > 0 ? byTicketId : null)).then(result => {
             setTickets([...tickets, ...result.data.tickets]);
             setPagesCount(result.data.pageCount);
             setNextPage(nextPage + 1);
