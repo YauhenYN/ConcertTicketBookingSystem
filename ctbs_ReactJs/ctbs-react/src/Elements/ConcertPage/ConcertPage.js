@@ -39,7 +39,9 @@ function ConcertPage() {
             setIsLoading(false);
         })
     }, [concertId])
-    return <>{!isLoading ? <div className="element-common">
+    return  <div className="element-common">
+        {!isLoading ? 
+        <>
         <div className="imagesBox">
             <div className="imageLeftSideConcert">
                 <div className="topImageConcert">
@@ -103,10 +105,10 @@ function ConcertPage() {
         </div>
         {store.getState().user && store.getState().user.isAdmin && <>
             <TicketAdministration concertId = {concert.concertId} isActive = {concert.isActiveFlag}/>
-        </>
-        }
-    </div> :
-        <Loading />}</>
+        </>}
+        </> : 
+        <Loading />}
+    </div>
 }
 
 function buyTicket(count, concertId) {
