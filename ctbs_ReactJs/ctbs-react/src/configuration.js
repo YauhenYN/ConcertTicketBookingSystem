@@ -1,5 +1,5 @@
 import Cookies from "universal-cookie/es6";
-export const apiLink = "https://localhost:44345";
+export const apiLink = "https://localhost:44345"; 
 
 
 export const googleLink = apiLink + "/Authentication/OAuth/Google/Redirect";

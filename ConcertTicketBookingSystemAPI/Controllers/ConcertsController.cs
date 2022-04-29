@@ -68,6 +68,28 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 var ticket = dto.ToTicket(Guid.Parse(HttpContext.User.Identity.Name), concertId, user.PromoCodeId);
                 decimal cost = concert.Cost * dto.Count;
                 if (user.PromoCode != null) cost = cost > user.PromoCode.Discount ? cost - user.PromoCode.Discount : 0;
+                void BuyTicketBodyTemplate(Models.ApplicationContext context)
+                {
+                    var promoCode = context.PromoCodes.FirstOrDefault(p => p.PromoCodeId == user.PromoCodeId);
+                    context.AddAction(user.UserId, "Bought ticket");
+                    if (user.PromoCode != null)
+                    {
+                        ticket.PromoCodeId = user.PromoCodeId;
+                        user.PromoCodeId = null;
+                        user.PromoCode = null;
+                    }
+                    concert.LeftCount -= ticket.Count;
+                    context.Tickets.Add(ticket);
+                    context.SaveChanges();
+
+                    _senderService.SendHtml("Ticket", user.Email,
+                    $"<p>Id Билета - {ticket.TicketId}</p>" +
+                    $"<p>На количество - {ticket.Count}</p>" +
+                    $"<p>Кому - {user.Name}</p>" +
+                    $"<p>Оплачено - {cost}</p>" +
+                    $"<h1>На концерт:</h1>" +
+                    $"<a href = \"{_configuration["RedirectUrl"]}/#/Concerts/{concert.ConcertId}\">Концерт</a>", 5);
+                }
                 if (cost != 0)
                 {
                     PayPalHttp.HttpResponse response = await _payment.CreateOrderAsync("USD", cost, "Count: " + ticket.Count + "\n");
@@ -84,26 +106,10 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                     {
                         _confirmationService.Add(result.Id, (context) =>
                         {
-                            user = ((Models.ApplicationContext)context).Users.Include(u => u.PromoCode).FirstOrDefault(u => u.UserId == user.UserId);
-                            var promoCode = ((Models.ApplicationContext)context).PromoCodes.FirstOrDefault(p => p.PromoCodeId == user.PromoCodeId);
-                            concert = ((Models.ApplicationContext)context).Concerts.FirstOrDefault(c => c.ConcertId == concert.ConcertId);
-                            ((Models.ApplicationContext)context).AddAction(user.UserId, "Bought ticket");
-                            if (user.PromoCode != null)
-                            {
-                                ticket.PromoCodeId = user.PromoCodeId;
-                                user.PromoCodeId = null;
-                                user.PromoCode = null;
-                            }
-                            concert.LeftCount = concert.LeftCount - ticket.Count;
-                            ((Models.ApplicationContext)context).Tickets.Add(ticket);
-                            ((Models.ApplicationContext)context).SaveChanges();
-                            _senderService.SendHtml("Ticket", user.Email,
-                            $"<p>Id Билета - {ticket.TicketId}</p>" +
-                            $"<p>На количество - {ticket.Count}</p>" +
-                            $"<p>Кому - {user.Name}</p>" +
-                            $"<p>Оплачено - {cost}</p>" +
-                            $"<h1>На концерт:</h1>" +
-                            $"<a href = \"{_configuration["RedirectUrl"]}/#/Concerts/{concert.ConcertId}\">Концерт</a>", 5);
+                            var convertedContext = (Models.ApplicationContext)context;
+                            user = convertedContext.Users.Include(u => u.PromoCode).FirstOrDefault(u => u.UserId == user.UserId);
+                            concert = convertedContext.Concerts.FirstOrDefault(c => c.ConcertId == concert.ConcertId);
+                            BuyTicketBodyTemplate(convertedContext);
                         });
                         return approveUrl;
                     }
@@ -111,24 +117,7 @@ namespace ConcertTicketBookingSystemAPI.Controllers
                 }
                 else
                 {
-                    var promoCode = _context.PromoCodes.FirstOrDefault(p => p.PromoCodeId == user.PromoCodeId);
-                    _context.AddAction(user.UserId, "Bought ticket");
-                    if (user.PromoCode != null)
-                    {
-                        ticket.PromoCodeId = user.PromoCodeId;
-                        user.PromoCodeId = null;
-                        user.PromoCode = null;
-                    }
-                    concert.LeftCount = concert.LeftCount - ticket.Count;
-                    _context.Tickets.Add(ticket);
-                    _context.SaveChanges();
-                    _senderService.SendHtml("Ticket", user.Email,
-                    $"<p>Id Билета - {ticket.TicketId}</p>" +
-                    $"<p>На количество - {ticket.Count}</p>" +
-                    $"<p>Кому - {user.Name}</p>" +
-                    $"<p>Оплачено - {cost}</p>" +
-                    $"<h1>На концерт:</h1>" +
-                    $"<a href = \"{_configuration["RedirectUrl"]}/#/Concerts/{concert.ConcertId}\">Концерт</a>", 5);
+                    BuyTicketBodyTemplate(_context);
                     return Ok();
                 }
             }
