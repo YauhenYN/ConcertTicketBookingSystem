@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
+namespace EmailSender
 {
-    public class EmailSenderService : IDisposable
+    public class EmailSenderService : IDisposable, IEmailSending
     {
         private readonly SmtpClient _client;
         private string _email;
@@ -66,7 +64,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.EmailSending
                     lastResult = _client.Send(emailMessage);
                     break;
                 }
-                catch { if(attempt > maxSendAttemptsCount - 2) throw; }
+                catch { if (attempt > maxSendAttemptsCount - 2) throw; }
             }
             return lastResult;
         }

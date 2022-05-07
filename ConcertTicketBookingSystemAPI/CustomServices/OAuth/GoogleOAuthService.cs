@@ -1,31 +1,27 @@
-﻿using ConcertTicketBookingSystemAPI.CustomServices.EmailSending;
-using ConcertTicketBookingSystemAPI.Helpers;
+﻿using HttpClientHelper;
+using OAuth.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
+namespace OAuth
 {
-    public class GoogleOAuthService
+    public class GoogleOAuthService : OAuthServiceBase, IGoogleOAuthService
     {
-        private readonly string _clientId;
-        private readonly string _secret;
-        private readonly string _oAuthServerEndPoint;
-        private readonly string _tokenEndPoint;
-        private readonly string _refreshEndPoint;
-        private readonly string _redirectUrl;
-        public GoogleOAuthService(string clientId, string secret, string oAuthServerEndPoint, string tokenEndPoint, string refreshEndPoint, string redirectUrl)
+        protected readonly string _refreshEndPoint;
+        public GoogleOAuthService(HttpClientHelperBase httpClientHelper,
+            string clientId,
+            string secret,
+            string oAuthServerEndPoint,
+            string tokenEndPoint,
+            string refreshEndPoint,
+            string redirectUrl)
+            : base(httpClientHelper, clientId, secret, oAuthServerEndPoint, tokenEndPoint, redirectUrl, "https://www.googleapis.com/oauth2/v2/userinfo")
         {
-            _clientId = clientId;
-            _secret = secret;
-            _oAuthServerEndPoint = oAuthServerEndPoint;
-            _tokenEndPoint = tokenEndPoint;
             _refreshEndPoint = refreshEndPoint;
-            _redirectUrl = redirectUrl;
         }
-        public string GenerateOAuthRequstUrl(string scope, string codeChallenge)
+
+        public string GenerateOAuthRequestUrl(string scope, string codeChallenge)
         {
             var queryParams = new Dictionary<string, string>()
             {
@@ -51,7 +47,7 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
                 { "grant_type", "authorization_code"},
                 { "redirect_uri", _redirectUrl}
             };
-            var tokenResult = await HttpClientHelper.SendPostRequest<TokenResult>(_tokenEndPoint, authParams);
+            var tokenResult = await _httpClientHelper.SendPostRequestAsync<TokenResult>(_tokenEndPoint, authParams);
             return tokenResult;
         }
         public async Task<TokenResult> RefreshTokenAsync(string refreshToken)
@@ -63,13 +59,8 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
                 { "grant_type", "refresh_token"},
                 { "refresh_token", refreshToken}
             };
-            var tokenResult = await HttpClientHelper.SendPostRequest<TokenResult>(_refreshEndPoint, refreshParams);
+            var tokenResult = await _httpClientHelper.SendPostRequestAsync<TokenResult>(_refreshEndPoint, refreshParams);
             return tokenResult;
-        }
-        public async Task<dynamic> GetUserCredentialsAsync(string accessToken)
-        { 
-            var response = await HttpClientHelper.SendGetRequest<dynamic>("https://www.googleapis.com/oauth2/v2/userinfo", null, accessToken);
-            return response;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices.ConfirmationService
+namespace ConfirmationService
 {
     public interface IConfirmationService<T, V>
     {

@@ -1,5 +1,3 @@
-using System;
-using ConcertTicketBookingSystemAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,12 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ConcertTicketBookingSystemAPI.CustomServices;
-using ConcertTicketBookingSystemAPI.CustomServices.OAuth;
-using ConcertTicketBookingSystemAPI.CustomServices.PayPal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using DAL;
+using System.Text;
+using BLL.Configurations;
+using DAL.Interfaces;
+using DAL.Repositories;
+using BLL.Services;
+using BLL.Interfaces;
 
 namespace ConcertTicketBookingSystemAPI
 {
@@ -34,80 +36,86 @@ namespace ConcertTicketBookingSystemAPI
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddCors();
-            services.AddDbContext<ApplicationContext>(optionsBuilder =>
-            {
-                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
-            new JwtAuth.AuthOptions(Configuration);
-            var googleSection = Configuration.GetSection("GoogleOAuth");
-            services.AddSingleton<GoogleOAuthService>(c => new GoogleOAuthService(
-                googleSection["clientId"],
-                googleSection["secret"],
-                googleSection["serverEndPoint"],
-                googleSection["tokenEndPoint"],
-                googleSection["googleApiEndPoint"],
-                googleSection["OAuthRedirect"])
-            );
-            var facebookSection = Configuration.GetSection("FacebookOAuth");
-            services.AddSingleton<FacebookOAuthService>(c => new FacebookOAuthService(
-                facebookSection["clientId"],
-                facebookSection["secret"],
-                facebookSection["serverEndPoint"],
-                facebookSection["tokenEndPoint"],
-                facebookSection["OAuthRedirect"],
-                facebookSection["scope"])
-            );
-            var microsoftSection = Configuration.GetSection("MicrosoftOAuth");
-            services.AddSingleton<MicrosoftOAuthService>(c => new MicrosoftOAuthService(
-                microsoftSection["tenant"],
-                microsoftSection["clientId"],
-                microsoftSection["secret"],
-                microsoftSection["serverEndPoint"],
-                microsoftSection["tokenEndPoint"],
-                microsoftSection["refreshEndPoint"],
-                microsoftSection["OAuthRedirect"])
-            );
-            services.AddAuthentication(configureOptions =>
-            {
-                configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = JwtAuth.AuthOptions.ISSUER,
-                    ValidateAudience = true,
-                    ValidAudience = JwtAuth.AuthOptions.AUDIENCE,
-                    ValidateLifetime = true,
-                    IssuerSigningKey = JwtAuth.AuthOptions.GetSymmetricSecurityKey(),
-                    ValidateIssuerSigningKey = true
-                };
-            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConcertTicketBookingSystemAPI", Version = "v1" });
             });
+
+            //Configuration
+            services.Configure<BaseLinksConf>(options => Configuration.GetSection("BaseLinks").Bind(options));
+            services.Configure<FacebookOAuthConf>(options => Configuration.GetSection("FacebookOAuth").Bind(options));
+            services.Configure<GoogleOAuthConf>(options => Configuration.GetSection("GoogleOAuth").Bind(options));
+            services.Configure<MicrosoftOAuthConf>(options => Configuration.GetSection("MicrosoftOAuth").Bind(options));
+            services.Configure<PayPalConf>(options => Configuration.GetSection("PayPal").Bind(options));
+
+            //Authentication
+            var authOptions = Configuration.GetSection("AuthOptions");
+            services.AddAuthentication(configureOptions =>
+            {
+                configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = authOptions["Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = authOptions["Audience"],
+                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(authOptions["Key"])),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
+            //CustomServices
+            services.AddJwtService(authOptions);
+            services.AddGoogleOAuthService(Configuration.GetSection("GoogleOAuth"));
+            services.AddFacebookOAuthService(Configuration.GetSection("FacebookOAuth"));
+            services.AddMicrosoftOAuthService(Configuration.GetSection("MicrosoftOAuth"));
             services.AddGuidConfirmationService(Configuration.GetValue<int>("EmailConfirmationTimeSpan"), 10000);
             services.AddStringConfirmationService(Configuration.GetValue<int>("EmailConfirmationTimeSpan"), 10000);
-            var senderSection = Configuration.GetSection("EmailSenderSettings");
-            services.AddEmailSenderService(
-                senderSection["host"],
-                senderSection.GetValue<int>("port"),
-                senderSection["name"],
-                senderSection["email"],
-                senderSection["password"]
-            );
-            var paypalSection = Configuration.GetSection("PayPal");
-            services.AddSingleton<PayPalPayment>(c => new PayPalPayment(new PayPalSetup()
+            services.AddEmailSenderService(Configuration.GetSection("EmailSenderSettings"));
+            services.AddPayPalPaymentService(Configuration.GetSection("PayPal"));
+            services.AddHttpClientHelper();
+            services.AddSha256Helper();
+
+            //DAL
+            services.AddDbContext<ApplicationContext>(optionsBuilder =>
             {
-                CancelUrl = paypalSection["cancelUrl"],
-                ReturnUrl = paypalSection["returnUrl"],
-                ClientId = paypalSection["clientId"],
-                Secret = paypalSection["secret"],
-                Environment = paypalSection["environment"]
-            }));
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+            services.AddScoped<IActionsRepository, ActionsRepository>();
+            services.AddScoped<IAdditionalImagesRepository, AdditionalImagesRepository>();
+            services.AddScoped<IClassicConcertsRepository, ClassicConcertsRepository>();
+            services.AddScoped<IConcertsRepository, ConcertsRepository>();
+            services.AddScoped<IFacebookUsersRepository, FacebookUsersRepository>();
+            services.AddScoped<IGoogleUsersRepository, GoogleUsersRepository>();
+            services.AddScoped<IImagesRepository, ImagesRepository>();
+            services.AddScoped<IMicrosoftUsersRepository, MicrosoftUsersRepository>();
+            services.AddScoped<IOpenAirConcertsRepository, OpenAirConcertsRepository>();
+            services.AddScoped<IPartyConcertsRepository, PartyConcertsRepository>();
+            services.AddScoped<ITicketsRepository, TicketsRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IPromoCodesRepository, PromoCodesRepository>();
+
+            //BLL
+            services.AddScoped<IActionsService, ActionsService>();
+            services.AddScoped<IAdministrationService, AdministrationService>();
+            services.AddScoped<IConcertPaymentService, ConcertPaymentService>();
+            services.AddScoped<ICommonConcertsService, ConcertsService>();
+            services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
+            services.AddScoped<IFacebookOAuthService, FacebookOAuthService>();
+            services.AddScoped<IGoogleOAuthService, GoogleOAuthService>();
+            services.AddScoped<ICommonImagesService, ImageService>();
+            services.AddScoped<IMicrosoftOAuthService, MicrosoftOAuthService>();
+            services.AddScoped<IPersonalizationService, PersonalizationService>();
+            services.AddScoped<ICommonPromoCodesService, PromoCodesService>();
+            services.AddScoped<ICommonTicketsService, TicketsService>();
+            services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
+            services.AddScoped<ICommonUsersService, UsersService>();
+            services.AddScoped<IUserInfoService, UsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -133,7 +141,7 @@ namespace ConcertTicketBookingSystemAPI
             app.UseRouting();
             app.UseCors(options =>
             {
-                options.WithOrigins(Configuration["RedirectUrl"], Configuration.GetSection("PayPal")["thenRedirectedTo"]);
+                options.WithOrigins(Configuration.GetSection("BaseLinks")["FrontUrl"], Configuration.GetSection("PayPal")["thenRedirectedTo"]);
                 options.AllowAnyHeader();
                 options.AllowAnyMethod();
                 options.AllowCredentials();

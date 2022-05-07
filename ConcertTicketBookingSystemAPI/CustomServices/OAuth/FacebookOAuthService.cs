@@ -1,31 +1,26 @@
-﻿using ConcertTicketBookingSystemAPI.CustomServices.EmailSending;
-using ConcertTicketBookingSystemAPI.Helpers;
+﻿using HttpClientHelper;
+using OAuth.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
+namespace OAuth
 {
-    public class FacebookOAuthService
+    public class FacebookOAuthService : OAuthServiceBase, IFacebookOAuthService
     {
-        private readonly string _clientId;
-        private readonly string _secret;
-        private readonly string _oAuthServerEndPoint;
-        private readonly string _tokenEndPoint;
-        private readonly string _redirectUrl;
         private readonly string _scope;
-        public FacebookOAuthService(string clientId, string secret, string oAuthServerEndPoint, string tokenEndPoint, string redirectUrl, string scope)
+        public FacebookOAuthService(HttpClientHelperBase httpClientHelper,
+            string clientId, 
+            string secret, 
+            string oAuthServerEndPoint, 
+            string tokenEndPoint, 
+            string redirectUrl, 
+            string scope)
+            : base(httpClientHelper, clientId, secret, oAuthServerEndPoint, tokenEndPoint, redirectUrl, "https://graph.facebook.com/v13.0/me?fields=id,name,email")
         {
-            _clientId = clientId;
-            _secret = secret;
-            _oAuthServerEndPoint = oAuthServerEndPoint;
-            _tokenEndPoint = tokenEndPoint;
-            _redirectUrl = redirectUrl;
             _scope = scope;
         }
-        public string GenerateOAuthRequstUrl(string state)
+        public string GenerateOAuthRequestUrl(string state)
         {
             var queryParams = new Dictionary<string, string>()
             {
@@ -46,13 +41,8 @@ namespace ConcertTicketBookingSystemAPI.CustomServices.OAuth
                 { "client_secret", _secret},
                 { "code", code}
             };
-            var tokenResult = await HttpClientHelper.SendPostRequest<TokenResult>(_tokenEndPoint, authParams);
+            var tokenResult = await _httpClientHelper.SendPostRequestAsync<TokenResult>(_tokenEndPoint, authParams);
             return tokenResult;
-        }
-        public async Task<dynamic> GetUserCredentialsAsync(string accessToken)
-        {
-            var response = await HttpClientHelper.SendGetRequest<dynamic>("https://graph.facebook.com/v13.0/me?fields=id,name,email", null, accessToken);
-            return response;
         }
     }
 }

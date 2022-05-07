@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ConcertTicketBookingSystemAPI.CustomServices.PayPal
+﻿namespace PayPal
 {
     public record PayPalSetup
     {
