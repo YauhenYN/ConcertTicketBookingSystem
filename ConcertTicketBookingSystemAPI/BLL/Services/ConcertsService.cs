@@ -19,6 +19,7 @@ namespace BLL.Services
         private readonly IClassicConcertsRepository _classicConcertsRepository;
         private readonly IOpenAirConcertsRepository _openAirConcertsRepository;
         private readonly IPartyConcertsRepository _partyConcertsRepository;
+        private readonly int maxCensure = 6;
         public ConcertsService(IActionsRepository actionsRepository,
             IUsersRepository usersRepository,
             IImagesRepository imagesRepository,
@@ -62,16 +63,25 @@ namespace BLL.Services
             return concert.ConcertId;
         }
 
-        public async Task<ConcertDto> GetConcertByIdAsync(int concertId, Guid userId)
+        public async Task<ConcertDto> GetConcertByIdAsync(int concertId, Guid? userId)
         {
-            var currentUser = await _usersRepository.GetByIdAsync(userId);
-            ConcertDto returningConcert = null;
             var concert = await _concertsRepository.GetByIdAsync(concertId);
-            if (concert is ClassicConcert) returningConcert = ((ClassicConcert)concert).ToDto();
-            else if (concert is OpenAirConcert) returningConcert = ((OpenAirConcert)concert).ToDto();
-            else if (currentUser != null && currentUser.BirthDate <= DateTime.UtcNow.AddYears(((PartyConcert)concert).Censure))
-                returningConcert = ((PartyConcert)concert).ToDto();
-            return await Task.FromResult(returningConcert);
+            if (concert is ClassicConcert) return ((ClassicConcert)concert).ToDto();
+            else if (concert is OpenAirConcert) return ((OpenAirConcert)concert).ToDto();
+            else
+            {
+                var partyConcert = (PartyConcert)concert;
+                if (userId != null)
+                {
+                    int age = GetAge((await _usersRepository.GetByIdAsync(userId.Value)).BirthDate.Value);
+                    if (age >= partyConcert.Censure)  return partyConcert.ToDto();
+                }
+                else
+                {
+                    if (maxCensure >= partyConcert.Censure) return partyConcert.ToDto();
+                }
+                return null;
+            }
         }
 
         public async Task ActivateConcertAsync(int concertId, Guid userId)
@@ -89,9 +99,8 @@ namespace BLL.Services
             await _actionsRepository.AddActionAsync(userId, "Deactivated concert with id = " + concertId);
         }
 
-        public async Task<ConcertSelectorDto> GetManyLightConcertsAsync(ConcertSelectParametersDto selectParametersDto, Guid userId)
+        public async Task<ConcertSelectorDto> GetManyLightConcertsAsync(ConcertSelectParametersDto selectParametersDto, Guid? userId)
         {
-            var userInfo = await _usersRepository.GetByIdAsync(userId);
             IQueryable<Concert> concerts;
             if (selectParametersDto.ByConcertType != null)
             {
@@ -116,8 +125,15 @@ namespace BLL.Services
                 else
                 {
                     var partyConcerts = _partyConcertsRepository.GetQueryable();
-                    if (userInfo != null) partyConcerts = partyConcerts.
-                            Where(c => userInfo.BirthDate <= DateTime.UtcNow.AddYears(-c.Censure));
+                    if (userId != null)
+                    {
+                        int age = GetAge((await _usersRepository.GetByIdAsync(userId.Value)).BirthDate.Value);
+                        partyConcerts = partyConcerts.Where(c => age >= c.Censure);
+                    }
+                    else
+                    {
+                        partyConcerts = partyConcerts.Where(c => maxCensure >= c.Censure);
+                    }
                     concerts = partyConcerts;
                 }
             }
@@ -147,6 +163,14 @@ namespace BLL.Services
         public Task<bool> IsExistsAsync(int concertId)
         {
             return _concertsRepository.IsExistsAsync(concertId);
+        }
+        private int GetAge(DateTime birthDate)
+        {
+            var userBirthDate = birthDate;
+            var nowTime = DateTime.UtcNow;
+            int age = nowTime.Year - userBirthDate.Year;
+            if (nowTime.DayOfYear < userBirthDate.DayOfYear) age++;
+            return age;
         }
     }
 }

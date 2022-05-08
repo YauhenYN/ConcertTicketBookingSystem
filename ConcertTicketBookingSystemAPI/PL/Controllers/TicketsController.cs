@@ -34,7 +34,7 @@ namespace PL.Controllers
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<TicketSelectorDto>> GetManyTicketsAsync([FromQuery]TicketSelectParametersDto dto)
         {
-            var selector = await _ticketsService.GetManyTicketsAsync(dto, UserId);
+            var selector = await _ticketsService.GetManyTicketsAsync(dto, UserId.Value);
             if (selector.Tickets.Length > 0) return selector;
             return NotFound();
         }
@@ -45,10 +45,10 @@ namespace PL.Controllers
         public async Task<ActionResult> MarkTicketAsync(Guid ticketId)
         {
             var ticket = await _ticketsService.GetTicketByIdAsync(ticketId);
-            var ticketConcert = await _concertService.GetConcertByIdAsync(ticket.ConcertId, UserId);
+            var ticketConcert = await _concertService.GetConcertByIdAsync(ticket.ConcertId, UserId.Value);
             if (ticket != null && ticket.IsMarked == false && ticketConcert.ConcertDate < DateTime.Now.ToUniversalTime() && ticketConcert.IsActiveFlag)
             {
-                await _ticketsService.MarkTicketAsync(ticketId, UserId);
+                await _ticketsService.MarkTicketAsync(ticketId, UserId.Value);
                 return NoContent();
             }
             else return NotFound();
@@ -63,7 +63,7 @@ namespace PL.Controllers
             var ticketConcert = await _concertService.GetConcertByIdAsync(ticket.ConcertId, UserId);
             if (ticket != null && ticket.IsMarked == true && ticketConcert.ConcertDate < DateTime.Now.ToUniversalTime() && ticketConcert.IsActiveFlag)
             {
-                await _ticketsService.UnmarkTicketAsync(ticketId, UserId);
+                await _ticketsService.UnmarkTicketAsync(ticketId, UserId.Value);
                 return NoContent();
             }
             else return NotFound();

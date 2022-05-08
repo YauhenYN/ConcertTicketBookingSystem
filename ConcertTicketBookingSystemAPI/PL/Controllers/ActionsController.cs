@@ -22,7 +22,7 @@ namespace PL.Controllers
         [Route("many")]
         public async Task<ActionResult<IEnumerable<ActionDto>>> GetManyAsync()
         {
-            var actions = await _actionsService.GetUserActionsAsync(UserId);
+            var actions = await _actionsService.GetUserActionsAsync(UserId.Value);
             if (actions.Count() > 0) return actions.ToArray();
             else return NotFound();
         }

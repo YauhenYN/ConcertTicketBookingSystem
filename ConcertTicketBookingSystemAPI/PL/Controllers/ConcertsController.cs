@@ -44,7 +44,7 @@ namespace PL.Controllers
             var concertInfo = await _commonConcertsService.GetConcertByIdAsync(concertId, UserId);
             if (concertInfo != null && concertInfo.IsActiveFlag == true && concertInfo.LeftTicketsCount > 0)
             {
-                var approveUrl = await _concertPaymentService.PrePayAsync(concertId, dto, UserId);
+                var approveUrl = await _concertPaymentService.PrePayAsync(concertId, dto, UserId.Value);
                 if (approveUrl != null) return approveUrl;
                 else return Ok();
             }
@@ -58,7 +58,7 @@ namespace PL.Controllers
             //this is where actual transaction is carried out
             try
             {
-                await _concertPaymentService.ConfirmedPaymentAsync(token, UserId);
+                await _concertPaymentService.ConfirmedPaymentAsync(token, UserId.Value);
                 return Redirect(_payPalConfiguration.SuccessURL);
             }
             catch
@@ -80,7 +80,7 @@ namespace PL.Controllers
         [Authorize(Roles = "admin", AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> AddConcertAsync(AddConcertDto dto)
         {
-            var concertId = await _commonConcertsService.AddConcertAsync(dto, UserId);
+            var concertId = await _commonConcertsService.AddConcertAsync(dto, UserId.Value);
             return CreatedAtRoute(concertId, new { concertId = concertId });
         }
 
@@ -92,7 +92,7 @@ namespace PL.Controllers
             var concert = await _commonConcertsService.GetConcertByIdAsync(concertId, UserId);
             if (concert != null && concert.IsActiveFlag == false && concert.ConcertDate > DateTime.UtcNow)
             {
-                await _commonConcertsService.ActivateConcertAsync(concertId, UserId);
+                await _commonConcertsService.ActivateConcertAsync(concertId, UserId.Value);
                 return NoContent();
             }
             else return NotFound();
@@ -106,7 +106,7 @@ namespace PL.Controllers
             var concert = await _commonConcertsService.GetConcertByIdAsync(concertId, UserId);
             if (concert != null && concert.IsActiveFlag == true && concert.ConcertDate > DateTime.UtcNow)
             {
-                await _commonConcertsService.DeactivateConcertAsync(concertId, UserId);
+                await _commonConcertsService.DeactivateConcertAsync(concertId, UserId.Value);
                 return NoContent();
             }
             else return NotFound();

@@ -25,7 +25,7 @@ namespace PL.Controllers
         {
             if (!await _promoCodesService.AnyWithSuchCode(dto.UniqueCode))
             {
-                var promoCodeId = await _promoCodesService.AddPromoCodeAsync(dto, UserId);
+                var promoCodeId = await _promoCodesService.AddPromoCodeAsync(dto, UserId.Value);
                 return CreatedAtAction("GetPromoCodeById", new 
                 { 
                     promoCodeId = promoCodeId
@@ -72,7 +72,7 @@ namespace PL.Controllers
             var ticket = await _promoCodesService.GetPromoCodeByIdAsync(promoCodeId);
             if (ticket != null && ticket.IsActiveFlag == false)
             {
-                await _promoCodesService.ActivatePromoCodeAsync(promoCodeId, UserId);
+                await _promoCodesService.ActivatePromoCodeAsync(promoCodeId, UserId.Value);
                 return NoContent();
             }
             else return NotFound();
@@ -86,7 +86,7 @@ namespace PL.Controllers
             var ticket = await _promoCodesService.GetPromoCodeByIdAsync(promoCodeId);
             if (ticket != null && ticket.IsActiveFlag == true)
             {
-                await _promoCodesService.DeactivatePromoCodeAsync(promoCodeId, UserId);
+                await _promoCodesService.DeactivatePromoCodeAsync(promoCodeId, UserId.Value);
                 return NoContent();
             }
             else return NotFound();

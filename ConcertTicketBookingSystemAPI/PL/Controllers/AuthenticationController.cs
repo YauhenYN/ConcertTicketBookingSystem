@@ -37,7 +37,7 @@ namespace PL.Controllers
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult> LogOutAsync()
         {
-            await _userAuthenticationService.ClearRefreshTokenAsync(UserId);
+            await _userAuthenticationService.ClearRefreshTokenAsync(UserId.Value);
             Response.Cookies.Delete("RefreshToken");
             return Ok();
         }

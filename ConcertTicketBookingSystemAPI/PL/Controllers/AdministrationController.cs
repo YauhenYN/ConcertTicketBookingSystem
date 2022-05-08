@@ -28,7 +28,7 @@ namespace PL.Controllers
             if (await _usersService.IsAdminAsync(id)) return Conflict();
             if (await _usersService.IsExistsAsync(id))
             {
-                await _administrationService.GiveAdminRightsAsync(id, UserId);
+                await _administrationService.GiveAdminRightsAsync(id, UserId.Value);
                 return NoContent();
             }
             else return NotFound();
@@ -40,7 +40,7 @@ namespace PL.Controllers
             if (!await _usersService.IsAdminAsync(id)) return Conflict();
             if (await _usersService.IsExistsAsync(id))
             {
-                await _administrationService.TakeAdminRightsAsync(id, UserId);
+                await _administrationService.TakeAdminRightsAsync(id, UserId.Value);
                 return NoContent();
             }
             else return NotFound();

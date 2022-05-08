@@ -22,7 +22,7 @@ namespace PL.Controllers
         [Route("[action]")]
         public async Task<RedirectResult> ConfirmAsync(Guid confirmationCode)
         {
-            await _emailConfirmationService.ConfirmAsync(confirmationCode, UserId);
+            await _emailConfirmationService.ConfirmAsync(confirmationCode, UserId.Value);
             return RedirectPermanent(_baseLinksConf.FrontUrl);
         }
     }

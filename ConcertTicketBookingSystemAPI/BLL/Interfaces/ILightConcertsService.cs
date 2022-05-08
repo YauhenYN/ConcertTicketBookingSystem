@@ -6,6 +6,6 @@ namespace BLL.Interfaces
 {
     public interface ILightConcertsService
     {
-        public Task<ConcertSelectorDto> GetManyLightConcertsAsync(ConcertSelectParametersDto selectParametersDto, Guid userId);
+        public Task<ConcertSelectorDto> GetManyLightConcertsAsync(ConcertSelectParametersDto selectParametersDto, Guid? userId);
     }
 }

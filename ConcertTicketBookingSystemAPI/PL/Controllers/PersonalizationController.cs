@@ -30,7 +30,7 @@ namespace PL.Controllers
         [Route("[action]")]
         public async Task<ActionResult> UpdateBirthYearAsync(UpdateBirthYearDto dto)
         {
-            await _personalizationService.UpdateBirthYearAsync(dto, UserId);
+            await _personalizationService.UpdateBirthYearAsync(dto, UserId.Value);
             return NoContent();
         }
 
@@ -38,14 +38,14 @@ namespace PL.Controllers
         [Route("[action]")]
         public async Task<ActionResult> UpdateNameAsync(UpdateNameDto dto)
         {
-            await _personalizationService.UpdateNameAsync(dto, UserId);
+            await _personalizationService.UpdateNameAsync(dto, UserId.Value);
             return NoContent();
         }
         [HttpPost]
         [Route("[action]")]
         public async Task<ActionResult> UpdateEmailAsync(UpdateEmailDto dto)
         {
-            await _personalizationService.UpdateEmailAsync(dto, UserId);
+            await _personalizationService.UpdateEmailAsync(dto, UserId.Value);
             return NoContent();
         }
 
@@ -53,7 +53,7 @@ namespace PL.Controllers
         [Route("[action]")]
         public async Task<ActionResult> RemoveRightsAsync()
         {
-            await _personalizationService.RemoveRightsAsync(UserId);
+            await _personalizationService.RemoveRightsAsync(UserId.Value);
             return NoContent();
         }
 
@@ -61,7 +61,7 @@ namespace PL.Controllers
         [Route("[action]")]
         public async Task<ActionResult> ActivatePromocodeAsync(ActivatePromocodeDto dto)
         {
-            var user = await _userInfoService.GetUserInfoByIdAsync(UserId);
+            var user = await _userInfoService.GetUserInfoByIdAsync(UserId.Value);
             PromoCodeDto userPromoCode = null;
             if (user.PromoCodeId != null) userPromoCode = await _promoCodeService.GetPromoCodeByIdAsync(user.PromoCodeId.Value);
             var promoCode = await _promoCodeService.GetPromoCodeByCodeAsync(dto.Code);
@@ -75,11 +75,11 @@ namespace PL.Controllers
         [Route("[action]")]
         public async Task<ActionResult> ConfirmCookiesAsync()
         {
-            var user = await _userInfoService.GetUserInfoByIdAsync(UserId);
+            var user = await _userInfoService.GetUserInfoByIdAsync(UserId.Value);
             if (user.CookieConfirmationFlag == true) return Conflict();
             else
             {
-                await _personalizationService.ConfirmCookiesAsync(UserId);
+                await _personalizationService.ConfirmCookiesAsync(UserId.Value);
                 return NoContent();
             }
         }
@@ -87,7 +87,7 @@ namespace PL.Controllers
         [Route("[action]")]
         public async Task<ActionResult<UserInfoDto>> UserInfoAsync()
         {
-            return await _userInfoService.GetUserInfoByIdAsync(UserId);
+            return await _userInfoService.GetUserInfoByIdAsync(UserId.Value);
         }
     }
 }

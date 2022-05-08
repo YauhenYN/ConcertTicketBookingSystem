@@ -105,6 +105,9 @@ namespace ConcertTicketBookingSystemAPI
             services.AddScoped<IAdministrationService, AdministrationService>();
             services.AddScoped<IConcertPaymentService, ConcertPaymentService>();
             services.AddScoped<ICommonConcertsService, ConcertsService>();
+            services.AddScoped<IConcertService, ConcertsService>();
+            services.AddScoped<IConcertsService, ConcertsService>();
+            services.AddScoped<IBasicOperationsConcertService, ConcertsService>();
             services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
             services.AddScoped<IFacebookOAuthService, FacebookOAuthService>();
             services.AddScoped<IGoogleOAuthService, GoogleOAuthService>();
@@ -112,7 +115,11 @@ namespace ConcertTicketBookingSystemAPI
             services.AddScoped<IMicrosoftOAuthService, MicrosoftOAuthService>();
             services.AddScoped<IPersonalizationService, PersonalizationService>();
             services.AddScoped<ICommonPromoCodesService, PromoCodesService>();
+            services.AddScoped<IPromoCodeService, PromoCodesService>();
+            services.AddScoped<IPromoCodeService, PromoCodesService>();
             services.AddScoped<ICommonTicketsService, TicketsService>();
+            services.AddScoped<ITicketService, TicketsService>();
+            services.AddScoped<ITicketsService, TicketsService>();
             services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
             services.AddScoped<ICommonUsersService, UsersService>();
             services.AddScoped<IUserInfoService, UsersService>();

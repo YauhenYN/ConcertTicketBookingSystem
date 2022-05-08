@@ -5,7 +5,7 @@ function ActionItem(props) {
     return (
         <div className="actionItem">
             <div className="actionCreationTime">
-                {toCommonDateFormat(toLocaleDate(new Date(props.creationTime)).toISOString())}
+                {toCommonDateFormat(toLocaleDate(toLocaleDate(new Date(props.creationTime))).toISOString())}
             </div>
             <div className="actionDescription">
                 {props.description}
