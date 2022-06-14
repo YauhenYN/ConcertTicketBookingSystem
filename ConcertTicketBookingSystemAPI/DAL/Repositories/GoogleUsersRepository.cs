@@ -21,7 +21,7 @@ namespace DAL.Repositories
 
         public Task<GoogleUser> GetByIdAsync(string googleId)
         {
-            return _context.GoogleUsers.FirstAsync(u => u.GoogleId == googleId);
+            return _context.GoogleUsers.FirstOrDefaultAsync(u => u.GoogleId == googleId);
         }
 
         public Task<GoogleUser> GetByIdAsyncIncludingAsync<Out>(string googleId, Func<GoogleUser, Out> predicate)

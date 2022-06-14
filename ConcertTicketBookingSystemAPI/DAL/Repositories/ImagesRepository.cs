@@ -28,7 +28,7 @@ namespace DAL.Repositories
 
         public Task<Image> GetImageByIdAsync(int imageId)
         {
-            return _context.Images.FirstAsync(i => i.ImageId == imageId);
+            return _context.Images.FirstOrDefaultAsync(i => i.ImageId == imageId);
         }
 
         public IQueryable<Image> GetQueryable()

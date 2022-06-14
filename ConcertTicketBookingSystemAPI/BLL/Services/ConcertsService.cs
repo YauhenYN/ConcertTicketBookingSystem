@@ -66,21 +66,23 @@ namespace BLL.Services
         public async Task<ConcertDto> GetConcertByIdAsync(int concertId, Guid? userId)
         {
             var concert = await _concertsRepository.GetByIdAsync(concertId);
-            if (concert is ClassicConcert) return ((ClassicConcert)concert).ToDto();
-            else if (concert is OpenAirConcert) return ((OpenAirConcert)concert).ToDto();
-            else
+            switch (concert)
             {
-                var partyConcert = (PartyConcert)concert;
-                if (userId != null)
-                {
-                    int age = GetAge((await _usersRepository.GetByIdAsync(userId.Value)).BirthDate.Value);
-                    if (age >= partyConcert.Censure)  return partyConcert.ToDto();
-                }
-                else
-                {
-                    if (maxCensure >= partyConcert.Censure) return partyConcert.ToDto();
-                }
-                return null;
+                case null:
+                    return null;
+                case ClassicConcert:
+                    return ((ClassicConcert)concert).ToDto();
+                case OpenAirConcert:
+                    return ((OpenAirConcert)concert).ToDto();
+                default:
+                    var partyConcert = (PartyConcert)concert;
+                    if (userId != null)
+                    {
+                        int age = GetAge((await _usersRepository.GetByIdAsync(userId.Value)).BirthDate.Value);
+                        if (age >= partyConcert.Censure) return partyConcert.ToDto();
+                    }
+                    else if(maxCensure >= partyConcert.Censure) return partyConcert.ToDto();
+                    return null;
             }
         }
 

@@ -16,12 +16,12 @@ namespace DAL.Repositories
 
         public Task<User> GetByIdAsync(Guid userId)
         {
-            return _context.Users.FirstAsync(u => u.UserId == userId);
+            return _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
         public Task<User> GetByIdIncludingAsync<Out>(Guid userId, Func<User, Out> predicate)
         {
-            return _context.Users.Include(u => predicate).FirstAsync(u => u.UserId == userId);
+            return _context.Users.Include(u => predicate).FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
         public IQueryable<User> GetQueryable()

@@ -21,12 +21,12 @@ namespace DAL.Repositories
 
         public Task<PromoCode> GetByCodeAsync(string code)
         {
-            return _context.PromoCodes.FirstAsync(p => p.Code == code);
+            return _context.PromoCodes.FirstOrDefaultAsync(p => p.Code == code);
         }
 
         public Task<PromoCode> GetByIdAsync(Guid id)
         {
-            return _context.PromoCodes.FirstAsync(p => p.PromoCodeId == id);
+            return _context.PromoCodes.FirstOrDefaultAsync(p => p.PromoCodeId == id);
         }
 
         public IQueryable<PromoCode> GetQueryable()

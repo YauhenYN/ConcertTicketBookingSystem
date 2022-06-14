@@ -32,7 +32,7 @@ namespace DAL.Repositories
 
         public Task<int> GetAdditionalImagesCountByConcertIdAsync(int concertId)
         {
-            return Task.FromResult(_context.Concerts.Include(c => c.AdditionalImages).First(c => c.ConcertId == concertId).AdditionalImages.Count);
+            return Task.FromResult(_context.Concerts.Include(c => c.AdditionalImages).FirstOrDefault(c => c.ConcertId == concertId).AdditionalImages.Count);
         }
 
         public IQueryable<AdditionalImage> GetQueryable()

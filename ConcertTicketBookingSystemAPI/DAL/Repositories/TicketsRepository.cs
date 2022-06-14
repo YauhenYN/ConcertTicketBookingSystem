@@ -21,7 +21,7 @@ namespace DAL.Repositories
 
         public Task<Ticket> GetByIdAsync(Guid ticketId)
         {
-            return _context.Tickets.FirstAsync(t => t.TicketId == ticketId);
+            return _context.Tickets.FirstOrDefaultAsync(t => t.TicketId == ticketId);
         }
 
         public IQueryable<Ticket> GetQueryable()

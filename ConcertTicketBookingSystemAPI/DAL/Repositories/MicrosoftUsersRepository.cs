@@ -21,12 +21,12 @@ namespace DAL.Repositories
 
         public Task<MicrosoftUser> GetByIdAsync(string microsoftId)
         {
-            return _context.MicrosoftUsers.FirstAsync(u => u.MicrosoftId == microsoftId);
+            return _context.MicrosoftUsers.FirstOrDefaultAsync(u => u.MicrosoftId == microsoftId);
         }
 
         public Task<MicrosoftUser> GetByIdAsyncIncludingAsync<Out>(string microsoftId, Func<MicrosoftUser, Out> predicate)
         {
-            return _context.MicrosoftUsers.Include(u => predicate).FirstAsync(u => u.MicrosoftId == microsoftId);
+            return _context.MicrosoftUsers.Include(u => predicate).FirstOrDefaultAsync(u => u.MicrosoftId == microsoftId);
         }
 
         public IQueryable<MicrosoftUser> GetQueryable()
